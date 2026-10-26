@@ -34,8 +34,8 @@ Further options: `--syson` (pull the SysON images), `--install-system` (apt pack
 uv run python tools/validate_model.py          # syntax and semantic check of model/*.sysml (non-zero exit on errors)
 uv run python tools/arch.py check              # architecture consistency: ports, connections, allocation of all DRs
 uv run python tools/arch.py diagrams --render  # regenerate docs/diagrams/*.mmd, .svg, .png and docs/diagrams.md
-uv run python tools/trace.py check             # trace completeness: needs, model and spec stages (--stage, --json)
-uv run python tools/coverage.py                # coverage report per level and gate (--format json|markdown, --out FILE)
+uv run python tools/tracecheck.py check             # trace completeness: needs, model and spec stages (--stage, --json)
+uv run python tools/coverage_report.py                # coverage report per level and gate (--format json|markdown, --out FILE)
 uv run behave specs/features --dry-run         # parse the specs and bind steps
 uv run behave specs/features                   # run the specs (all skipped until the system exists)
 uv run python tools/steps_vocab.py             # regenerate docs/step_vocabulary.md
@@ -69,6 +69,18 @@ The `.sysml` files in git remain the source of truth.
 - Agents propose changes on `proposal/*` branches only; commits made with AI assistance carry a `Co-authored-by` trailer.
 - Generated files (`docs/diagrams*`, `docs/step_vocabulary.md`) are not edited by hand.
 
+## MCP servers (stdio)
+
+- `uv run python tools/mcp_model.py`: `list_elements`, `read_element`, `search`, `trace`, `validate`, `render`, `request_model_draft`.
+- `uv run python tools/mcp_spec.py`: `list_specs`, `draft_scenarios`, `run`, `coverage`.
+- Both also offer `read_document` (content labelled untrusted), `list_decisions`, `record_decision` and `propose_edit`.
+
+Register them in any MCP client as stdio commands, with the repository as working directory. Guards:
+paths are confined to the workspace (`.git` is protected), `propose_edit` writes only to `proposal/*` branches and
+never to files in a `baseline/*` tag, and `record_decision` / `propose_edit` need a human "approve" through the
+client's elicitation prompt. If the client cannot elicit, the call is refused. Decisions are appended to
+`decisions/<stage>.md`. Set `SPECFLOW_ROOT` to use another workspace.
+
 ## Not yet built
 
-Model and spec MCP servers, workflow prompts, decision log, approval and gate tooling, retrospective.
+Workflow prompts, approval and gate tooling (signed baselines), retrospective.

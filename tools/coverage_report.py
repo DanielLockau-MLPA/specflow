@@ -4,7 +4,7 @@ Produces JSON or Markdown with stable ordering (sorted, no timestamps), a summar
 and a list of every gap. Gate rows cover the trace rules only; spec run results are not included yet.
 
 Usage:
-    python tools/coverage.py [--format json|markdown] [--out FILE]
+    python tools/coverage_report.py [--format json|markdown] [--out FILE]
 Exit code 1 when any gap is unwaived.
 """
 import argparse
@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from arch import architecture, ids_and_names, read_model  # noqa: E402
-from trace import ID_TAG, evaluate, load_model, load_scenarios, prefix  # noqa: E402
+from tracecheck import ID_TAG, evaluate, load_model, load_scenarios, prefix  # noqa: E402
 
 GATES = {"G1": ("needs",), "G2": ("needs", "model"), "G3": ("needs", "model", "spec"), "G4": ("needs", "model", "spec")}
 

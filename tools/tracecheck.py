@@ -5,7 +5,7 @@ text with the lightweight reader of tools/arch.py and the specification with
 behave's Gherkin parser. Output is deterministic: sorted, no timestamps.
 
 Usage:
-    python tools/trace.py check [--stage needs|model|spec|all] [--json]
+    python tools/tracecheck.py check [--stage needs|model|spec|all] [--json]
 Exit code 1 when unwaived violations exist.
 Waivers (optional): trace/waivers.json, a list of
     {"rule": ..., "element": ..., "rationale": ..., "approver": ..., "expiry": "YYYY-MM-DD"}
