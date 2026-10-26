@@ -1,0 +1,28 @@
+# SysON images are multi-platform (linux/amd64 and linux/arm64) starting with v2026.9.0.
+# To run an older version on an ARM architecture, execute this command in your shell first:
+# export DOCKER_DEFAULT_PLATFORM=linux/amd64
+services:
+  database:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    networks:
+      - syson
+  app:
+    image: "${IMAGE_TAG:-eclipsesyson/syson:latest}"
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database/postgres
+      SPRING_DATASOURCE_USERNAME: username
+      SPRING_DATASOURCE_PASSWORD: password
+      SIRIUS_COMPONENTS_CORS_ALLOWEDORIGINPATTERNS: "*"
+      SERVER_PORT: 8080
+    depends_on:
+      - database
+    networks:
+      - syson
+networks:
+  syson:

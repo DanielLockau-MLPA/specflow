@@ -1,0 +1,9 @@
+[project]
+name = "mbse-to-executable-spec-test"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "behave>=1.3.3",
+    "mcp>=2.3.0",
+    "pytest>=9.1.1",
+]
