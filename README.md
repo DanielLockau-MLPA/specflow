@@ -83,4 +83,4 @@ client's elicitation prompt. If the client cannot elicit, the call is refused. D
 
 ## Not yet built
 
-Approval and gate tooling (signed baselines), retrospective.
+Approval and gate tooling (signed baselines), step bindings. See `docs/retrospective.md` for findings.
