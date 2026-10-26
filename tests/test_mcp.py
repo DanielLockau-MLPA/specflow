@@ -224,3 +224,17 @@ def test_decision_log_is_append_only_through_proposals(repo):
     assert call("propose_edit", {**edit, "content": old.replace("DL-001", "DL-009")})[0]
     assert call("propose_edit", {**edit, "content": ""})[0]
     assert not call("propose_edit", {**edit, "content": old + "\n## DL-002\n"})[0]
+
+
+def test_new_revision_supersedes_old_and_keeps_history(repo, approver):
+    import approvals
+    approve_gate(repo, "G2", approver)
+    (repo / "model/a.sysml").write_text("changed")
+    sh(repo, "git", "commit", "-qam", "change")
+    assert not approvals.gate_status("G2")["open"]
+    sh(repo, "git", "config", "user.signingkey", str(approver))
+    for role in ("reviewer", "owner"):
+        approvals.create_approval("G2", role, "re-approve")
+    st = approvals.gate_status("G2")
+    assert st["open"] and st["roles"]["owner"]["revision"] == 1
+    assert [r for r, _ in approvals.role_tags(core.Workspace(), "G2", "owner")] == [0, 1]

@@ -45,7 +45,7 @@ def main():
     except core.Rejected as e:
         print(e, file=sys.stderr)
         return 1
-    print(f"approval/{a.gate}/{a.role} signed by {v.signer}")
+    print(f"approval for {a.gate}/{a.role} signed by {v.signer} (older revisions are superseded, not deleted)")
     return 0
 
 

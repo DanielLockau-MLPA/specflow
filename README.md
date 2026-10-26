@@ -83,7 +83,7 @@ client's elicitation prompt. If the client cannot elicit, the call is refused. D
 
 ## Approvals and gates
 
-Gates are opened by stakeholders, not by one owner. Each required role signs its own tag `approval/<gate>/<role>`
+Gates are opened by stakeholders, not by one owner. Each required role signs its own tag `approval/<gate>/<role>.<n>` (n = revision; `approve` creates the next one, the newest valid revision counts, older ones stay as history; an unversioned tag is revision 0)
 with an SSH key whose public half is in `approvals/keys/<principal>.pub`. Protected configuration (agents cannot read
 or write `approvals/`):
 

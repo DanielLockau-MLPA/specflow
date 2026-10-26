@@ -1,6 +1,7 @@
 """Gate approval from per-stakeholder SSH-signed tags (SR-041, DR-003).
 
-Each stakeholder role signs `approval/<gate>/<role>` with a key whose public half is in approvals/keys/<principal>.pub.
+Each stakeholder role signs `approval/<gate>/<role>.<n>` (n = revision; an unversioned tag counts as revision 0)
+with a key whose public half is in approvals/keys/<principal>.pub.
 approvals/gates.json lists the gate scopes and required roles; approvals/roles.json maps principals to roles.
 A gate is open when every required role has a valid tag signed by a principal holding that role, all tags cover the
 same scope content, and the working tree has not drifted from it. There is no separate "gate open" tag: the state
@@ -60,6 +61,30 @@ def verify_tag(name, ws=None):
     return Verification(True, signer=m.group(1) if m else "")
 
 
+def role_tags(ws, gate, role):
+    """All approval tags of a role for a gate as (revision, name), oldest first."""
+    found = []
+    for name in core.git("tag", "--list", f"approval/{gate}/{role}*", cwd=ws.root).split():
+        m = re.fullmatch(re.escape(f"approval/{gate}/{role}") + r"(?:\.(\d+))?", name)
+        if m:
+            found.append((int(m.group(1) or 0), name))
+    return sorted(found)
+
+
+def current_tag(ws, gate, role):
+    """Newest revision with a valid signature from a holder of the role; older revisions are superseded."""
+    roles_of = _json(ws, "roles.json")
+    last = None
+    for rev, name in reversed(role_tags(ws, gate, role)):
+        v = verify_tag(name, ws)
+        if v.ok and role not in roles_of.get(v.signer, []):
+            v = Verification(False, reason=f"signer {v.signer} does not hold role {role}")
+        if v.ok:
+            return name, rev, v
+        last = last or (name, rev, v)
+    return last or (f"approval/{gate}/{role}.1", 0, Verification(False, reason="tag missing"))
+
+
 def _scope(ws, gate):
     return tuple(gates(ws).get(gate, {}).get("scope", ()))
 
@@ -87,15 +112,11 @@ def gate_status(gate, ws=None):
     g = cfg.get("gates", {}).get(gate)
     if g is None:
         return {"gate": gate, "open": False, "problems": ["gate not configured"], "roles": {}, "drift": []}
-    roles_of = _json(ws, "roles.json")
     scope = tuple(g["scope"])
     roles, prints, signers = {}, set(), set()
     for role in g["roles"]:
-        tag = f"approval/{gate}/{role}"
-        v = verify_tag(tag, ws)
-        entry = {"tag": tag, "valid": v.ok, "signer": v.signer, "reason": v.reason}
-        if v.ok and role not in roles_of.get(v.signer, []):
-            entry.update(valid=False, reason=f"signer {v.signer} does not hold role {role}")
+        tag, rev, v = current_tag(ws, gate, role)
+        entry = {"tag": tag, "revision": rev, "valid": v.ok, "signer": v.signer, "reason": v.reason}
         if entry["valid"]:
             commit = core.git("rev-parse", f"{tag}^{{commit}}", cwd=ws.root)
             fp = fingerprint(ws, commit, scope)
@@ -135,14 +156,15 @@ def protected_files(ws):
 
 
 def create_approval(gate, role, message, ws=None):
-    """Human action: sign approval/<gate>/<role> on HEAD with the operator's SSH key (git config user.signingkey)."""
+    """Human action: sign the next revision approval/<gate>/<role>.<n> on HEAD with the operator's SSH key (git config user.signingkey)."""
     ws = ws or core.Workspace()
     g = gates(ws).get(gate)
     if g is None or role not in g["roles"]:
         raise core.Rejected(f"role {role} is not required for gate {gate}; valid: {', '.join(g['roles']) if g else '(gate unknown)'}")
     if drift(gate, ws):
         raise core.Rejected("scope has uncommitted changes; commit them first so the approval covers what is signed")
-    name = f"approval/{gate}/{role}"
+    existing = role_tags(ws, gate, role)
+    name = f"approval/{gate}/{role}.{(existing[-1][0] if existing else 0) + 1}"
     core.git("-c", "gpg.format=ssh", "tag", "-s", name, "-m", message, cwd=ws.root)
     v = verify_tag(name, ws)
     if v.ok and role not in _json(ws, "roles.json").get(v.signer, []):
