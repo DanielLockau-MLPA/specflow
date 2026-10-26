@@ -19,3 +19,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Reviewed by user: readable, relate well to the model, no corrections.
 - rationale: User statement in session. Formal G3 approval is not yet recorded (approval tooling not built).
 - affected: SR-014
+
+## DL-007
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Approve gate G3?
+- decision: baseline/G3 created as signed tag.
+- rationale: Signature verified against approvals/keys, signer id_rsa_dl_devops_20250812. Signed tags are the approval record.
+- affected: SR-014

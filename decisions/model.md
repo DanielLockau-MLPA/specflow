@@ -19,3 +19,21 @@ Append-only. Entries are never edited or deleted.
 - decision: Accepted after fixes: InputGuard ports, ConfirmationChannel, arrow direction convention (sender to receiver).
 - rationale: Reviewed via generated diagrams; user said 'Looks good'.
 - affected: DR-032, DR-024
+
+## DL-005
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Approve gate G1?
+- decision: baseline/G1 created as signed tag.
+- rationale: Signature verified against approvals/keys, signer id_rsa_dl_devops_20250812. Signed tags are the approval record.
+- affected: N-001
+
+## DL-006
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Approve gate G2?
+- decision: baseline/G2 created as signed tag.
+- rationale: Signature verified against approvals/keys, signer id_rsa_dl_devops_20250812. Signed tags are the approval record.
+- affected: DR-001
