@@ -37,7 +37,11 @@ uv run python tools/arch.py diagrams --render  # regenerate docs/diagrams/*.mmd,
 uv run python tools/tracecheck.py check             # trace completeness: needs, model and spec stages (--stage, --json)
 uv run python tools/coverage_report.py                # coverage report per level and gate (--format json|markdown, --out FILE)
 uv run behave specs/features --dry-run         # parse the specs and bind steps
-uv run behave specs/features                   # run the specs (all skipped until the system exists)
+uv run behave specs/features                   # run all scenarios against the real tooling (~1 min)
+uv run python tools/specflow.py run            # run the specs and record .specflow/results/last_run.json (G4 evidence)
+uv run python tools/specflow.py gate G4        # evaluate a gate: approvals, trace stages, spec run, unreviewed AI commits
+uv run python tools/specflow.py impact SR-004  # upstream/downstream elements, scenarios and gates needing re-approval
+uv run python tools/specflow.py audit approvals|waivers|changes|test-evidence|integrity|bundle
 uv run python tools/steps_vocab.py             # regenerate docs/step_vocabulary.md
 uv run pytest tests                            # tests of the tooling
 ```
@@ -54,9 +58,9 @@ Arrows point from the sender of a request to its receiver.
 
 ## Waivers
 
-Trace gaps can be waived in `trace/waivers.json` (optional), a list of
-`{"rule", "element", "rationale", "approver", "expiry": "YYYY-MM-DD"}`. A waiver without rationale, human approver
-or a future expiry is ignored and reported.
+Trace gaps are waived by a signed tag `waiver/<rule>/<element>[.n]` whose message has the lines `rationale:` and `expiry: YYYY-MM-DD`.
+It counts only with a verified signer who is a registered non-agent principal, a rationale and a future expiry; newer
+revisions supersede older ones. Create one with `uv run python tools/approve.py waive ...`.
 
 ## Optional: SysON (graphical model review)
 
@@ -77,7 +81,7 @@ The `.sysml` files in git remain the source of truth.
 
 Register them in any MCP client as stdio commands, with the repository as working directory. Guards:
 paths are confined to the workspace (`.git` is protected), `propose_edit` writes only to `proposal/*` branches and
-never to files in a `baseline/*` tag, and `record_decision` / `propose_edit` need a human "approve" through the
+never to files in the scope of a gate that has approval tags, and `record_decision` / `propose_edit` need a human "approve" through the
 client's elicitation prompt. If the client cannot elicit, the call is refused. Decisions are appended to
 `decisions/<stage>.md`. Set `SPECFLOW_ROOT` to use another workspace.
 
@@ -87,7 +91,7 @@ Gates are opened by stakeholders, not by one owner. Each required role signs its
 with an SSH key whose public half is in `approvals/keys/<principal>.pub`. Protected configuration (agents cannot read
 or write `approvals/`):
 
-- `approvals/gates.json`: per gate (G1 needs, G2 model, G3 specs) the scope paths and required roles; `allow_single_person`
+- `approvals/gates.json`: per gate (G1 needs, G2 model, G3 specs, G4 implementation release: also requires a fresh spec run in which every scenario passed, except `@manual` ones that the approvers attest) the scope paths and required roles; `allow_single_person`
   permits one person to hold all roles (prototype only; status reports `single_person`).
 - `approvals/roles.json`: principal (key file name) to roles.
 
@@ -99,8 +103,15 @@ content, and the scope has not changed since. There is no separate "gate open" t
   `git config gpg.format ssh` and `user.signingkey`; scope changes must be committed first).
 - `uv run python tools/approve.py status` shows per-role verification, problems and drift (exit 1 if any gate is not open).
 
+Tags are mutable locally; install `tools/hooks/pre-receive` on the git host (with `SPECFLOW_KEYS_DIR`) so that only validly signed `approval/*` and `waiver/*` tags can be created and none can be moved or deleted.
+
 Agents only have the read-only `approval_status` tool. Files in an approved scope cannot be changed by `propose_edit`.
+
+## Step bindings
+
+`specs/environment.py` and `specs/steps/world.py` give every scenario a throwaway git workspace with test keys (alice holds all roles,
+bob only `reviewer`, agent-1 none, mallory is unregistered). Steps live in `specs/steps/<letter>_*.py`. The SysON scenario is `@manual`.
 
 ## Not yet built
 
-Impact analysis, evidence bundle, gate evaluation including spec results, step bindings. See `docs/retrospective.md` for findings.
+Host-side enforcement beyond the pre-receive hook (role check), SysON import automation. See `docs/retrospective.md` for findings.

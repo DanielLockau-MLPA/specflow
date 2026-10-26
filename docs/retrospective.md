@@ -47,3 +47,9 @@ candidates for iteration 2. It is input for the next planning round, not a decis
 - Splitting the component diagram by port type kept each view readable and still checkable.
 - Q&A before drafting was valuable; the prompts now enforce it, but the enforcement is a convention for the agent,
   backed only by `request_model_draft` refusing without a baseline and a recorded Q&A.
+
+## Iteration 2 findings (G4 preparation)
+
+- Binding scenarios to real steps exposed four wording defects in reviewed specs (wrong upstream ID, tag name without revision, wrong trace stage, over-broad format rule). Executing specs is itself a review.
+- Per-scenario throwaway git workspaces with test keys made approval, waiver and hook scenarios testable without touching the real repository; the real suite must never run inside such a workspace (recursion).
+- Remaining gaps: pre-receive hook does not check the signer's role; only `read_document` applies the confidentiality filter; decision IDs are count-based; refusal steps match substrings; MCP tool names differ from the scenario wording; SysON import is manual.
