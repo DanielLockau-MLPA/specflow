@@ -4,7 +4,7 @@ flowchart LR
   specMcp["SpecMcpServer"]
   specRunner["SpecRunner"]
   traceService["TraceService"]
-  baselineStore["BaselineStore"]
+  tagStore["ApprovalTagStore"]
   decisionLog["DecisionLogService"]
   idRegistry["IdRegistry"]
   viewExporter["ViewExporter"]
@@ -14,7 +14,7 @@ flowchart LR
   specMcp -->|WorkspacePort| workspaceGuard
   specRunner -->|WorkspacePort| workspaceGuard
   traceService -->|WorkspacePort| workspaceGuard
-  baselineStore -->|WorkspacePort| workspaceGuard
+  tagStore -->|WorkspacePort| workspaceGuard
   decisionLog -->|WorkspacePort| workspaceGuard
   idRegistry -->|WorkspacePort| workspaceGuard
   viewExporter -->|WorkspacePort| workspaceGuard
@@ -22,5 +22,5 @@ flowchart LR
   modelMcp -->|GitPort| repo
   specMcp -->|GitPort| repo
   approvalService -->|GitPort| repo
-  baselineStore -->|GitPort| repo
+  tagStore -->|GitPort| repo
   style repo fill:#eee,stroke:#999

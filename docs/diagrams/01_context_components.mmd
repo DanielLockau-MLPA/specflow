@@ -12,7 +12,7 @@ flowchart LR
     impactAnalyzer["ImpactAnalyzer"]
     approvalService["ApprovalService"]
     gateEvaluator["GateEvaluator"]
-    baselineStore["BaselineStore"]
+    tagStore["ApprovalTagStore"]
     decisionLog["DecisionLogService"]
     promptLibrary["PromptLibrary"]
     workspaceGuard["WorkspaceGuard"]
@@ -36,7 +36,7 @@ flowchart LR
   gateEvaluator -->|ApprovalPort| approvalService
   reviewCli -->|ApprovalPort| approvalService
   reviewCli -->|GatePort| gateEvaluator
-  baselineStore -->|GatePort| gateEvaluator
+  tagStore -->|GatePort| gateEvaluator
   specMcp -->|RunPort| specRunner
   reviewCli -->|RunPort| specRunner
   modelMcp -->|LogPort| decisionLog
@@ -48,7 +48,7 @@ flowchart LR
   specMcp -->|WorkspacePort| workspaceGuard
   specRunner -->|WorkspacePort| workspaceGuard
   traceService -->|WorkspacePort| workspaceGuard
-  baselineStore -->|WorkspacePort| workspaceGuard
+  tagStore -->|WorkspacePort| workspaceGuard
   decisionLog -->|WorkspacePort| workspaceGuard
   idRegistry -->|WorkspacePort| workspaceGuard
   viewExporter -->|WorkspacePort| workspaceGuard
@@ -68,7 +68,7 @@ flowchart LR
   modelMcp -->|GitPort| repo
   specMcp -->|GitPort| repo
   approvalService -->|GitPort| repo
-  baselineStore -->|GitPort| repo
+  tagStore -->|GitPort| repo
   style human fill:#eee,stroke:#999
   style mcpClient fill:#eee,stroke:#999
   style repo fill:#eee,stroke:#999

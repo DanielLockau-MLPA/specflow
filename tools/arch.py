@@ -181,7 +181,7 @@ def build_diagrams():
         "agentfacing": ("Agent-facing servers", ["modelMcp", "specMcp", "promptLibrary"]),
         "guards": ("Security guards", ["inputGuard", "confidentialityFilter", "confirmationChannel", "workspaceGuard"]),
         "services": ("Core services", ["traceService", "impactAnalyzer", "specRunner", "idRegistry", "decisionLog", "viewExporter"]),
-        "governance": ("Governance (human only)", ["reviewCli", "approvalService", "gateEvaluator", "baselineStore"]),
+        "governance": ("Governance (human only)", ["reviewCli", "approvalService", "gateEvaluator", "tagStore"]),
         "extagent": ("MCP client + AI agent", ["mcpClient"]),
         "exthuman": ("Human", ["human"]),
         "extrepo": ("Git repository", ["repo"]),
@@ -285,8 +285,8 @@ def build_diagrams():
                          "    G-->>A: aborted",
                          "  end"])))
 
-    diagrams.append(("03_approval_baseline_path", "Approval and baseline path (human only)",
-                     "Approvals, gate evaluation and baselines are reachable only through the review CLI; there is no agent-facing port (DR-012 to DR-018).",
+    diagrams.append(("03_approval_gate_path", "Approval and gate path (human only)",
+                     "Approvals are signed git tags; the gate state is derived from them and the trace rules. Reachable only through the review CLI; there is no agent-facing port (DR-012 to DR-018).",
                      "\n".join([
                          "sequenceDiagram",
                          "  actor H as Human approver",
@@ -294,21 +294,19 @@ def build_diagrams():
                          "  participant AP as ApprovalService",
                          "  participant GE as GateEvaluator",
                          "  participant TS as TraceService",
-                         "  participant BS as BaselineStore",
+                         "  participant TG as ApprovalTagStore",
                          "  participant R as Repository",
-                         "  H->>CLI: approve(subject, role, rationale)",
-                         "  CLI->>AP: submit signed approval",
-                         "  AP->>AP: check human identity, role, author is not sole approver",
-                         "  AP->>R: store approval record",
+                         "  H->>CLI: approve(gate, role, rationale)",
+                         "  CLI->>AP: sign approval/<gate>/<role>",
+                         "  AP->>AP: check registered key, role mapping, clean scope",
+                         "  AP->>TG: create signed tag",
+                         "  TG->>R: store tag",
                          "  H->>CLI: evaluate gate",
                          "  CLI->>GE: evaluate(gate)",
-                         "  GE->>AP: approvals for current hashes",
-                         "  GE->>TS: trace rules, waivers",
-                         "  GE-->>CLI: open / closed with reasons",
-                         "  H->>CLI: create baseline",
-                         "  CLI->>BS: tag if gate open",
-                         "  BS->>GE: confirm gate",
-                         "  BS->>R: signed tag + hashes + evidence"])))
+                         "  GE->>TG: latest valid tag per role, scope drift",
+                         "  GE->>TS: trace rules, signed waiver tags",
+                         "  GE-->>CLI: open / closed with reasons (state derived, no baseline tag)",
+                         "  GE->>TG: write evidence bundle of the gate"])))
 
     by_part = defaultdict(list)
     for dr, part in sat:

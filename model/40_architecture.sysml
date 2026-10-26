@@ -35,7 +35,7 @@ package Architecture {
     part def ImpactAnalyzer { port impact : ImpactPort[*]; port trace : TraceQueryPort; }
     part def ApprovalService { port approvals : ApprovalPort[*]; port git : GitPort; port trace : TraceQueryPort; port impact : ImpactPort; }
     part def GateEvaluator { port gates : GatePort[*]; port approvals : ApprovalPort; port trace : TraceQueryPort; }
-    part def BaselineStore { port git : GitPort; port ws : WorkspacePort; port gate : GatePort; }
+    part def ApprovalTagStore { port git : GitPort; port ws : WorkspacePort; port gate : GatePort; }
     part def DecisionLogService { port log : LogPort[*]; port ws : WorkspacePort; }
     part def PromptLibrary { port mcp : McpPort; }
     part def IdRegistry { port ids : IdPort[*]; port ws : WorkspacePort; }
@@ -75,7 +75,7 @@ package Architecture {
         part impactAnalyzer : ImpactAnalyzer;
         part approvalService : ApprovalService;
         part gateEvaluator : GateEvaluator;
-        part baselineStore : BaselineStore;
+        part tagStore : ApprovalTagStore;
         part decisionLog : DecisionLogService;
         part promptLibrary : PromptLibrary;
         part workspaceGuard : WorkspaceGuard;
@@ -102,7 +102,7 @@ package Architecture {
         connect gateEvaluator.approvals to approvalService.approvals;
         connect reviewCli.approvals to approvalService.approvals;
         connect reviewCli.gate to gateEvaluator.gates;
-        connect baselineStore.gate to gateEvaluator.gates;
+        connect tagStore.gate to gateEvaluator.gates;
 
         // Spec execution, log, IDs, views
         connect specMcp.run to specRunner.run;
@@ -118,7 +118,7 @@ package Architecture {
         connect specMcp.ws to workspaceGuard.clients;
         connect specRunner.ws to workspaceGuard.clients;
         connect traceService.ws to workspaceGuard.clients;
-        connect baselineStore.ws to workspaceGuard.clients;
+        connect tagStore.ws to workspaceGuard.clients;
         connect decisionLog.ws to workspaceGuard.clients;
         connect idRegistry.ws to workspaceGuard.clients;
         connect viewExporter.ws to workspaceGuard.clients;
@@ -150,7 +150,7 @@ package Architecture {
         connect toolchain.modelMcp.git to repo.git;
         connect toolchain.specMcp.git to repo.git;
         connect toolchain.approvalService.git to repo.git;
-        connect toolchain.baselineStore.git to repo.git;
+        connect toolchain.tagStore.git to repo.git;
     }
 
     part context : SystemContext;
@@ -175,16 +175,16 @@ package Architecture {
     satisfy WaiverRecord by context.toolchain.approvalService;
     satisfy ApprovalInvalidation by context.toolchain.approvalService;
     satisfy ImpactAnalysis by context.toolchain.impactAnalyzer;
-    satisfy TamperEvidentApprovals by context.toolchain.baselineStore;
-    satisfy DriftDetection by context.toolchain.baselineStore;
-    satisfy EvidenceBundle by context.toolchain.baselineStore;
+    satisfy TamperEvidentApprovals by context.toolchain.tagStore;
+    satisfy DriftDetection by context.toolchain.tagStore;
+    satisfy EvidenceBundle by context.toolchain.tagStore;
     satisfy DecisionLogFormat by context.toolchain.decisionLog;
     satisfy WorkflowPrompts by context.toolchain.promptLibrary;
     satisfy PathContainment by context.toolchain.workspaceGuard;
     satisfy UntrustedContentHandling by context.toolchain.inputGuard;
     satisfy ConfidentialityExclusions by context.toolchain.confidentialityFilter;
     satisfy HumanConfirmationChannel by context.toolchain.confirmationChannel;
-    satisfy RefProtectionOutsideAgent by context.toolchain.baselineStore;
+    satisfy RefProtectionOutsideAgent by context.toolchain.tagStore;
     satisfy ViewExport by context.toolchain.viewExporter;
     satisfy StableIdScheme by context.toolchain.idRegistry;
     satisfy OpenFormatsOnly by context.toolchain;

@@ -66,13 +66,13 @@ All agent traffic passes the input guard; state-changing calls need a human deci
 
 Source: [`02_agent_path_confirmation.mmd`](diagrams/02_agent_path_confirmation.mmd) · [PNG](diagrams/02_agent_path_confirmation.png)
 
-## Approval and baseline path (human only)
+## Approval and gate path (human only)
 
-Approvals, gate evaluation and baselines are reachable only through the review CLI; there is no agent-facing port (DR-012 to DR-018).
+Approvals are signed git tags; the gate state is derived from them and the trace rules. Reachable only through the review CLI; there is no agent-facing port (DR-012 to DR-018).
 
-[![Approval and baseline path (human only)](diagrams/03_approval_baseline_path.svg)](diagrams/03_approval_baseline_path.svg)
+[![Approval and gate path (human only)](diagrams/03_approval_gate_path.svg)](diagrams/03_approval_gate_path.svg)
 
-Source: [`03_approval_baseline_path.mmd`](diagrams/03_approval_baseline_path.mmd) · [PNG](diagrams/03_approval_baseline_path.png)
+Source: [`03_approval_gate_path.mmd`](diagrams/03_approval_gate_path.mmd) · [PNG](diagrams/03_approval_gate_path.png)
 
 ## Allocation of design requirements to parts
 

@@ -1,0 +1,19 @@
+sequenceDiagram
+  actor H as Human approver
+  participant CLI as ReviewCli
+  participant AP as ApprovalService
+  participant GE as GateEvaluator
+  participant TS as TraceService
+  participant TG as ApprovalTagStore
+  participant R as Repository
+  H->>CLI: approve(gate, role, rationale)
+  CLI->>AP: sign approval/<gate>/<role>
+  AP->>AP: check registered key, role mapping, clean scope
+  AP->>TG: create signed tag
+  TG->>R: store tag
+  H->>CLI: evaluate gate
+  CLI->>GE: evaluate(gate)
+  GE->>TG: latest valid tag per role, scope drift
+  GE->>TS: trace rules, signed waiver tags
+  GE-->>CLI: open / closed with reasons (state derived, no baseline tag)
+  GE->>TG: write evidence bundle of the gate
