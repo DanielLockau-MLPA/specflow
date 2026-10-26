@@ -59,23 +59,23 @@ package DesignRequirements {
 
     // Approvals, gates, impact
     requirement <'DR-012'> ApprovalRecord : DesignRequirement {
-        doc /* An approval shall be a repository record containing approver identity, role, decision, subject element IDs, subject content hash, rationale and date, and shall be signed by the approver. */
+        doc /* An approval shall be a signed git tag named approval/<gate>/<role>, created by a registered human approver for the gate scope at one commit; the signature gives approver identity and date, the tag name gives role and gate, the tag message gives the rationale, and the content hash is computed from the scope at the tagged commit. A newer approval of the same role supersedes older ones, which stay in the history. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-013'> ApproverEligibility : DesignRequirement {
-        doc /* The approval service shall accept approvals only from registered human identities holding the required role, reject agent identities, and reject approvals where the author is the only approver. */
+        doc /* The approval service shall accept an approval only if its signing key is registered in approvals/keys and mapped to the role in approvals/roles.json; agents hold no registered key. A gate whose approvals all come from one person shall open only if single-person approval is explicitly allowed in the gate configuration, and the status shall report it. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-014'> GateEvaluation : DesignRequirement {
-        doc /* The gate evaluator shall open a gate only if all required roles hold valid approvals for the current content hashes and the trace rules report no unwaived gap. */
+        doc /* The gate evaluator shall derive the gate state and open a gate only if all required roles hold valid approvals for the current scope content, the trace rules of the gate report no unwaived gap, no AI-authored change in scope is unreviewed, and for the implementation gate all scenarios pass. No separate gate-open record exists. */
         attribute :>> kind = Kind::functional;
     }
     requirement <'DR-015'> WaiverRecord : DesignRequirement {
-        doc /* A waiver shall be a signed record naming the gap, rationale, human approver and expiry, and shall be listed in every report. */
+        doc /* A waiver shall be a signed git tag named waiver/<rule>/<element> by a registered human approver, with the rationale and an expiry date in the tag message; it shall be listed in every report, and a waiver without rationale, with a past expiry or without a registered signer shall be ignored. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-016'> ApprovalInvalidation : DesignRequirement {
-        doc /* When the content hash of an approved element changes, the approval service shall mark approvals of that element and of all dependents as invalidated, retaining the original records. */
+        doc /* When the content of a gate scope changes, the approval service shall report every approval of that gate as stale, leave approvals of gates with unchanged scope valid, and retain all approval tags. */
         attribute :>> kind = Kind::functional;
     }
     requirement <'DR-017'> ImpactAnalysis : DesignRequirement {
@@ -84,16 +84,16 @@ package DesignRequirements {
     }
 
     // Baselines and evidence
-    requirement <'DR-018'> SignedBaselineTags : DesignRequirement {
-        doc /* A baseline shall be a signed git tag created only after gate evaluation succeeds, and shall reference the approval records it relies on. */
+    requirement <'DR-018'> TamperEvidentApprovals : DesignRequirement {
+        doc /* Approval and waiver tags shall be tamper-evident: a tag that is unsigned, signed by an unregistered key or altered shall be reported as invalid, and no agent-facing tool shall create, move or delete approval or waiver refs. Protection of these refs on the git host is a deployment requirement. */
         attribute :>> kind = Kind::security;
     }
     requirement <'DR-019'> DriftDetection : DesignRequirement {
-        doc /* A baseline shall record content hashes of model and specification; verification shall report any difference between recorded and current hashes. */
+        doc /* Verification shall compute the scope content hash at each approval and report every file of the gate scope that differs from the current content. */
         attribute :>> kind = Kind::security;
     }
     requirement <'DR-020'> EvidenceBundle : DesignRequirement {
-        doc /* Per baseline, the system shall archive spec results, trace report and tool versions so that requirement-to-test evidence can be inspected later. */
+        doc /* Per gate, the system shall write an evidence bundle containing the scope content hashes, the approvals, the waivers, the spec results, the trace report and the tool versions, so that requirement-to-test evidence can be inspected later. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-021'> DecisionLogFormat : DesignRequirement {
@@ -179,8 +179,8 @@ package DesignRequirements {
     dependency 'DR-015 derives SR-030' from WaiverRecord to ChangeRecords;
     dependency 'DR-016 derives SR-012' from ApprovalInvalidation to ApprovalReset;
     dependency 'DR-017 derives SR-010' from ImpactAnalysis to ChangeImpactAnalysis;
-    dependency 'DR-018 derives SR-041' from SignedBaselineTags to TamperEvidentBaselines;
-    dependency 'DR-018 derives SR-030' from SignedBaselineTags to ChangeRecords;
+    dependency 'DR-018 derives SR-041' from TamperEvidentApprovals to TamperEvidentBaselines;
+    dependency 'DR-018 derives SR-030' from TamperEvidentApprovals to ChangeRecords;
     dependency 'DR-019 derives SR-041' from DriftDetection to TamperEvidentBaselines;
     dependency 'DR-020 derives SR-032' from EvidenceBundle to RequirementsToTestEvidence;
     dependency 'DR-021 derives SR-007' from DecisionLogFormat to DecisionLog;

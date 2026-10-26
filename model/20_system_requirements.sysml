@@ -57,7 +57,7 @@ package SystemRequirements {
     }
 
     requirement <'SR-012'> ApprovalReset : SystemRequirement {
-        doc /* When an approved element changes, the system shall invalidate the approvals of that element and of every element depending on it, and keep the invalidated approvals in the history. */
+        doc /* When approved content changes, the system shall invalidate every approval of the affected gate, keep the invalidated approvals in the history, and show which elements and scenarios are affected. */
         attribute :>> kind = Kind::functional;
     }
 
@@ -112,7 +112,7 @@ package SystemRequirements {
         attribute :>> kind = Kind::security;
     }
     requirement <'SR-041'> TamperEvidentBaselines : SystemRequirement {
-        doc /* Baselines shall be tamper-evident (signed tags/commits) and drift between model and specs shall be detected. */
+        doc /* Approvals shall be tamper-evident (signed, verifiable against registered keys) and drift of approved model and specification content shall be detected. */
         attribute :>> kind = Kind::security;
     }
     requirement <'SR-042'> RestrictedFileAccess : SystemRequirement {

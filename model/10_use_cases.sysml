@@ -13,7 +13,7 @@ package ProjectUseCases {
         actor owner : Stakeholder { perform main.supplyInputs; perform main.answerQuestions; }
         actor ai : AiAgent { perform main.askQuestions; perform main.draftBaseline; perform altUntrustedInput; }
         actor reviewers : Stakeholder[1..*] { perform main.approveBaseline; perform altRejected; }
-        objective { doc /* Agreed, baselined needs and requirements (G1). Precondition: input documents available. Postcondition: baseline tagged and decisions logged. */ }
+        objective { doc /* Agreed, baselined needs and requirements (G1). Precondition: input documents available. Postcondition: gate G1 open and decisions logged. */ }
 
         action main {
             action supplyInputs;
@@ -58,11 +58,11 @@ package ProjectUseCases {
 
     use case <'UC-03'> ReviewAndApproveModel {
         doc /* Review team modifies the model; all stakeholders approve (G2). */
-        subject system : ProjectSystem { perform main.presentViews; perform main.checkCoverage; perform main.recordApprovals; perform main.tagBaseline; perform altCoverageGap; perform altAgentApproval; }
+        subject system : ProjectSystem { perform main.presentViews; perform main.checkCoverage; perform main.recordApprovals; perform main.openGate; perform altCoverageGap; perform altAgentApproval; }
         actor engineer : Stakeholder { perform main.modifyModel; }
         actor reviewers : Stakeholder[1..*] { perform main.collectComments; perform altChangesRequested; }
         actor ai : AiAgent { doc /* May suggest edits during modifyModel on a branch; no approval rights. */ }
-        objective { doc /* Model approved by all required roles (G2). Precondition: validated draft. Postcondition: approved baseline tagged, coverage complete. */ }
+        objective { doc /* Model approved by all required roles (G2). Precondition: validated draft. Postcondition: gate G2 open, coverage complete. */ }
 
         action main {
             action presentViews;
@@ -70,7 +70,7 @@ package ProjectUseCases {
             then action modifyModel;
             then action checkCoverage;
             then action recordApprovals;
-            then action tagBaseline;
+            then action openGate;
         }
         action altChangesRequested {
             doc /* A reviewer requests changes; loop to modifyModel; earlier approvals are reset if the change affects approved elements. */
@@ -136,10 +136,10 @@ package ProjectUseCases {
 
     use case <'UC-06'> ReviewAndApproveSpecification {
         doc /* Review team modifies specs; all stakeholders approve (G3). */
-        subject system : ProjectSystem { perform main.executeSpecs; perform main.checkCoverage; perform main.recordApprovals; perform main.tagBaseline; perform altSpecFails; perform altAgentApproval; }
+        subject system : ProjectSystem { perform main.executeSpecs; perform main.checkCoverage; perform main.recordApprovals; perform main.openGate; perform altSpecFails; perform altAgentApproval; }
         actor engineer : Stakeholder { perform main.modifySpecs; }
         actor reviewers : Stakeholder[1..*] { perform main.collectComments; perform altChangesRequested; }
-        objective { doc /* Specification approved by all required roles (G3). Precondition: executable draft. Postcondition: baseline tagged, every requirement has a passing scenario or recorded waiver. */ }
+        objective { doc /* Specification approved by all required roles (G3). Precondition: executable draft. Postcondition: gate G3 open, every requirement has a passing scenario or recorded waiver. */ }
 
         action main {
             action collectComments;
@@ -147,7 +147,7 @@ package ProjectUseCases {
             then action executeSpecs;
             then action checkCoverage;
             then action recordApprovals;
-            then action tagBaseline;
+            then action openGate;
         }
         action altChangesRequested { doc /* Loop to modifySpecs; approvals reset if approved items change. */ }
         action altSpecFails { doc /* Failing scenario blocks the gate until fixed or the spec/model is corrected via UC-08. */ }
@@ -173,11 +173,11 @@ package ProjectUseCases {
 
     use case <'UC-08'> ChangeApprovedBaseline {
         doc /* A change to approved content triggers impact analysis and re-approval. */
-        subject system : ProjectSystem { perform main.analyseImpact; perform main.resetApprovals; perform main.recordApprovals; perform main.tagBaseline; perform altAgentWriteDenied; }
+        subject system : ProjectSystem { perform main.analyseImpact; perform main.resetApprovals; perform main.recordApprovals; perform main.openGate; perform altAgentWriteDenied; }
         actor requester : Stakeholder { perform main.requestChange; perform main.proposeChange; }
         actor ai : AiAgent { doc /* May propose changes on a branch only; marked as AI-authored. */ }
         actor reviewers : Stakeholder[1..*] { perform main.reviewChange; }
-        objective { doc /* Controlled change with re-approval. Precondition: an approved baseline exists. Postcondition: new baseline tagged with change record, or change rejected. */ }
+        objective { doc /* Controlled change with re-approval. Precondition: an approved baseline exists. Postcondition: affected gates re-approved and open again with a change record, or change rejected. */ }
 
         action main {
             action requestChange;
@@ -186,7 +186,7 @@ package ProjectUseCases {
             then action reviewChange;
             then action resetApprovals;
             then action recordApprovals;
-            then action tagBaseline;
+            then action openGate;
         }
         action altAgentWriteDenied { doc /* Direct agent write to the baseline is denied and logged. */ }
     }

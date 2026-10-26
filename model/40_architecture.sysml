@@ -175,7 +175,7 @@ package Architecture {
     satisfy WaiverRecord by context.toolchain.approvalService;
     satisfy ApprovalInvalidation by context.toolchain.approvalService;
     satisfy ImpactAnalysis by context.toolchain.impactAnalyzer;
-    satisfy SignedBaselineTags by context.toolchain.baselineStore;
+    satisfy TamperEvidentApprovals by context.toolchain.baselineStore;
     satisfy DriftDetection by context.toolchain.baselineStore;
     satisfy EvidenceBundle by context.toolchain.baselineStore;
     satisfy DecisionLogFormat by context.toolchain.decisionLog;
