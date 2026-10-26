@@ -35,6 +35,7 @@ uv run python tools/validate_model.py          # syntax and semantic check of mo
 uv run python tools/arch.py check              # architecture consistency: ports, connections, allocation of all DRs
 uv run python tools/arch.py diagrams --render  # regenerate docs/diagrams/*.mmd, .svg, .png and docs/diagrams.md
 uv run python tools/trace.py check             # trace completeness: needs, model and spec stages (--stage, --json)
+uv run python tools/coverage.py                # coverage report per level and gate (--format json|markdown, --out FILE)
 uv run behave specs/features --dry-run         # parse the specs and bind steps
 uv run behave specs/features                   # run the specs (all skipped until the system exists)
 uv run python tools/steps_vocab.py             # regenerate docs/step_vocabulary.md
@@ -70,4 +71,4 @@ The `.sysml` files in git remain the source of truth.
 
 ## Not yet built
 
-Model and spec MCP servers, workflow prompts, decision log, approval and gate tooling, coverage report, retrospective.
+Model and spec MCP servers, workflow prompts, decision log, approval and gate tooling, retrospective.

@@ -124,6 +124,23 @@ def load_waivers():
     return valid, invalid
 
 
+def evaluate(stages):
+    id_info, links, allocated = load_model()
+    scenarios = load_scenarios()
+    violations = [x for s in stages for x in check(s, id_info, links, allocated, scenarios)]
+    valid_w, invalid_w = load_waivers()
+    waived_keys = {(w["rule"], w["element"]) for w in valid_w}
+    open_v = [x for x in violations if (x["rule"], x["element"]) not in waived_keys]
+    violations.sort(key=lambda x: (x["stage"], x["rule"], x["element"]))
+    return {
+        "summary": summary(id_info, scenarios),
+        "violations": sorted(open_v, key=lambda x: (x["stage"], x["rule"], x["element"])),
+        "waived": [x for x in violations if (x["rule"], x["element"]) in waived_keys],
+        "waivers": sorted(valid_w, key=lambda w: (w["rule"], w["element"])),
+        "invalid_waivers": invalid_w,
+    }
+
+
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("command", choices=["check"])
@@ -131,21 +148,9 @@ def main(argv):
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
 
-    id_info, links, allocated = load_model()
-    scenarios = load_scenarios()
     stages = STAGES if args.stage == "all" else (args.stage,)
-    violations = [x for s in stages for x in check(s, id_info, links, allocated, scenarios)]
-    valid_w, invalid_w = load_waivers()
-    waived_keys = {(w["rule"], w["element"]) for w in valid_w}
-    open_v = [x for x in violations if (x["rule"], x["element"]) not in waived_keys]
-    violations.sort(key=lambda x: (x["stage"], x["rule"], x["element"]))
-    result = {
-        "summary": summary(id_info, scenarios),
-        "violations": open_v,
-        "waived": [x for x in violations if (x["rule"], x["element"]) in waived_keys],
-        "waivers": sorted(valid_w, key=lambda w: (w["rule"], w["element"])),
-        "invalid_waivers": invalid_w,
-    }
+    result = evaluate(stages)
+    open_v = result["violations"]
     if args.json:
         print(json.dumps(result, indent=2, sort_keys=True))
     else:
@@ -155,7 +160,7 @@ def main(argv):
             print(f"VIOLATION [{x['stage']}] {x['rule']} {x['element']}: {x['message']}")
         for x in result["waived"]:
             print(f"WAIVED    [{x['stage']}] {x['rule']} {x['element']}")
-        for w in invalid_w:
+        for w in result["invalid_waivers"]:
             print(f"INVALID WAIVER ignored: {w}")
         print("OK" if not open_v else f"{len(open_v)} violation(s)")
     return 1 if open_v else 0

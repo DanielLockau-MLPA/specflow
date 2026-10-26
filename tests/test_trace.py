@@ -37,3 +37,14 @@ def test_project_model_and_specs_are_trace_complete():
     scenarios = load_scenarios()
     for stage in ("needs", "model", "spec"):
         assert check(stage, info, links, allocated, scenarios) == []
+
+
+def test_coverage_report_is_complete_and_deterministic():
+    import json
+    from coverage import build, markdown
+
+    a, b = build(), build()
+    assert json.dumps(a, sort_keys=True) == json.dumps(b, sort_keys=True)
+    assert {r["level"].split(" (")[0] for r in a["levels"]} >= {"need", "use case", "L1 requirement", "L2 requirement", "design element", "scenario"}
+    assert set(a["gates"]) == {"G1", "G2", "G3", "G4"}
+    assert "## Gaps" in markdown(a)
