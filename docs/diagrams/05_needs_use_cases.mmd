@@ -1,0 +1,37 @@
+flowchart LR
+  N001["N-001<br/>TurnRequirementsIntoDesign"]
+  N002["N-002<br/>AgreeOnDesign"]
+  N003["N-003<br/>DesignIncludesAllRequirementKinds"]
+  N004["N-004<br/>PreciselyTestableSpecification"]
+  N005["N-005<br/>EndToEndTraceability"]
+  N006["N-006<br/>VisualAndTextualModel"]
+  N007["N-007<br/>HumanControlOfAi"]
+  N008["N-008<br/>CertifiableWorkflow"]
+  N009["N-009<br/>ToolAndLlmIndependence"]
+  N010["N-010<br/>ReproducibleChecks"]
+  UC01["UC-01<br/>ElicitRequirements"]
+  UC02["UC-02<br/>DraftModel"]
+  UC03["UC-03<br/>ReviewAndApproveModel"]
+  UC04["UC-04<br/>ReviewModelWithAgent"]
+  UC05["UC-05<br/>DraftSpecification"]
+  UC06["UC-06<br/>ReviewAndApproveSpecification"]
+  UC07["UC-07<br/>CheckCoverage"]
+  UC08["UC-08<br/>ChangeApprovedBaseline"]
+  UC09["UC-09<br/>ReviewSecurityConstraints"]
+  UC10["UC-10<br/>AuditHistory"]
+  UC11["UC-11<br/>VerifyTraceability"]
+  UC01 -->|covers| N001
+  UC02 -->|covers| N001
+  UC03 -->|covers| N002
+  UC03 -->|covers| N003
+  UC04 -->|covers| N002
+  UC05 -->|covers| N004
+  UC06 -->|covers| N004
+  UC07 -->|covers| N005
+  UC07 -->|covers| N010
+  UC08 -->|covers| N007
+  UC09 -->|covers| N003
+  UC11 -->|covers| N005
+  UC10 -->|covers| N008
+  UC02 -->|covers| N006
+  UC02 -->|covers| N009

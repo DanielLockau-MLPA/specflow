@@ -1,0 +1,21 @@
+sequenceDiagram
+  actor H as Human approver
+  participant CLI as ReviewCli
+  participant AP as ApprovalService
+  participant GE as GateEvaluator
+  participant TS as TraceService
+  participant BS as BaselineStore
+  participant R as Repository
+  H->>CLI: approve(subject, role, rationale)
+  CLI->>AP: submit signed approval
+  AP->>AP: check human identity, role, author is not sole approver
+  AP->>R: store approval record
+  H->>CLI: evaluate gate
+  CLI->>GE: evaluate(gate)
+  GE->>AP: approvals for current hashes
+  GE->>TS: trace rules, waivers
+  GE-->>CLI: open / closed with reasons
+  H->>CLI: create baseline
+  CLI->>BS: tag if gate open
+  BS->>GE: confirm gate
+  BS->>R: signed tag + hashes + evidence

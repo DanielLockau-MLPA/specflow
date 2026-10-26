@@ -1,0 +1,26 @@
+flowchart LR
+  modelMcp["ModelMcpServer"]
+  workspaceGuard["WorkspaceGuard"]
+  specMcp["SpecMcpServer"]
+  specRunner["SpecRunner"]
+  traceService["TraceService"]
+  baselineStore["BaselineStore"]
+  decisionLog["DecisionLogService"]
+  idRegistry["IdRegistry"]
+  viewExporter["ViewExporter"]
+  repo["GitRepository"]
+  approvalService["ApprovalService"]
+  modelMcp -->|WorkspacePort| workspaceGuard
+  specMcp -->|WorkspacePort| workspaceGuard
+  specRunner -->|WorkspacePort| workspaceGuard
+  traceService -->|WorkspacePort| workspaceGuard
+  baselineStore -->|WorkspacePort| workspaceGuard
+  decisionLog -->|WorkspacePort| workspaceGuard
+  idRegistry -->|WorkspacePort| workspaceGuard
+  viewExporter -->|WorkspacePort| workspaceGuard
+  workspaceGuard -->|WorkspacePort| repo
+  modelMcp -->|GitPort| repo
+  specMcp -->|GitPort| repo
+  approvalService -->|GitPort| repo
+  baselineStore -->|GitPort| repo
+  style repo fill:#eee,stroke:#999

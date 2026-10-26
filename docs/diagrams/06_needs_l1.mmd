@@ -1,0 +1,67 @@
+flowchart LR
+  N001["N-001<br/>TurnRequirementsIntoDesign"]
+  N002["N-002<br/>AgreeOnDesign"]
+  N004["N-004<br/>PreciselyTestableSpecification"]
+  N005["N-005<br/>EndToEndTraceability"]
+  N006["N-006<br/>VisualAndTextualModel"]
+  N007["N-007<br/>HumanControlOfAi"]
+  N008["N-008<br/>CertifiableWorkflow"]
+  N009["N-009<br/>ToolAndLlmIndependence"]
+  N010["N-010<br/>ReproducibleChecks"]
+  SR001["SR-001<br/>QAndABeforeDrafting"]
+  SR002["SR-002<br/>DraftModelFromBaseline"]
+  SR003["SR-003<br/>DraftSpecFromModel"]
+  SR004["SR-004<br/>ValidateModel"]
+  SR005["SR-005<br/>CoverageReport"]
+  SR006["SR-006<br/>ExecuteSpecs"]
+  SR007["SR-007<br/>DecisionLog"]
+  SR008["SR-008<br/>ApprovalGates"]
+  SR009["SR-009<br/>RenderViews"]
+  SR010["SR-010<br/>ChangeImpactAnalysis"]
+  SR011["SR-011<br/>AgentAccessViaMcp"]
+  SR012["SR-012<br/>ApprovalReset"]
+  SR013["SR-013<br/>ModelTraceCompleteness"]
+  SR014["SR-014<br/>SpecTraceCompleteness"]
+  SR015["SR-015<br/>TraceGateEnforcement"]
+  SR016["SR-016<br/>TraceQuery"]
+  SR020["SR-020<br/>OpenFormats"]
+  SR021["SR-021<br/>CiReproducible"]
+  SR022["SR-022<br/>UnambiguousIds"]
+  SR030["SR-030<br/>ChangeRecords"]
+  SR031["SR-031<br/>SegregationOfDuties"]
+  SR032["SR-032<br/>RequirementsToTestEvidence"]
+  SR040["SR-040<br/>NoAgentWriteToBaseline"]
+  SR041["SR-041<br/>TamperEvidentBaselines"]
+  SR042["SR-042<br/>RestrictedFileAccess"]
+  SR043["SR-043<br/>UntrustedInputHandling"]
+  SR044["SR-044<br/>NoSecretsToLlm"]
+  SR045["SR-045<br/>AiContributionMarked"]
+  SR013 -->|derives| N005
+  SR014 -->|derives| N005
+  SR015 -->|derives| N002
+  SR016 -->|derives| N005
+  SR012 -->|derives| N002
+  SR001 -->|derives| N001
+  SR002 -->|derives| N001
+  SR003 -->|derives| N004
+  SR004 -->|derives| N010
+  SR005 -->|derives| N005
+  SR006 -->|derives| N004
+  SR007 -->|derives| N005
+  SR008 -->|derives| N002
+  SR009 -->|derives| N006
+  SR010 -->|derives| N005
+  SR011 -->|derives| N009
+  SR020 -->|derives| N009
+  SR021 -->|derives| N010
+  SR022 -->|derives| N005
+  SR030 -->|derives| N008
+  SR031 -->|derives| N008
+  SR031 -->|derives| N007
+  SR032 -->|derives| N008
+  SR040 -->|derives| N007
+  SR041 -->|derives| N008
+  SR042 -->|derives| N008
+  SR043 -->|derives| N007
+  SR044 -->|derives| N008
+  SR045 -->|derives| N007

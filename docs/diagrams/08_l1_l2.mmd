@@ -1,0 +1,109 @@
+flowchart LR
+  DR001["DR-001<br/>ModelMcpTools"]
+  DR002["DR-002<br/>ValidationWithLocation"]
+  DR003["DR-003<br/>ProposeOnBranchOnly"]
+  DR004["DR-004<br/>AiAuthorshipMarking"]
+  DR005["DR-005<br/>SpecMcpTools"]
+  DR006["DR-006<br/>ScenarioIdTags"]
+  DR007["DR-007<br/>HeadlessSpecRun"]
+  DR008["DR-008<br/>TraceIndex"]
+  DR009["DR-009<br/>TraceRules"]
+  DR010["DR-010<br/>StaleReferenceDetection"]
+  DR011["DR-011<br/>CoverageReportFormat"]
+  DR012["DR-012<br/>ApprovalRecord"]
+  DR013["DR-013<br/>ApproverEligibility"]
+  DR014["DR-014<br/>GateEvaluation"]
+  DR015["DR-015<br/>WaiverRecord"]
+  DR016["DR-016<br/>ApprovalInvalidation"]
+  DR017["DR-017<br/>ImpactAnalysis"]
+  DR018["DR-018<br/>SignedBaselineTags"]
+  DR019["DR-019<br/>DriftDetection"]
+  DR020["DR-020<br/>EvidenceBundle"]
+  DR021["DR-021<br/>DecisionLogFormat"]
+  DR022["DR-022<br/>WorkflowPrompts"]
+  DR023["DR-023<br/>PathContainment"]
+  DR024["DR-024<br/>UntrustedContentHandling"]
+  DR025["DR-025<br/>ConfidentialityExclusions"]
+  DR026["DR-026<br/>RefProtectionOutsideAgent"]
+  DR027["DR-027<br/>ViewExport"]
+  DR028["DR-028<br/>StableIdScheme"]
+  DR029["DR-029<br/>OpenFormatsOnly"]
+  DR030["DR-030<br/>HeadlessCli"]
+  DR031["DR-031<br/>AuditQuery"]
+  DR032["DR-032<br/>HumanConfirmationChannel"]
+  SR001["SR-001<br/>QAndABeforeDrafting"]
+  SR002["SR-002<br/>DraftModelFromBaseline"]
+  SR003["SR-003<br/>DraftSpecFromModel"]
+  SR004["SR-004<br/>ValidateModel"]
+  SR005["SR-005<br/>CoverageReport"]
+  SR006["SR-006<br/>ExecuteSpecs"]
+  SR007["SR-007<br/>DecisionLog"]
+  SR008["SR-008<br/>ApprovalGates"]
+  SR009["SR-009<br/>RenderViews"]
+  SR010["SR-010<br/>ChangeImpactAnalysis"]
+  SR011["SR-011<br/>AgentAccessViaMcp"]
+  SR012["SR-012<br/>ApprovalReset"]
+  SR013["SR-013<br/>ModelTraceCompleteness"]
+  SR014["SR-014<br/>SpecTraceCompleteness"]
+  SR015["SR-015<br/>TraceGateEnforcement"]
+  SR016["SR-016<br/>TraceQuery"]
+  SR020["SR-020<br/>OpenFormats"]
+  SR021["SR-021<br/>CiReproducible"]
+  SR022["SR-022<br/>UnambiguousIds"]
+  SR030["SR-030<br/>ChangeRecords"]
+  SR031["SR-031<br/>SegregationOfDuties"]
+  SR032["SR-032<br/>RequirementsToTestEvidence"]
+  SR040["SR-040<br/>NoAgentWriteToBaseline"]
+  SR041["SR-041<br/>TamperEvidentBaselines"]
+  SR042["SR-042<br/>RestrictedFileAccess"]
+  SR043["SR-043<br/>UntrustedInputHandling"]
+  SR044["SR-044<br/>NoSecretsToLlm"]
+  SR045["SR-045<br/>AiContributionMarked"]
+  DR001 -->|derives| SR011
+  DR001 -->|derives| SR004
+  DR002 -->|derives| SR004
+  DR003 -->|derives| SR040
+  DR003 -->|derives| SR002
+  DR004 -->|derives| SR045
+  DR005 -->|derives| SR011
+  DR005 -->|derives| SR003
+  DR006 -->|derives| SR003
+  DR006 -->|derives| SR014
+  DR007 -->|derives| SR006
+  DR007 -->|derives| SR021
+  DR008 -->|derives| SR016
+  DR008 -->|derives| SR021
+  DR009 -->|derives| SR013
+  DR009 -->|derives| SR014
+  DR010 -->|derives| SR016
+  DR011 -->|derives| SR005
+  DR011 -->|derives| SR021
+  DR012 -->|derives| SR030
+  DR012 -->|derives| SR008
+  DR013 -->|derives| SR031
+  DR014 -->|derives| SR008
+  DR014 -->|derives| SR015
+  DR015 -->|derives| SR015
+  DR015 -->|derives| SR030
+  DR016 -->|derives| SR012
+  DR017 -->|derives| SR010
+  DR018 -->|derives| SR041
+  DR018 -->|derives| SR030
+  DR019 -->|derives| SR041
+  DR020 -->|derives| SR032
+  DR021 -->|derives| SR007
+  DR021 -->|derives| SR030
+  DR022 -->|derives| SR001
+  DR022 -->|derives| SR007
+  DR023 -->|derives| SR042
+  DR024 -->|derives| SR043
+  DR032 -->|derives| SR043
+  DR032 -->|derives| SR045
+  DR025 -->|derives| SR044
+  DR026 -->|derives| SR040
+  DR027 -->|derives| SR009
+  DR028 -->|derives| SR022
+  DR029 -->|derives| SR020
+  DR030 -->|derives| SR021
+  DR031 -->|derives| SR032
+  DR031 -->|derives| SR030

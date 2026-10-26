@@ -1,0 +1,74 @@
+flowchart LR
+  subgraph ext[External context]
+    human["Human"]
+    mcpClient["McpClient"]
+    repo["GitRepository"]
+  end
+  subgraph tc[Toolchain - system of interest]
+    modelMcp["ModelMcpServer"]
+    specMcp["SpecMcpServer"]
+    specRunner["SpecRunner"]
+    traceService["TraceService"]
+    impactAnalyzer["ImpactAnalyzer"]
+    approvalService["ApprovalService"]
+    gateEvaluator["GateEvaluator"]
+    baselineStore["BaselineStore"]
+    decisionLog["DecisionLogService"]
+    promptLibrary["PromptLibrary"]
+    workspaceGuard["WorkspaceGuard"]
+    inputGuard["InputGuard"]
+    confidentialityFilter["ConfidentialityFilter"]
+    confirmationChannel["ConfirmationChannel"]
+    idRegistry["IdRegistry"]
+    reviewCli["ReviewCli"]
+    viewExporter["ViewExporter"]
+  end
+  modelMcp -->|TraceQueryPort| traceService
+  specMcp -->|TraceQueryPort| traceService
+  impactAnalyzer -->|TraceQueryPort| traceService
+  approvalService -->|TraceQueryPort| traceService
+  gateEvaluator -->|TraceQueryPort| traceService
+  reviewCli -->|TraceQueryPort| traceService
+  modelMcp -->|ImpactPort| impactAnalyzer
+  specMcp -->|ImpactPort| impactAnalyzer
+  reviewCli -->|ImpactPort| impactAnalyzer
+  approvalService -->|ImpactPort| impactAnalyzer
+  gateEvaluator -->|ApprovalPort| approvalService
+  reviewCli -->|ApprovalPort| approvalService
+  reviewCli -->|GatePort| gateEvaluator
+  baselineStore -->|GatePort| gateEvaluator
+  specMcp -->|RunPort| specRunner
+  reviewCli -->|RunPort| specRunner
+  modelMcp -->|LogPort| decisionLog
+  specMcp -->|LogPort| decisionLog
+  modelMcp -->|IdPort| idRegistry
+  specMcp -->|IdPort| idRegistry
+  modelMcp -->|ViewPort| viewExporter
+  modelMcp -->|WorkspacePort| workspaceGuard
+  specMcp -->|WorkspacePort| workspaceGuard
+  specRunner -->|WorkspacePort| workspaceGuard
+  traceService -->|WorkspacePort| workspaceGuard
+  baselineStore -->|WorkspacePort| workspaceGuard
+  decisionLog -->|WorkspacePort| workspaceGuard
+  idRegistry -->|WorkspacePort| workspaceGuard
+  viewExporter -->|WorkspacePort| workspaceGuard
+  inputGuard -->|McpPort| modelMcp
+  inputGuard -->|McpPort| specMcp
+  inputGuard -->|McpPort| promptLibrary
+  modelMcp -->|ContentPort| confidentialityFilter
+  specMcp -->|ContentPort| confidentialityFilter
+  confidentialityFilter -->|ContentPort| inputGuard
+  modelMcp -->|ConfirmationPort| inputGuard
+  specMcp -->|ConfirmationPort| inputGuard
+  inputGuard -->|ConfirmationPort| confirmationChannel
+  mcpClient -->|McpPort| inputGuard
+  confirmationChannel -->|HumanPort| human
+  human -->|CliPort| reviewCli
+  workspaceGuard -->|WorkspacePort| repo
+  modelMcp -->|GitPort| repo
+  specMcp -->|GitPort| repo
+  approvalService -->|GitPort| repo
+  baselineStore -->|GitPort| repo
+  style human fill:#eee,stroke:#999
+  style mcpClient fill:#eee,stroke:#999
+  style repo fill:#eee,stroke:#999

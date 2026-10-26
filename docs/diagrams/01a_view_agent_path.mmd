@@ -1,0 +1,22 @@
+flowchart LR
+  inputGuard["InputGuard"]
+  modelMcp["ModelMcpServer"]
+  specMcp["SpecMcpServer"]
+  promptLibrary["PromptLibrary"]
+  confidentialityFilter["ConfidentialityFilter"]
+  confirmationChannel["ConfirmationChannel"]
+  mcpClient["McpClient"]
+  human["Human"]
+  inputGuard -->|McpPort| modelMcp
+  inputGuard -->|McpPort| specMcp
+  inputGuard -->|McpPort| promptLibrary
+  modelMcp -->|ContentPort| confidentialityFilter
+  specMcp -->|ContentPort| confidentialityFilter
+  confidentialityFilter -->|ContentPort| inputGuard
+  modelMcp -->|ConfirmationPort| inputGuard
+  specMcp -->|ConfirmationPort| inputGuard
+  inputGuard -->|ConfirmationPort| confirmationChannel
+  mcpClient -->|McpPort| inputGuard
+  confirmationChannel -->|HumanPort| human
+  style mcpClient fill:#eee,stroke:#999
+  style human fill:#eee,stroke:#999

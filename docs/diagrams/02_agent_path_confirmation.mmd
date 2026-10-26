@@ -1,0 +1,24 @@
+sequenceDiagram
+  participant A as AI agent (MCP client)
+  participant G as InputGuard
+  participant S as Model/Spec MCP server
+  participant C as ConfirmationChannel
+  actor H as Human
+  participant R as Repository
+  A->>G: tool call (read)
+  G->>S: forward
+  S->>G: content via ConfidentialityFilter
+  G-->>A: content labelled untrusted
+  A->>G: tool call (propose edit)
+  G->>S: forward
+  S->>G: request confirmation
+  G->>C: confirmation request
+  C->>H: prompt outside agent session
+  H-->>C: decision
+  C-->>G: decision only
+  alt approved
+    G-->>S: proceed
+    S->>R: commit on proposal/* branch (AI-marked)
+  else denied or no answer
+    G-->>A: aborted
+  end

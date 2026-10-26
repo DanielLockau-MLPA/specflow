@@ -1,0 +1,50 @@
+flowchart LR
+  subgraph agentfacing["Agent-facing servers"]
+    modelMcp["ModelMcpServer"]
+    specMcp["SpecMcpServer"]
+    promptLibrary["PromptLibrary"]
+  end
+  subgraph guards["Security guards"]
+    inputGuard["InputGuard"]
+    confidentialityFilter["ConfidentialityFilter"]
+    confirmationChannel["ConfirmationChannel"]
+    workspaceGuard["WorkspaceGuard"]
+  end
+  subgraph services["Core services"]
+    traceService["TraceService"]
+    impactAnalyzer["ImpactAnalyzer"]
+    specRunner["SpecRunner"]
+    idRegistry["IdRegistry"]
+    decisionLog["DecisionLogService"]
+    viewExporter["ViewExporter"]
+  end
+  subgraph governance["Governance (human only)"]
+    reviewCli["ReviewCli"]
+    approvalService["ApprovalService"]
+    gateEvaluator["GateEvaluator"]
+    baselineStore["BaselineStore"]
+  end
+  subgraph extagent["MCP client + AI agent"]
+    mcpClient["McpClient"]
+  end
+  subgraph exthuman["Human"]
+    human["Human"]
+  end
+  subgraph extrepo["Git repository"]
+    repo["GitRepository"]
+  end
+  agentfacing -->|Git| extrepo
+  agentfacing -->|Confirmation, Content, Workspace| guards
+  agentfacing -->|Id, Impact, Log, Run, TraceQuery, View| services
+  extagent -->|Mcp| guards
+  exthuman -->|Cli| governance
+  governance -->|Git| extrepo
+  governance -->|Workspace| guards
+  governance -->|Impact, Run, TraceQuery| services
+  guards -->|Mcp| agentfacing
+  guards -->|Human| exthuman
+  guards -->|Workspace| extrepo
+  services -->|Workspace| guards
+  style extagent fill:#eee,stroke:#999
+  style exthuman fill:#eee,stroke:#999
+  style extrepo fill:#eee,stroke:#999

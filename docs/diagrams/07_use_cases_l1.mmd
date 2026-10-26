@@ -1,0 +1,71 @@
+flowchart LR
+  SR001["SR-001<br/>QAndABeforeDrafting"]
+  SR002["SR-002<br/>DraftModelFromBaseline"]
+  SR003["SR-003<br/>DraftSpecFromModel"]
+  SR004["SR-004<br/>ValidateModel"]
+  SR005["SR-005<br/>CoverageReport"]
+  SR006["SR-006<br/>ExecuteSpecs"]
+  SR007["SR-007<br/>DecisionLog"]
+  SR008["SR-008<br/>ApprovalGates"]
+  SR009["SR-009<br/>RenderViews"]
+  SR010["SR-010<br/>ChangeImpactAnalysis"]
+  SR012["SR-012<br/>ApprovalReset"]
+  SR013["SR-013<br/>ModelTraceCompleteness"]
+  SR014["SR-014<br/>SpecTraceCompleteness"]
+  SR015["SR-015<br/>TraceGateEnforcement"]
+  SR016["SR-016<br/>TraceQuery"]
+  SR021["SR-021<br/>CiReproducible"]
+  SR030["SR-030<br/>ChangeRecords"]
+  SR031["SR-031<br/>SegregationOfDuties"]
+  SR032["SR-032<br/>RequirementsToTestEvidence"]
+  SR040["SR-040<br/>NoAgentWriteToBaseline"]
+  SR041["SR-041<br/>TamperEvidentBaselines"]
+  SR043["SR-043<br/>UntrustedInputHandling"]
+  SR045["SR-045<br/>AiContributionMarked"]
+  UC01["UC-01<br/>ElicitRequirements"]
+  UC02["UC-02<br/>DraftModel"]
+  UC03["UC-03<br/>ReviewAndApproveModel"]
+  UC04["UC-04<br/>ReviewModelWithAgent"]
+  UC05["UC-05<br/>DraftSpecification"]
+  UC06["UC-06<br/>ReviewAndApproveSpecification"]
+  UC07["UC-07<br/>CheckCoverage"]
+  UC08["UC-08<br/>ChangeApprovedBaseline"]
+  UC09["UC-09<br/>ReviewSecurityConstraints"]
+  UC10["UC-10<br/>AuditHistory"]
+  UC11["UC-11<br/>VerifyTraceability"]
+  UC01 -->|exercises| SR001
+  UC01 -->|exercises| SR007
+  UC01 -->|exercises| SR043
+  UC02 -->|exercises| SR002
+  UC02 -->|exercises| SR004
+  UC02 -->|exercises| SR040
+  UC03 -->|exercises| SR005
+  UC03 -->|exercises| SR008
+  UC03 -->|exercises| SR009
+  UC03 -->|exercises| SR031
+  UC04 -->|exercises| SR001
+  UC04 -->|exercises| SR007
+  UC05 -->|exercises| SR003
+  UC05 -->|exercises| SR006
+  UC05 -->|exercises| SR045
+  UC06 -->|exercises| SR006
+  UC06 -->|exercises| SR008
+  UC06 -->|exercises| SR031
+  UC07 -->|exercises| SR004
+  UC07 -->|exercises| SR005
+  UC03 -->|exercises| SR015
+  UC06 -->|exercises| SR015
+  UC07 -->|exercises| SR021
+  UC08 -->|exercises| SR010
+  UC08 -->|exercises| SR012
+  UC08 -->|exercises| SR030
+  UC08 -->|exercises| SR040
+  UC09 -->|exercises| SR005
+  UC10 -->|exercises| SR030
+  UC10 -->|exercises| SR032
+  UC10 -->|exercises| SR041
+  UC11 -->|exercises| SR013
+  UC11 -->|exercises| SR014
+  UC11 -->|exercises| SR015
+  UC11 -->|exercises| SR016
+  UC11 -->|exercises| SR031
