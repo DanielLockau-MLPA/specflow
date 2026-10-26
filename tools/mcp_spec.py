@@ -19,6 +19,7 @@ import tracecheck  # noqa: E402
 
 mcp = MCPServer("spec-mcp", instructions="Operations on the executable specification. Scenarios must carry model ID tags.")
 mcp_shared.register_common(mcp)
+mcp_shared.register_prompts(mcp)
 
 
 @mcp.tool()

@@ -90,3 +90,14 @@ def test_model_draft_requires_baseline_and_qa(repo):
     sh(repo, "git", "tag", "baseline/G1")
     err, text = call("request_model_draft", {})
     assert err and "Q&A" in text
+
+
+def test_prompts_forbid_approval_and_require_logging():
+    async def run():
+        async with Client(mcp_model.mcp, mode="legacy") as c:
+            names = {p.name for p in (await c.list_prompts()).prompts}
+            text = (await c.get_prompt("model_qa")).messages[0].content.text
+            return names, text
+    names, text = asyncio.run(run())
+    assert {"model_qa", "spec_qa", "review"} <= names
+    assert "Ask questions first" in text and "record_decision" in text and "Never claim" in text
