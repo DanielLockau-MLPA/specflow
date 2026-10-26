@@ -37,3 +37,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Approved: seven per-role signed tags approval/G3/<role> created; gate G3 open.
 - rationale: Verified with approve.py status: all roles valid, no drift. Prototype: one person holds all roles (allow_single_person=true). Old baseline/* tags no longer count.
 - affected: SR-014
+
+## DL-013
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Gate G3 re-approval after the rewritten features 06-08 (DL-011)?
+- decision: Approved: seven per-role tags approval/G3/<role>.1 created; gate G3 open.
+- rationale: Verified with approve.py status: all roles valid, no drift.
+- affected: SR-014

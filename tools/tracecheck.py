@@ -7,9 +7,8 @@ behave's Gherkin parser. Output is deterministic: sorted, no timestamps.
 Usage:
     python tools/tracecheck.py check [--stage needs|model|spec|all] [--json]
 Exit code 1 when unwaived violations exist.
-Waivers (optional): trace/waivers.json, a list of
-    {"rule": ..., "element": ..., "rationale": ..., "approver": ..., "expiry": "YYYY-MM-DD"}
-A waiver without rationale, human approver or a future expiry is invalid and ignored.
+Waivers are signed tags waiver/<rule>/<element> (see tools/waivers.py). A waiver without rationale, human signer
+with a registered key, or a future expiry is invalid and ignored.
 """
 import argparse
 import datetime
@@ -111,16 +110,8 @@ def summary(id_info, scenarios):
 
 
 def load_waivers():
-    waivers = data_root() / "trace/waivers.json"
-    if not waivers.exists():
-        return [], []
-    valid, invalid = [], []
-    today = datetime.date.today().isoformat()
-    for w in json.loads(waivers.read_text(encoding="utf-8")):
-        ok = (w.get("rationale") and w.get("approver") and not str(w["approver"]).lower().startswith("agent")
-              and str(w.get("expiry", "")) >= today)
-        (valid if ok else invalid).append(w)
-    return valid, invalid
+    import waivers
+    return waivers.load()
 
 
 def evaluate(stages):
@@ -128,13 +119,18 @@ def evaluate(stages):
     scenarios = load_scenarios()
     violations = [x for s in stages for x in check(s, id_info, links, allocated, scenarios)]
     valid_w, invalid_w = load_waivers()
+    import waivers
     waived_keys = {(w["rule"], w["element"]) for w in valid_w}
-    open_v = [x for x in violations if (x["rule"], x["element"]) not in waived_keys]
+
+    def is_waived(x):
+        return (x["rule"], waivers.element_key(x["element"])) in waived_keys
+
+    open_v = [x for x in violations if not is_waived(x)]
     violations.sort(key=lambda x: (x["stage"], x["rule"], x["element"]))
     return {
         "summary": summary(id_info, scenarios),
         "violations": sorted(open_v, key=lambda x: (x["stage"], x["rule"], x["element"])),
-        "waived": [x for x in violations if (x["rule"], x["element"]) in waived_keys],
+        "waived": [x for x in violations if is_waived(x)],
         "waivers": sorted(valid_w, key=lambda w: (w["rule"], w["element"])),
         "invalid_waivers": invalid_w,
     }

@@ -64,3 +64,21 @@ Append-only. Entries are never edited or deleted.
 - decision: Approvals are signed tags approval/<gate>/<role> (newer supersedes older); waivers are signed tags waiver/<rule>/<element>; the gate state is derived (no baseline tag); invalidation is at gate-scope level with impact analysis naming affected elements; evidence bundle per gate; G4 roles implementation-team, quality-management, information-security plus passing scenarios. Features 06-08 rewritten (08 renamed approval_integrity). Re-approval of G2 and G3 required.
 - rationale: Implementation had diverged from element-level records in DR-012..DR-020; tags give tamper evidence and history with git alone and need no extra store.
 - affected: DR-012, DR-014, DR-016, DR-018, SR-012
+
+## DL-012
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Gate G2 re-approval after the change to per-role signed tags (DL-011)?
+- decision: Approved: seven per-role tags approval/G2/<role>.1 created; gate G2 open. Older unversioned tags are revision 0 and superseded.
+- rationale: Verified with approve.py status after the model changes of DL-011: all roles valid, no drift. Prototype: one person holds all roles (allow_single_person=true).
+- affected: DR-014
+
+## DL-014
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: How are approvals re-signed when content changes?
+- decision: Approval tags are named approval/<gate>/<role>.<n>; an unversioned tag is revision 0; the newest valid revision per role counts; older revisions stay as history.
+- rationale: A fixed tag name could not be re-signed without deleting evidence; the dot suffix avoids a git ref file/directory conflict with unversioned tags.
+- affected: DR-012

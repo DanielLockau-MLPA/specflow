@@ -3,15 +3,24 @@
   "gates": {
     "G1": {
       "scope": ["model/00_needs.sysml"],
-      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"],
+      "trace": ["needs"]
     },
     "G2": {
       "scope": ["model/"],
-      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"],
+      "trace": ["needs", "model"]
     },
     "G3": {
       "scope": ["specs/features/"],
-      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"],
+      "trace": ["needs", "model", "spec"]
+    },
+    "G4": {
+      "scope": ["model/", "specs/"],
+      "roles": ["implementation-team", "quality-management", "information-security"],
+      "trace": ["needs", "model", "spec"],
+      "scenarios": true
     }
   }
 }

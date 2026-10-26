@@ -3,6 +3,7 @@
   uv run python tools/approve.py roles
   uv run python tools/approve.py status
   uv run python tools/approve.py approve G2 --role reviewer -m "Reviewed model, no findings"
+  uv run python tools/approve.py waive need-covered N-003 --rationale "Covered in iteration 3" --expiry 2027-03-31
 
 Each stakeholder runs `approve` for their own role with their own SSH key (git config gpg.format ssh,
 user.signingkey). A gate opens when all required roles have signed the same scope content.
@@ -26,7 +27,21 @@ def main():
     b.add_argument("gate")
     b.add_argument("--role", required=True)
     b.add_argument("-m", "--message", required=True)
+    w = sub.add_parser("waive")
+    w.add_argument("rule")
+    w.add_argument("element")
+    w.add_argument("--rationale", required=True)
+    w.add_argument("--expiry", required=True, help="YYYY-MM-DD")
     a = ap.parse_args()
+    if a.cmd == "waive":
+        import waivers
+        try:
+            name, v = waivers.create_waiver(a.rule, a.element, a.rationale, a.expiry)
+        except core.Rejected as e:
+            print(e, file=sys.stderr)
+            return 1
+        print(f"{name} signed by {v.signer}")
+        return 0
     if a.cmd == "roles":
         ws = core.Workspace()
         roles_of = json.loads((ws.root / "approvals/roles.json").read_text(encoding="utf-8"))

@@ -187,7 +187,7 @@ def _require_append_only(ws, rel, content, branch):
             return
 
 
-def propose_edit(path, content, branch, message, ws=None):
+def propose_edit(path, content, branch, message, ws=None, session=None):
     """Commit `content` to `path` on a proposal/* branch using a temporary worktree; the checkout is untouched."""
     ws = ws or Workspace()
     if not re.fullmatch(r"proposal/[\w.\-/]+", branch):
@@ -207,7 +207,7 @@ def propose_edit(path, content, branch, message, ws=None):
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(content, encoding="utf-8")
             git("add", rel, cwd=wt)
-            git("commit", "-q", "-m", f"{message}\n\nStatus: DRAFT\n{AI_TRAILER}: {SESSION_ID}", cwd=wt)
+            git("commit", "-q", "-m", f"{message}\n\nStatus: DRAFT\n{AI_TRAILER}: {session or SESSION_ID}", cwd=wt)
             return git("rev-parse", "HEAD", cwd=wt)
         finally:
             git("worktree", "remove", "--force", str(wt), cwd=ws.root)
@@ -215,15 +215,23 @@ def propose_edit(path, content, branch, message, ws=None):
 
 # --- confirmation (DR-032) -----------------------------------------------------
 
-async def confirm(ctx, message):
-    """Ask the human through the MCP client's elicitation UI; only an explicit yes lets the call proceed."""
+async def confirm(ctx, message, timeout=None):
+    """Ask the human through the MCP client's elicitation UI; only an explicit yes lets the call proceed.
+
+    No answer within the timeout (SPECFLOW_CONFIRM_TIMEOUT seconds, default 120) aborts the call.
+    """
+    import asyncio
+
     from pydantic import BaseModel
 
     class Decision(BaseModel):
         approve: bool
 
+    timeout = timeout if timeout is not None else float(os.environ.get("SPECFLOW_CONFIRM_TIMEOUT", "120"))
     try:
-        res = await ctx.elicit(message, Decision)
+        res = await asyncio.wait_for(ctx.elicit(message, Decision), timeout)
+    except TimeoutError:
+        raise Rejected("no human answer within the confirmation timeout; call aborted")
     except Exception:
         raise Rejected("no confirmation channel available; call aborted")
     if res.action != "accept" or not res.data.approve:

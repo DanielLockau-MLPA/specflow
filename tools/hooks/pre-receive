@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+"""Server-side pre-receive hook: approval and waiver refs are written only as valid signed tags (SR-040, DR-026).
+
+Install in the bare repository of the git host as hooks/pre-receive. The trust anchor is a directory of
+public keys on the host (SPECFLOW_KEYS_DIR, default: ../approvals-keys next to the repository); the hook does
+not depend on the checks of the MCP servers or on the identity of the pusher. Rules for refs/tags/approval/* and
+refs/tags/waiver/*:
+  - an existing tag is never moved or deleted,
+  - a new tag must be an annotated tag with a valid SSH signature from a key in the trust anchor.
+"""
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+ZERO = "0" * 40
+PROTECTED = ("refs/tags/approval/", "refs/tags/waiver/")
+
+
+def signers(keys_dir):
+    lines = []
+    for k in sorted(Path(keys_dir).glob("*.pub")):
+        parts = k.read_text(encoding="utf-8").split()
+        if len(parts) >= 2:
+            lines.append(f'{k.stem} namespaces="git" {parts[0]} {parts[1]}')
+    return lines
+
+
+def signature_ok(sha, keys_dir):
+    if subprocess.run(["git", "cat-file", "-t", sha], capture_output=True, text=True).stdout.strip() != "tag":
+        return False
+    with tempfile.TemporaryDirectory() as tmp:
+        f = Path(tmp) / "allowed_signers"
+        f.write_text("\n".join(signers(keys_dir)) + "\n", encoding="utf-8")
+        r = subprocess.run(["git", "-c", "gpg.format=ssh", "-c", f"gpg.ssh.allowedSignersFile={f}", "verify-tag", sha],
+                           capture_output=True, text=True)
+    return r.returncode == 0
+
+
+def main():
+    keys_dir = os.environ.get("SPECFLOW_KEYS_DIR", str(Path.cwd().resolve().parent / "approvals-keys"))
+    rejected = False
+    for line in sys.stdin:
+        old, new, ref = line.split()
+        if not ref.startswith(PROTECTED):
+            continue
+        if old != ZERO:
+            print(f"rejected {ref}: approval and waiver tags are immutable", file=sys.stderr)
+            rejected = True
+        elif not signature_ok(new, keys_dir):
+            print(f"rejected {ref}: not an annotated tag with a valid signature from a registered key", file=sys.stderr)
+            rejected = True
+    return 1 if rejected else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
