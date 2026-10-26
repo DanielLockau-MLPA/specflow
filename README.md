@@ -94,6 +94,7 @@ or write `approvals/`):
 A gate is open only if every role has a valid tag from a principal holding that role, all tags cover the same scope
 content, and the scope has not changed since. There is no separate "gate open" tag; the state is derived.
 
+- `uv run python tools/approve.py roles` lists the exact role names (kebab-case, e.g. `requirements-owner`, not the model's `RequirementsOwner`) and who holds them.
 - `uv run python tools/approve.py approve G2 --role reviewer -m "reason"` signs on HEAD with your own key (needs
   `git config gpg.format ssh` and `user.signingkey`; scope changes must be committed first).
 - `uv run python tools/approve.py status` shows per-role verification, problems and drift (exit 1 if any gate is not open).

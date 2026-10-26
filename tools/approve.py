@@ -1,5 +1,6 @@
 """Human CLI for gate approvals. Not exposed through MCP.
 
+  uv run python tools/approve.py roles
   uv run python tools/approve.py status
   uv run python tools/approve.py approve G2 --role reviewer -m "Reviewed model, no findings"
 
@@ -20,11 +21,21 @@ def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
+    sub.add_parser("roles")
     b = sub.add_parser("approve")
     b.add_argument("gate")
     b.add_argument("--role", required=True)
     b.add_argument("-m", "--message", required=True)
     a = ap.parse_args()
+    if a.cmd == "roles":
+        ws = core.Workspace()
+        roles_of = json.loads((ws.root / "approvals/roles.json").read_text(encoding="utf-8"))
+        for gate, g in approvals.gates(ws).items():
+            print(f"{gate}: scope {', '.join(g['scope'])}")
+            for r in g["roles"]:
+                holders = ", ".join(p for p, rs in roles_of.items() if r in rs) or "(nobody)"
+                print(f"  {r}  <- {holders}")
+        return 0
     if a.cmd == "status":
         st = approvals.status()
         print(json.dumps(st, indent=2))

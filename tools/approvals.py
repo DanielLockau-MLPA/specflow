@@ -139,7 +139,7 @@ def create_approval(gate, role, message, ws=None):
     ws = ws or core.Workspace()
     g = gates(ws).get(gate)
     if g is None or role not in g["roles"]:
-        raise core.Rejected(f"role {role} is not required for gate {gate}")
+        raise core.Rejected(f"role {role} is not required for gate {gate}; valid: {', '.join(g['roles']) if g else '(gate unknown)'}")
     if drift(gate, ws):
         raise core.Rejected("scope has uncommitted changes; commit them first so the approval covers what is signed")
     name = f"approval/{gate}/{role}"
