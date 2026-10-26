@@ -16,7 +16,7 @@ from pathlib import Path
 from mcp.server.mcpserver.exceptions import ToolError
 
 ROOT = Path(os.environ.get("SPECFLOW_ROOT", Path(__file__).resolve().parent.parent)).resolve()
-PROTECTED = (".git", ".approvals")
+PROTECTED = (".git", ".approvals", "approvals")
 STAGES = ("model", "spec")
 BASELINES = {"requirements": "baseline/G1", "model": "baseline/G2", "spec": "baseline/G3"}
 ID_PATTERN = re.compile(r"^(N|UC|SR|DR)-\d+$")
@@ -141,16 +141,23 @@ def git(*args, cwd=None, check=True):
     return r.stdout.strip()
 
 
+SCOPES = {"baseline/G1": ("model/00_needs.sysml",), "baseline/G2": ("model/",), "baseline/G3": ("specs/features/",)}
+
+
 def baseline_exists(name, ws=None):
-    ws = ws or Workspace()
-    return bool(git("tag", "--list", name, cwd=ws.root))
+    """A baseline counts only if its tag carries a valid signature from a key in approvals/keys."""
+    import approvals
+    return approvals.verify_tag(name, ws or Workspace()).ok
 
 
 def baseline_files(ws=None):
+    """Files protected from agent edits: the gate scope of every baseline/* tag, verified or not."""
     ws = ws or Workspace()
     files = set()
     for tag in git("tag", "--list", "baseline/*", cwd=ws.root).split():
-        files.update(git("ls-tree", "-r", "--name-only", tag, cwd=ws.root).split("\n"))
+        scope = SCOPES.get(tag, ("",))
+        names = git("ls-tree", "-r", "--name-only", tag, cwd=ws.root).split("\n")
+        files.update(n for n in names if n.startswith(scope))
     return files
 
 

@@ -10,6 +10,12 @@ import specflow_core as core
 
 def register_common(mcp):
     @mcp.tool()
+    def approval_status() -> dict:
+        """Read-only: which gate baselines carry a valid approver signature, and drift since approval."""
+        import approvals
+        return approvals.status()
+
+    @mcp.tool()
     def read_document(path: str) -> dict:
         """Read an input document. The content is returned labelled as untrusted data."""
         ws = core.Workspace()

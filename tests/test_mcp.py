@@ -30,6 +30,25 @@ def repo(tmp_path, monkeypatch):
     return tmp_path
 
 
+def make_key(directory, name):
+    key = directory / name
+    sh(directory, "ssh-keygen", "-q", "-t", "ed25519", "-N", "", "-f", str(key))
+    return key
+
+
+def sign_tag(repo, tag, key):
+    sh(repo, "git", "-c", "gpg.format=ssh", "-c", f"user.signingkey={key}", "tag", "-s", tag, "-m", "approved")
+
+
+@pytest.fixture
+def approver(repo, tmp_path_factory):
+    keys = tmp_path_factory.mktemp("keys")
+    key = make_key(keys, "approver")
+    (repo / "approvals/keys").mkdir(parents=True)
+    (repo / "approvals/keys/approver.pub").write_text((keys / "approver.pub").read_text())
+    return key
+
+
 def call(name, args, answer="accept", approve=True):
     async def cb(ctx, params):
         return types.ElicitResult(action=answer, content={"approve": approve} if answer == "accept" else None)
@@ -69,8 +88,8 @@ def test_propose_edit_needs_confirmation_and_proposal_branch(repo):
     assert not (repo / "model/b.sysml").exists()
 
 
-def test_propose_edit_refuses_baseline_files(repo):
-    sh(repo, "git", "tag", "baseline/G2")
+def test_propose_edit_refuses_baseline_files(repo, approver):
+    sign_tag(repo, "baseline/G2", approver)
     err, text = call("propose_edit", {"path": "model/a.sysml", "content": "z", "branch": "proposal/y", "message": "m"})
     assert err and "baseline" in text
 
@@ -84,10 +103,10 @@ def test_decision_log_validates_ids_and_appends(repo):
     assert "DL-001" in text and "DL-002" in text
 
 
-def test_model_draft_requires_baseline_and_qa(repo):
+def test_model_draft_requires_baseline_and_qa(repo, approver):
     err, text = call("request_model_draft", {})
     assert err and "baseline" in text
-    sh(repo, "git", "tag", "baseline/G1")
+    sign_tag(repo, "baseline/G1", approver)
     err, text = call("request_model_draft", {})
     assert err and "Q&A" in text
 
@@ -101,3 +120,38 @@ def test_prompts_forbid_approval_and_require_logging():
     names, text = asyncio.run(run())
     assert {"model_qa", "spec_qa", "review"} <= names
     assert "Ask questions first" in text and "record_decision" in text and "Never claim" in text
+
+
+def test_unsigned_or_foreign_signed_baseline_is_not_accepted(repo, approver, tmp_path_factory):
+    import approvals
+    sh(repo, "git", "tag", "-a", "baseline/G1", "-m", "unsigned")
+    assert not approvals.verify_tag("baseline/G1").ok
+    stranger = make_key(tmp_path_factory.mktemp("s"), "stranger")
+    sign_tag(repo, "baseline/G2", stranger)
+    assert not approvals.verify_tag("baseline/G2").ok
+    sign_tag(repo, "baseline/G3", approver)
+    v = approvals.verify_tag("baseline/G3")
+    assert v.ok and v.signer == "approver"
+
+
+def test_drift_detected_in_scope_only(repo, approver):
+    import approvals
+    sign_tag(repo, "baseline/G2", approver)
+    (repo / "inputs.txt").write_text("changed")
+    assert approvals.drift("baseline/G2") == []
+    (repo / "model/a.sysml").write_text("changed")
+    (repo / "model/new.sysml").write_text("new")
+    assert approvals.drift("baseline/G2") == ["model/a.sysml", "model/new.sysml"]
+
+
+def test_approver_keys_are_protected_from_agent(repo):
+    err, text = call("read_document", {"path": "approvals/keys/x.pub"})
+    assert err and "protected" in text
+    err, text = call("propose_edit", {"path": "approvals/keys/evil.pub", "content": "k", "branch": "proposal/k", "message": "m"})
+    assert err and "protected" in text
+
+
+def test_baseline_outside_gate_scope_stays_editable(repo, approver):
+    sign_tag(repo, "baseline/G2", approver)
+    err, text = call("propose_edit", {"path": "inputs.txt", "content": "n", "branch": "proposal/z", "message": "m"})
+    assert not err, text

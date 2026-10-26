@@ -81,6 +81,18 @@ never to files in a `baseline/*` tag, and `record_decision` / `propose_edit` nee
 client's elicitation prompt. If the client cannot elicit, the call is refused. Decisions are appended to
 `decisions/<stage>.md`. Set `SPECFLOW_ROOT` to use another workspace.
 
+## Approvals and baselines
+
+Approvers' public SSH keys live in `approvals/keys/<name>.pub` (protected from agents; changing them is a human review
+change). A gate baseline is an SSH-signed tag `baseline/G1` (needs: `model/00_needs.sysml`), `baseline/G2` (`model/`),
+`baseline/G3` (`specs/features/`), created by a human with their own key:
+
+- `uv run python tools/approve.py baseline G2 -m "reason"` (needs `git config gpg.format ssh` and `user.signingkey`).
+- `uv run python tools/approve.py status` shows verification, signer and drift (exit 1 on drift).
+
+A tag counts as a baseline only if its signature verifies against `approvals/keys`. Agents can only read
+`approval_status`. Files in a baseline's scope cannot be changed by `propose_edit`.
+
 ## Not yet built
 
-Approval and gate tooling (signed baselines), step bindings. See `docs/retrospective.md` for findings.
+Multi-approver rules, impact analysis, evidence bundle, gate evaluation including spec results, step bindings. See `docs/retrospective.md` for findings.
