@@ -55,3 +55,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Features corrected (SR-004 upstream N-010, tag revision suffix, needs-stage trace example, key-file exception) and G3 re-signed. The SysON load scenario is tagged @manual: it runs skipped, and the G4 gate accepts skipped @manual scenarios, attested by the G4 approvers.
 - rationale: Binding exposed wording defects; SysON has no import API to automate. Legacy baseline/G1..G3 tags deleted by the user.
 - affected: SR-009, DR-027, SR-020, DR-029
+
+## DL-016
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Manual scenario 'The model is loadable in a graphical modeling tool': does it hold?
+- decision: Verified manually by the user on 2026-10-26: the SysML model files load into SysON.
+- rationale: Evidence for the @manual scenario that the automated run skips; the G4 approvers attest it.
+- affected: SR-009, DR-027
