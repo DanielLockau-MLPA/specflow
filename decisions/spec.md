@@ -46,3 +46,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Approved: seven per-role tags approval/G3/<role>.1 created; gate G3 open.
 - rationale: Verified with approve.py status: all roles valid, no drift.
 - affected: SR-014
+
+## DL-015
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: How are spec defects found during G4 step binding resolved, and how are non-automatable scenarios handled?
+- decision: Features corrected (SR-004 upstream N-010, tag revision suffix, needs-stage trace example, key-file exception) and G3 re-signed. The SysON load scenario is tagged @manual: it runs skipped, and the G4 gate accepts skipped @manual scenarios, attested by the G4 approvers.
+- rationale: Binding exposed wording defects; SysON has no import API to automate. Legacy baseline/G1..G3 tags deleted by the user.
+- affected: SR-009, DR-027, SR-020, DR-029
