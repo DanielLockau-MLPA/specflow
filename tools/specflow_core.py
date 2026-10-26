@@ -15,6 +15,7 @@ from pathlib import Path
 
 from mcp.server.mcpserver.exceptions import ToolError
 
+CODE_ROOT = Path(__file__).resolve().parent.parent
 ROOT = Path(os.environ.get("SPECFLOW_ROOT", Path(__file__).resolve().parent.parent)).resolve()
 PROTECTED = (".git", ".approvals", "approvals")
 STAGES = ("model", "spec")
@@ -86,7 +87,7 @@ def untrusted(rel_path, text):
 def model_ids(ws=None):
     ws = ws or Workspace()
     from arch import ids_and_names, read_model
-    _n, info = ids_and_names(read_model())
+    _n, info = ids_and_names(read_model(ws.root))
     return info
 
 
@@ -153,15 +154,37 @@ def baseline_files(ws=None):
     return approvals.protected_files(ws or Workspace())
 
 
+def require_preconditions(stage, previous_stage, ws=None):
+    """Refuse a draft request, naming every unmet precondition (approved baseline and recorded Q&A)."""
+    problems = []
+    gate = BASELINES[previous_stage]
+    if not baseline_exists(gate, ws):
+        problems.append(f"no approved baseline: gate {gate} is not open (approvals incomplete, invalid or stale)")
+    if not qa_recorded(stage, ws):
+        problems.append(f"Q&A required: record the Q&A for stage '{stage}' first")
+    if problems:
+        raise Rejected("; ".join(problems))
+
+
 def require_baseline(stage, ws=None):
     gate = BASELINES[stage]
     if not baseline_exists(gate, ws):
-        raise Rejected(f"gate {gate} is not open (approvals incomplete, invalid or stale)")
+        raise Rejected(f"no approved baseline: gate {gate} is not open (approvals incomplete, invalid or stale)")
 
 
 def require_qa(stage, ws=None):
     if not qa_recorded(stage, ws):
         raise Rejected("Q&A required: record the Q&A for this stage first")
+
+
+def _require_append_only(ws, rel, content, branch):
+    """The decision log is append-only: the new content must start with the existing content."""
+    for ref in (branch, "HEAD"):
+        old = git("show", f"{ref}:{rel}", cwd=ws.root, check=False)
+        if old:
+            if not content.startswith(old):
+                raise Rejected("decision log is append-only: existing entries cannot be modified or deleted")
+            return
 
 
 def propose_edit(path, content, branch, message, ws=None):
@@ -173,6 +196,8 @@ def propose_edit(path, content, branch, message, ws=None):
     rel = target.relative_to(ws.root).as_posix()
     if rel in baseline_files(ws):
         raise Rejected(f"{rel} belongs to an approved baseline; use the change process")
+    if rel.startswith("decisions/"):
+        _require_append_only(ws, rel, content, branch)
     with tempfile.TemporaryDirectory() as tmp:
         wt = Path(tmp) / "wt"
         exists = bool(git("branch", "--list", branch, cwd=ws.root))

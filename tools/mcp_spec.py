@@ -3,6 +3,7 @@
 Run (stdio): uv run python tools/mcp_spec.py
 """
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -31,8 +32,7 @@ def list_specs() -> list[dict]:
 @mcp.tool()
 def draft_scenarios(requirement_id: str) -> str:
     """Draft a Gherkin skeleton for a requirement; needs an approved model baseline and a recorded spec Q&A."""
-    core.require_baseline("model")
-    core.require_qa("spec")
+    core.require_preconditions("spec", "model")
     info = core.model_ids()
     if requirement_id not in info:
         raise core.Rejected(f"unknown element ID: {requirement_id}")
@@ -47,7 +47,8 @@ def run() -> list[dict]:
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "r.json"
         subprocess.run([sys.executable, "-m", "behave", str(core.ROOT / "specs/features"), "-f", "json", "-o", str(out),
-                        "--no-summary"], capture_output=True, text=True, cwd=core.ROOT)
+                        "--no-summary"], capture_output=True, text=True, cwd=core.ROOT,
+                       env={**os.environ, "SPECFLOW_ROOT": str(core.ROOT)})
         data = json.loads(out.read_text(encoding="utf-8")) if out.exists() else []
     results = []
     for feature in data:

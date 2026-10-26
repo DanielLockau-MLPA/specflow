@@ -15,19 +15,27 @@ import re
 import shutil
 import subprocess
 import sys
+import os
 from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_GLOB = str(ROOT / "model/*.sysml")
+
+
+def data_root():
+    """Workspace holding model/ and specs/; the code checkout unless SPECFLOW_ROOT is set."""
+    return Path(os.environ.get("SPECFLOW_ROOT", ROOT)).resolve()
+
+
 OUT_DIR = ROOT / "docs/diagrams"
 MMDC = ROOT / "tools/node/node_modules/.bin/mmdc"
 MMDC_CONFIG = ROOT / "tools/node/mermaid-config.json"
 PUPPETEER_CONFIG = ROOT / "tools/node/puppeteer.json"
 
 
-def read_model():
-    return {f: open(f, encoding="utf-8").read() for f in sorted(glob.glob(MODEL_GLOB))}
+def read_model(root=None):
+    base = Path(root) if root else data_root()
+    return {f: open(f, encoding="utf-8").read() for f in sorted(glob.glob(str(base / "model/*.sysml")))}
 
 
 def block(src, start):

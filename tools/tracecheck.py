@@ -20,13 +20,11 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from arch import ROOT, architecture, ids_and_names, read_model, trace_links  # noqa: E402
+from arch import architecture, data_root, ids_and_names, read_model, trace_links  # noqa: E402
 
 LEVELS = {"N": "need", "UC": "use case", "SR": "requirement (L1)", "DR": "requirement (L2)"}
 ID_TAG = re.compile(r"^[A-Z]{1,3}-\d+$")
 STAGES = ("needs", "model", "spec")
-WAIVERS = ROOT / "trace/waivers.json"
-FEATURES = ROOT / "specs/features"
 
 
 def prefix(eid):
@@ -46,7 +44,7 @@ def load_scenarios():
     from behave.parser import parse_file
 
     scenarios = []
-    for f in sorted(FEATURES.glob("*.feature")):
+    for f in sorted((data_root() / "specs/features").glob("*.feature")):
         feature = parse_file(str(f))
         for sc in feature.scenarios:
             tags = sorted({str(t) for t in sc.effective_tags})
@@ -113,11 +111,12 @@ def summary(id_info, scenarios):
 
 
 def load_waivers():
-    if not WAIVERS.exists():
+    waivers = data_root() / "trace/waivers.json"
+    if not waivers.exists():
         return [], []
     valid, invalid = [], []
     today = datetime.date.today().isoformat()
-    for w in json.loads(WAIVERS.read_text(encoding="utf-8")):
+    for w in json.loads(waivers.read_text(encoding="utf-8")):
         ok = (w.get("rationale") and w.get("approver") and not str(w["approver"]).lower().startswith("agent")
               and str(w.get("expiry", "")) >= today)
         (valid if ok else invalid).append(w)

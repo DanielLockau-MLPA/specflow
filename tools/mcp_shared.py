@@ -58,14 +58,14 @@ RULES = """Rules:
 
 
 def register_prompts(mcp):
-    @mcp.prompt()
+    @mcp.prompt(name="model-qa")
     def model_qa() -> str:
         """Q&A between engineers and the agent before drafting the SysML v2 model (G1 to G2)."""
         return ("You are interviewing engineers before drafting the SysML v2 model from the approved requirement baseline. "
                 "Read the needs with request_model_draft, then clarify scope, boundary, stakeholders, quality goals and "
                 "security constraints. Stage for decisions: 'model'.\n" + RULES)
 
-    @mcp.prompt()
+    @mcp.prompt(name="spec-qa")
     def spec_qa() -> str:
         """Q&A between engineers and the agent before drafting executable specifications (G2 to G3)."""
         return ("You are reviewing the approved model with engineers before drafting Gherkin specs. Confirm a shared "

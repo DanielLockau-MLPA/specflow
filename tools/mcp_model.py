@@ -2,6 +2,8 @@
 
 Run (stdio): uv run python tools/mcp_model.py
 """
+import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -62,9 +64,13 @@ def trace(element_id: str) -> dict:
 
 @mcp.tool()
 def validate() -> dict:
-    """Validate the model with the parser backend; returns exit code and report."""
-    r = subprocess.run([sys.executable, str(core.ROOT / "tools/validate_model.py")], capture_output=True, text=True)
-    return {"ok": r.returncode == 0, "exit_code": r.returncode, "report": (r.stdout + r.stderr).strip()}
+    """Validate the model with the parser backend; findings carry file, line, severity and element ID."""
+    r = subprocess.run([sys.executable, str(core.CODE_ROOT / "tools/validate_model.py"), "--json"], capture_output=True,
+                       text=True, env={**os.environ, "SPECFLOW_ROOT": str(core.ROOT)})
+    if r.returncode > 1:
+        raise core.Rejected(r.stderr.strip() or "validation backend failed")
+    report = json.loads(r.stdout)
+    return {"ok": r.returncode == 0, "exit_code": r.returncode, **report}
 
 
 @mcp.tool()
@@ -81,8 +87,7 @@ def render(view: str | None = None) -> object:
 @mcp.tool()
 def request_model_draft() -> dict:
     """Context for drafting the model: needs the approved requirement baseline and a recorded Q&A."""
-    core.require_baseline("requirements")
-    core.require_qa("model")
+    core.require_preconditions("model", "requirements")
     return {"needs": [{"id": i, "text": d} for i, (_n, d) in sorted(_info().items()) if i.startswith("N-")],
             "hint": "Propose changes with propose_edit on a proposal/* branch."}
 

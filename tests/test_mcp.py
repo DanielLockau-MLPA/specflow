@@ -1,5 +1,6 @@
 import asyncio
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -106,6 +107,7 @@ def test_propose_edit_refuses_baseline_files(repo, approver):
 
 
 def test_decision_log_validates_ids_and_appends(repo):
+    shutil.copytree(core.CODE_ROOT / "model", repo / "model", dirs_exist_ok=True)
     base = {"stage": "model", "kind": "qa", "participants": ["h"], "question": "q", "decision": "d", "rationale": "r"}
     assert call("record_decision", {**base, "affected": ["SR-999"]})[0]
     assert not call("record_decision", {**base, "affected": ["SR-001"]})[0]
@@ -126,10 +128,10 @@ def test_prompts_forbid_approval_and_require_logging():
     async def run():
         async with Client(mcp_model.mcp, mode="legacy") as c:
             names = {p.name for p in (await c.list_prompts()).prompts}
-            text = (await c.get_prompt("model_qa")).messages[0].content.text
+            text = (await c.get_prompt("model-qa")).messages[0].content.text
             return names, text
     names, text = asyncio.run(run())
-    assert {"model_qa", "spec_qa", "review"} <= names
+    assert {"model-qa", "spec-qa", "review"} <= names
     assert "Ask questions first" in text and "record_decision" in text and "Never claim" in text
 
 
@@ -208,3 +210,17 @@ def test_baseline_outside_gate_scope_stays_editable(repo, approver):
     approve_gate(repo, "G2", approver)
     err, text = call("propose_edit", {"path": "inputs.txt", "content": "n", "branch": "proposal/z", "message": "m"})
     assert not err, text
+
+
+def test_decision_log_is_append_only_through_proposals(repo):
+    shutil.copytree(core.CODE_ROOT / "model", repo / "model", dirs_exist_ok=True)
+    base = {"stage": "model", "kind": "qa", "participants": ["h"], "question": "q", "decision": "d", "rationale": "r",
+            "affected": ["SR-001"]}
+    assert not call("record_decision", base)[0]
+    sh(repo, "git", "add", "-A")
+    sh(repo, "git", "commit", "-qm", "log")
+    old = (repo / "decisions/model.md").read_text()
+    edit = {"path": "decisions/model.md", "branch": "proposal/log", "message": "m"}
+    assert call("propose_edit", {**edit, "content": old.replace("DL-001", "DL-009")})[0]
+    assert call("propose_edit", {**edit, "content": ""})[0]
+    assert not call("propose_edit", {**edit, "content": old + "\n## DL-002\n"})[0]

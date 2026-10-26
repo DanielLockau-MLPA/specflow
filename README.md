@@ -73,7 +73,7 @@ The `.sysml` files in git remain the source of truth.
 
 - `uv run python tools/mcp_model.py`: `list_elements`, `read_element`, `search`, `trace`, `validate`, `render`, `request_model_draft`.
 - `uv run python tools/mcp_spec.py`: `list_specs`, `draft_scenarios`, `run`, `coverage`.
-- Both also offer prompts `model_qa`, `spec_qa`, `review` (ask first, log outcomes, never claim approval), and `read_document` (content labelled untrusted), `list_decisions`, `record_decision` and `propose_edit`.
+- Both also offer prompts `model-qa`, `spec-qa`, `review` (ask first, log outcomes, never claim approval), and `read_document` (content labelled untrusted), `list_decisions`, `record_decision` and `propose_edit`.
 
 Register them in any MCP client as stdio commands, with the repository as working directory. Guards:
 paths are confined to the workspace (`.git` is protected), `propose_edit` writes only to `proposal/*` branches and
