@@ -13,7 +13,7 @@ Feature: Change control, impact and audit evidence
 
     Examples:
       | element | upstream | downstream            |
-      | SR-004  | N-001    | DR-002, its scenarios |
+      | SR-004  | N-010    | DR-002, its scenarios |
       | DR-002  | SR-004   | its scenarios         |
 
   @SR-010 @SR-012

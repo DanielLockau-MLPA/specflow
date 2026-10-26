@@ -12,11 +12,16 @@ Feature: Traceability checks and queries
 
     Examples:
       | defect                                         | rule                   | element |
-      | need N-001 is covered by no use case           | need-covered           | N-001   |
       | use case UC-01 exercises no requirement        | usecase-exercises      | UC-01   |
       | requirement SR-001 derives from no need        | l1-derives-need        | SR-001  |
       | requirement DR-001 derives from no L1 requirement | l2-derives-l1       | DR-001  |
       | requirement DR-001 is allocated to no element  | l2-allocated           | DR-001  |
+
+  @SR-013 @DR-009
+  Scenario: A need without a use case is reported at the needs stage
+    Given a model in which need N-001 is covered by no use case
+    When I run the trace check for stage "needs"
+    Then the report contains a violation of rule "need-covered" for the element "N-001"
 
   @SR-013 @DR-009
   Scenario: A complete model has no trace violations

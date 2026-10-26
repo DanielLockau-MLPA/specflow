@@ -7,7 +7,7 @@ Feature: Approvals and gates
   @SR-008 @DR-012
   Scenario: An approval is a signed tag carrying the mandatory information
     When the registered human "alice" with role "systems-engineer" approves gate "G2" with rationale "reviewed"
-    Then the signed tag "approval/G2/systems-engineer" exists
+    Then the signed tag "approval/G2/systems-engineer.1" exists
     And the tag signature identifies the approver and the date
     And the tag message holds the rationale
     And the approval reports the content hash of the gate scope

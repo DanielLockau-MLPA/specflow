@@ -49,6 +49,7 @@ def run_behave(ws):
                 "scenario": el["name"], "location": el["location"],
                 "tags": [t for t in el.get("tags", []) if tracecheck.ID_TAG.match(t)],
                 "status": el.get("status", "untested"),
+                "manual": "manual" in el.get("tags", []),
                 "duration": round(sum(s.get("result", {}).get("duration", 0) for s in steps), 6),
                 "detail": "\n".join(failed["result"].get("error_message", []))[:600] if failed else ""})
     return sorted(results, key=lambda r: r["location"])

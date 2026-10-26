@@ -5,13 +5,15 @@ text with the lightweight reader of tools/arch.py and the specification with
 behave's Gherkin parser. Output is deterministic: sorted, no timestamps.
 
 Usage:
-    python tools/tracecheck.py check [--stage needs|model|spec|all] [--json]
+    python tools/tracecheck.py check [--stage needs|model|spec|refs|all] [--json]
+Stage refs (not part of "all") reports dangling links and links whose target changed since a gate approval.
 Exit code 1 when unwaived violations exist.
 Waivers are signed tags waiver/<rule>/<element> (see tools/waivers.py). A waiver without rationale, human signer
 with a registered key, or a future expiry is invalid and ignored.
 """
 import argparse
 import datetime
+import hashlib
 import json
 import re
 import sys
@@ -99,6 +101,88 @@ def check(stage, id_info, links, allocated, scenarios):
     return v
 
 
+def element_hash(name, doc):
+    return hashlib.sha256(f"{name}\n{doc}".encode()).hexdigest()
+
+
+def reference_findings(ws=None):
+    """Stage "refs": dangling links (a link names an element that is not defined) and stale links (the target's
+    content differs from its content at every commit approved by a gate)."""
+    import approvals
+    import specflow_core as core
+    ws = ws or core.Workspace()
+    v = []
+    model = read_model()
+    _n, id_info = ids_and_names(model)
+    labels = [m for src in model.values() for m in re.findall(r"dependency\s+'([^']*)'", src)]
+    link_ids = sorted({i for label in labels for i in re.findall(r"\b[A-Z]{1,3}-\d+\b", label)})
+    for i in link_ids:
+        if i not in id_info:
+            v.append({"stage": "refs", "rule": "link-dangling", "element": i,
+                      "message": "a link refers to an element that is not defined"})
+    commits = set()
+    for gate in approvals.gates(ws):
+        for entry in approvals.gate_status(gate, ws)["roles"].values():
+            if entry["valid"]:
+                commits.add(core.git("rev-parse", f"{entry['tag']}^{{commit}}", cwd=ws.root))
+    approved = {}
+    for commit in sorted(commits):
+        files = core.git("ls-tree", "-r", "--name-only", commit, "--", "model", cwd=ws.root).split("\n")
+        old = {f: core.git("show", f"{commit}:{f}", cwd=ws.root) for f in files if f.endswith(".sysml")}
+        for eid, (name, doc) in ids_and_names(old)[1].items():
+            approved.setdefault(eid, set()).add(element_hash(name, doc))
+    for i in link_ids:
+        if i in id_info and i in approved and element_hash(*id_info[i]) not in approved[i]:
+            v.append({"stage": "refs", "rule": "link-stale", "element": i,
+                      "message": "the link target changed since it was approved"})
+    return v
+
+
+def graph(id_info=None, links=None, scenarios=None):
+    """Trace graph as sorted nodes and edges: model links plus scenario-to-ID tags (scenario nodes are file:line)."""
+    if id_info is None:
+        id_info, links, _allocated = load_model()
+        scenarios = load_scenarios()
+    edges = {(a, verb, b) for a, verb, b in links}
+    nodes = set(id_info)
+    for sc in scenarios:
+        where = f"{sc['file']}:{sc['line']}"
+        nodes.add(where)
+        edges.update((where, "verifies", t) for t in sc["tags"] if ID_TAG.match(t))
+    return {"nodes": sorted(nodes), "edges": [list(e) for e in sorted(edges)]}
+
+
+def graph_json():
+    return json.dumps(graph(), indent=2, sort_keys=True)
+
+
+def query(source, target):
+    """Elements connected to `source` (following links in both directions) that are `target` (an ID, a prefix such as
+    N, or "scenario"), each with the shortest connecting path."""
+    g = graph()
+    adj = defaultdict(set)
+    for a, _verb, b in g["edges"]:
+        adj[a].add(b)
+        adj[b].add(a)
+    if source == "scenario":
+        starts = [n for n in g["nodes"] if ".feature:" in n]
+    else:
+        starts = [source] if source in g["nodes"] else []
+    paths = {}
+    for start in starts:
+        seen, queue = {start: [start]}, [start]
+        for node in queue:
+            for nxt in sorted(adj[node]):
+                if nxt not in seen:
+                    seen[nxt] = [*seen[node], nxt]
+                    queue.append(nxt)
+        for node, path in seen.items():
+            hit = ".feature:" in node if target == "scenario" else (node == target or prefix(node) == target)
+            if hit and node != start:
+                paths.setdefault(node, path)
+    return {"from": source, "to": target, "connected": sorted(paths), "paths": dict(sorted(paths.items()))}
+
+
 def summary(id_info, scenarios):
     verified = {t for sc in scenarios for t in sc["tags"] if ID_TAG.match(t)}
     rows = {}
@@ -117,7 +201,9 @@ def load_waivers():
 def evaluate(stages):
     id_info, links, allocated = load_model()
     scenarios = load_scenarios()
-    violations = [x for s in stages for x in check(s, id_info, links, allocated, scenarios)]
+    violations = [x for s in stages if s != "refs" for x in check(s, id_info, links, allocated, scenarios)]
+    if "refs" in stages:
+        violations += reference_findings()
     valid_w, invalid_w = load_waivers()
     import waivers
     waived_keys = {(w["rule"], w["element"]) for w in valid_w}
@@ -139,7 +225,7 @@ def evaluate(stages):
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("command", choices=["check"])
-    ap.add_argument("--stage", choices=[*STAGES, "all"], default="all")
+    ap.add_argument("--stage", choices=[*STAGES, "refs", "all"], default="all")
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
 

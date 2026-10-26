@@ -7,7 +7,7 @@ Feature: Open formats, IDs and views
   @SR-020 @DR-029
   Scenario: Persistent artifacts use only open text formats
     When I list all persistent artifacts of the project
-    Then every artifact has one of the extensions ".sysml", ".feature", ".yaml", ".json" or ".md"
+    Then every artifact has one of the extensions ".sysml", ".feature", ".yaml", ".json" or ".md", except public key files under "approvals/keys"
 
   @SR-020
   Scenario: The model can be read without the toolchain
@@ -42,7 +42,7 @@ Feature: Open formats, IDs and views
     Then the export contains Mermaid text files
     And each file can be rendered without error
 
-  @SR-009 @DR-027
+  @SR-009 @DR-027 @manual
   Scenario: The model is loadable in a graphical modeling tool
     Given a valid model
     When I load the model files into the graphical review tool

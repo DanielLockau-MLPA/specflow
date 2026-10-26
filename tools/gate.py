@@ -78,8 +78,11 @@ def evaluate(gate, ws=None, run_specs=False):
         if why:
             problems.append(why)
         else:
-            bad = [s for s in payload["scenarios"] if s["status"] != "passed"]
-            report["scenarios"] = {"summary": payload["summary"], "not_passed": [f"{s['location']} {s['status']}" for s in bad]}
+            # @manual scenarios are verified by humans; the G4 approvers attest them
+            manual = [s for s in payload["scenarios"] if s["status"] == "skipped" and s.get("manual")]
+            bad = [s for s in payload["scenarios"] if s["status"] != "passed" and s not in manual]
+            report["scenarios"] = {"summary": payload["summary"], "not_passed": [f"{s['location']} {s['status']}" for s in bad],
+                                   "manual": [s["location"] for s in manual]}
             if bad:
                 problems.append(f"{len(bad)} scenario(s) did not pass; first: {bad[0]['location']} ({bad[0]['status']})")
 
