@@ -1,0 +1,17 @@
+{
+  "allow_single_person": true,
+  "gates": {
+    "G1": {
+      "scope": ["model/00_needs.sysml"],
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+    },
+    "G2": {
+      "scope": ["model/"],
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+    },
+    "G3": {
+      "scope": ["specs/features/"],
+      "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"]
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import asyncio
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -46,7 +47,17 @@ def approver(repo, tmp_path_factory):
     key = make_key(keys, "approver")
     (repo / "approvals/keys").mkdir(parents=True)
     (repo / "approvals/keys/approver.pub").write_text((keys / "approver.pub").read_text())
+    roles = ["reviewer", "owner"]
+    (repo / "approvals/gates.json").write_text(json.dumps({"allow_single_person": True, "gates": {
+        "G1": {"scope": ["inputs.txt"], "roles": roles}, "G2": {"scope": ["model/"], "roles": roles},
+        "G3": {"scope": ["specs/"], "roles": roles}}}))
+    (repo / "approvals/roles.json").write_text(json.dumps({"approver": roles}))
     return key
+
+
+def approve_gate(repo, gate, key, roles=("reviewer", "owner")):
+    for r in roles:
+        sign_tag(repo, f"approval/{gate}/{r}", key)
 
 
 def call(name, args, answer="accept", approve=True):
@@ -89,7 +100,7 @@ def test_propose_edit_needs_confirmation_and_proposal_branch(repo):
 
 
 def test_propose_edit_refuses_baseline_files(repo, approver):
-    sign_tag(repo, "baseline/G2", approver)
+    approve_gate(repo, "G2", approver)
     err, text = call("propose_edit", {"path": "model/a.sysml", "content": "z", "branch": "proposal/y", "message": "m"})
     assert err and "baseline" in text
 
@@ -105,8 +116,8 @@ def test_decision_log_validates_ids_and_appends(repo):
 
 def test_model_draft_requires_baseline_and_qa(repo, approver):
     err, text = call("request_model_draft", {})
-    assert err and "baseline" in text
-    sign_tag(repo, "baseline/G1", approver)
+    assert err and "gate G1 is not open" in text
+    approve_gate(repo, "G1", approver)
     err, text = call("request_model_draft", {})
     assert err and "Q&A" in text
 
@@ -122,26 +133,68 @@ def test_prompts_forbid_approval_and_require_logging():
     assert "Ask questions first" in text and "record_decision" in text and "Never claim" in text
 
 
-def test_unsigned_or_foreign_signed_baseline_is_not_accepted(repo, approver, tmp_path_factory):
+def test_gate_needs_all_roles_signed_by_authorised_keys(repo, approver, tmp_path_factory):
     import approvals
-    sh(repo, "git", "tag", "-a", "baseline/G1", "-m", "unsigned")
-    assert not approvals.verify_tag("baseline/G1").ok
+    sign_tag(repo, "approval/G2/reviewer", approver)
+    st = approvals.gate_status("G2")
+    assert not st["open"] and "owner" in st["problems"][0]
+    sh(repo, "git", "tag", "-a", "approval/G2/owner", "-m", "unsigned")
+    assert not approvals.gate_status("G2")["open"]
+    sh(repo, "git", "tag", "-d", "approval/G2/owner")
     stranger = make_key(tmp_path_factory.mktemp("s"), "stranger")
-    sign_tag(repo, "baseline/G2", stranger)
-    assert not approvals.verify_tag("baseline/G2").ok
-    sign_tag(repo, "baseline/G3", approver)
-    v = approvals.verify_tag("baseline/G3")
-    assert v.ok and v.signer == "approver"
+    sign_tag(repo, "approval/G2/owner", stranger)
+    assert not approvals.gate_status("G2")["open"]
+    sh(repo, "git", "tag", "-d", "approval/G2/owner")
+    sign_tag(repo, "approval/G2/owner", approver)
+    st = approvals.gate_status("G2")
+    assert st["open"] and st["single_person"]
 
 
-def test_drift_detected_in_scope_only(repo, approver):
+def test_single_person_requires_explicit_allowance(repo, approver):
     import approvals
-    sign_tag(repo, "baseline/G2", approver)
+    approve_gate(repo, "G2", approver)
+    assert approvals.gate_status("G2")["open"]
+    cfg = json.loads((repo / "approvals/gates.json").read_text())
+    cfg["allow_single_person"] = False
+    (repo / "approvals/gates.json").write_text(json.dumps(cfg))
+    st = approvals.gate_status("G2")
+    assert not st["open"] and "separation of duties" in st["problems"][0]
+
+
+def test_signer_must_hold_the_role(repo, approver):
+    import approvals
+    (repo / "approvals/roles.json").write_text(json.dumps({"approver": ["reviewer"]}))
+    approve_gate(repo, "G2", approver)
+    st = approvals.gate_status("G2")
+    assert not st["open"] and "does not hold role owner" in st["roles"]["owner"]["reason"]
+
+
+def test_changed_scope_invalidates_approvals(repo, approver):
+    import approvals
+    approve_gate(repo, "G2", approver)
     (repo / "inputs.txt").write_text("changed")
-    assert approvals.drift("baseline/G2") == []
+    assert approvals.gate_status("G2")["open"]
     (repo / "model/a.sysml").write_text("changed")
-    (repo / "model/new.sysml").write_text("new")
-    assert approvals.drift("baseline/G2") == ["model/a.sysml", "model/new.sysml"]
+    sh(repo, "git", "commit", "-qam", "change")
+    st = approvals.gate_status("G2")
+    assert not st["open"] and "scope changed" in " ".join(st["problems"])
+
+
+def test_roles_must_agree_on_content(repo, approver):
+    import approvals
+    sign_tag(repo, "approval/G2/reviewer", approver)
+    (repo / "model/a.sysml").write_text("changed")
+    sh(repo, "git", "commit", "-qam", "change")
+    sign_tag(repo, "approval/G2/owner", approver)
+    st = approvals.gate_status("G2")
+    assert not st["open"] and "different scope content" in " ".join(st["problems"])
+
+
+def test_create_approval_refuses_uncommitted_scope(repo, approver):
+    import approvals
+    (repo / "model/a.sysml").write_text("changed")
+    with pytest.raises(core.Rejected):
+        approvals.create_approval("G2", "reviewer", "m")
 
 
 def test_approver_keys_are_protected_from_agent(repo):
@@ -152,6 +205,6 @@ def test_approver_keys_are_protected_from_agent(repo):
 
 
 def test_baseline_outside_gate_scope_stays_editable(repo, approver):
-    sign_tag(repo, "baseline/G2", approver)
+    approve_gate(repo, "G2", approver)
     err, text = call("propose_edit", {"path": "inputs.txt", "content": "n", "branch": "proposal/z", "message": "m"})
     assert not err, text

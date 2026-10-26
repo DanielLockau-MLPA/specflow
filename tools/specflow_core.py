@@ -18,7 +18,7 @@ from mcp.server.mcpserver.exceptions import ToolError
 ROOT = Path(os.environ.get("SPECFLOW_ROOT", Path(__file__).resolve().parent.parent)).resolve()
 PROTECTED = (".git", ".approvals", "approvals")
 STAGES = ("model", "spec")
-BASELINES = {"requirements": "baseline/G1", "model": "baseline/G2", "spec": "baseline/G3"}
+BASELINES = {"requirements": "G1", "model": "G2", "spec": "G3"}
 ID_PATTERN = re.compile(r"^(N|UC|SR|DR)-\d+$")
 SESSION_ID = os.environ.get("SPECFLOW_SESSION", f"s-{uuid.uuid4().hex[:8]}")
 AI_TRAILER = "AI-Authored-By"
@@ -141,30 +141,22 @@ def git(*args, cwd=None, check=True):
     return r.stdout.strip()
 
 
-SCOPES = {"baseline/G1": ("model/00_needs.sysml",), "baseline/G2": ("model/",), "baseline/G3": ("specs/features/",)}
-
-
-def baseline_exists(name, ws=None):
-    """A baseline counts only if its tag carries a valid signature from a key in approvals/keys."""
+def baseline_exists(gate, ws=None):
+    """A gate baseline exists only when every required role holds a valid, matching signed approval tag."""
     import approvals
-    return approvals.verify_tag(name, ws or Workspace()).ok
+    return approvals.gate_status(gate, ws or Workspace())["open"]
 
 
 def baseline_files(ws=None):
-    """Files protected from agent edits: the gate scope of every baseline/* tag, verified or not."""
-    ws = ws or Workspace()
-    files = set()
-    for tag in git("tag", "--list", "baseline/*", cwd=ws.root).split():
-        scope = SCOPES.get(tag, ("",))
-        names = git("ls-tree", "-r", "--name-only", tag, cwd=ws.root).split("\n")
-        files.update(n for n in names if n.startswith(scope))
-    return files
+    """Files protected from agent edits: the scope of every gate that has any approval tag, valid or not."""
+    import approvals
+    return approvals.protected_files(ws or Workspace())
 
 
 def require_baseline(stage, ws=None):
-    name = BASELINES[stage]
-    if not baseline_exists(name, ws):
-        raise Rejected(f"no approved baseline ({name} missing)")
+    gate = BASELINES[stage]
+    if not baseline_exists(gate, ws):
+        raise Rejected(f"gate {gate} is not open (approvals incomplete, invalid or stale)")
 
 
 def require_qa(stage, ws=None):

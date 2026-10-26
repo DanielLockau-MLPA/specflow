@@ -1,7 +1,10 @@
-"""Human CLI for approvals: status, verify, baseline. Not exposed through MCP.
+"""Human CLI for gate approvals. Not exposed through MCP.
 
   uv run python tools/approve.py status
-  uv run python tools/approve.py baseline G2 -m "Model approved by ..."
+  uv run python tools/approve.py approve G2 --role reviewer -m "Reviewed model, no findings"
+
+Each stakeholder runs `approve` for their own role with their own SSH key (git config gpg.format ssh,
+user.signingkey). A gate opens when all required roles have signed the same scope content.
 """
 import argparse
 import json
@@ -17,20 +20,21 @@ def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status")
-    b = sub.add_parser("baseline")
-    b.add_argument("gate", choices=["G1", "G2", "G3"])
+    b = sub.add_parser("approve")
+    b.add_argument("gate")
+    b.add_argument("--role", required=True)
     b.add_argument("-m", "--message", required=True)
     a = ap.parse_args()
     if a.cmd == "status":
         st = approvals.status()
         print(json.dumps(st, indent=2))
-        return 1 if any(v["drift"] for v in st.values()) else 0
+        return 0 if all(g["open"] for g in st.values()) else 1
     try:
-        v = approvals.create_baseline(a.gate, a.message)
+        v = approvals.create_approval(a.gate, a.role, a.message)
     except core.Rejected as e:
         print(e, file=sys.stderr)
         return 1
-    print(f"baseline/{a.gate} signed by {v.signer}")
+    print(f"approval/{a.gate}/{a.role} signed by {v.signer}")
     return 0
 
 

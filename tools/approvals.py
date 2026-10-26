@@ -1,8 +1,13 @@
-"""Baseline approval: SSH-signed git tags verified against the public keys in approvals/keys (SR-041, DR-003).
+"""Gate approval from per-stakeholder SSH-signed tags (SR-041, DR-003).
 
-Tags are created by humans with `approve.py baseline`; agents have no path to this module's write functions
-(MCP tools only call verify_tag/status). The directory approvals/ is protected from the file guard.
+Each stakeholder role signs `approval/<gate>/<role>` with a key whose public half is in approvals/keys/<principal>.pub.
+approvals/gates.json lists the gate scopes and required roles; approvals/roles.json maps principals to roles.
+A gate is open when every required role has a valid tag signed by a principal holding that role, all tags cover the
+same scope content, and the working tree has not drifted from it. There is no separate "gate open" tag: the state
+is derived. Tags are created by humans (tools/approve.py); agents can only read status.
 """
+import hashlib
+import json
 import re
 import subprocess
 import tempfile
@@ -17,6 +22,15 @@ class Verification:
     ok: bool
     signer: str = ""
     reason: str = ""
+
+
+def _json(ws, name):
+    f = ws.root / "approvals" / name
+    return json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+
+
+def gates(ws):
+    return _json(ws, "gates.json").get("gates", {})
 
 
 def _signers(ws):
@@ -46,33 +60,94 @@ def verify_tag(name, ws=None):
     return Verification(True, signer=m.group(1) if m else "")
 
 
-def drift(name, ws=None):
-    """Files in the gate scope that differ between the tag and the working tree (tracked or untracked)."""
+def _scope(ws, gate):
+    return tuple(gates(ws).get(gate, {}).get("scope", ()))
+
+
+def fingerprint(ws, commit, scope):
+    """Hash of the scope content at a commit (paths and blob IDs)."""
+    listing = core.git("ls-tree", "-r", commit, "--", *scope, cwd=ws.root)
+    return hashlib.sha256(listing.encode()).hexdigest()
+
+
+def drift(gate, ws=None, commit="HEAD"):
+    """Scope files that differ between `commit` and the working tree (tracked changes or untracked files)."""
     ws = ws or core.Workspace()
-    scope = core.SCOPES.get(name, ("",))
-    changed = core.git("diff", "--name-only", name, "--", *scope, cwd=ws.root).split("\n")
+    scope = _scope(ws, gate)
+    if not scope:
+        return []
+    changed = core.git("diff", "--name-only", commit, "--", *scope, cwd=ws.root).split("\n")
     untracked = core.git("ls-files", "--others", "--exclude-standard", "--", *scope, cwd=ws.root).split("\n")
     return sorted({c for c in changed + untracked if c})
 
 
+def gate_status(gate, ws=None):
+    ws = ws or core.Workspace()
+    cfg = _json(ws, "gates.json")
+    g = cfg.get("gates", {}).get(gate)
+    if g is None:
+        return {"gate": gate, "open": False, "problems": ["gate not configured"], "roles": {}, "drift": []}
+    roles_of = _json(ws, "roles.json")
+    scope = tuple(g["scope"])
+    roles, prints, signers = {}, set(), set()
+    for role in g["roles"]:
+        tag = f"approval/{gate}/{role}"
+        v = verify_tag(tag, ws)
+        entry = {"tag": tag, "valid": v.ok, "signer": v.signer, "reason": v.reason}
+        if v.ok and role not in roles_of.get(v.signer, []):
+            entry.update(valid=False, reason=f"signer {v.signer} does not hold role {role}")
+        if entry["valid"]:
+            commit = core.git("rev-parse", f"{tag}^{{commit}}", cwd=ws.root)
+            fp = fingerprint(ws, commit, scope)
+            entry["scope_fingerprint"] = fp
+            prints.add(fp)
+            signers.add(v.signer)
+            entry["stale"] = bool(drift(gate, ws, commit))
+        roles[role] = entry
+    missing = [r for r, e in roles.items() if not e["valid"]]
+    stale = [r for r, e in roles.items() if e.get("stale")]
+    single = len(signers) == 1 and not missing
+    problems = []
+    if missing:
+        problems.append(f"missing or invalid approvals: {', '.join(missing)}")
+    if len(prints) > 1:
+        problems.append("approvals cover different scope content")
+    if stale:
+        problems.append(f"scope changed since approval: {', '.join(stale)}")
+    if single and not cfg.get("allow_single_person", False):
+        problems.append("separation of duties: one person signed all roles")
+    return {"gate": gate, "open": not problems, "problems": problems, "single_person": single,
+            "roles": roles, "drift": drift(gate, ws) if not missing else []}
+
+
 def status(ws=None):
     ws = ws or core.Workspace()
-    out = {}
-    for name in ("baseline/G1", "baseline/G2", "baseline/G3"):
-        v = verify_tag(name, ws)
-        out[name] = {"verified": v.ok, "signer": v.signer, "reason": v.reason, "drift": drift(name, ws) if v.ok else []}
-    return out
+    return {g: gate_status(g, ws) for g in gates(ws)}
 
 
-def create_baseline(gate, message, ws=None):
-    """Human action: create the signed tag with the operator's own SSH key (git config user.signingkey)."""
+def protected_files(ws):
+    files = set()
+    for gate, g in gates(ws).items():
+        for tag in core.git("tag", "--list", f"approval/{gate}/*", cwd=ws.root).split():
+            names = core.git("ls-tree", "-r", "--name-only", tag, "--", *g["scope"], cwd=ws.root).split("\n")
+            files.update(n for n in names if n)
+    return files
+
+
+def create_approval(gate, role, message, ws=None):
+    """Human action: sign approval/<gate>/<role> on HEAD with the operator's SSH key (git config user.signingkey)."""
     ws = ws or core.Workspace()
-    name = f"baseline/{gate}"
-    if name not in core.SCOPES:
-        raise core.Rejected(f"unknown gate: {gate}")
+    g = gates(ws).get(gate)
+    if g is None or role not in g["roles"]:
+        raise core.Rejected(f"role {role} is not required for gate {gate}")
+    if drift(gate, ws):
+        raise core.Rejected("scope has uncommitted changes; commit them first so the approval covers what is signed")
+    name = f"approval/{gate}/{role}"
     core.git("-c", "gpg.format=ssh", "tag", "-s", name, "-m", message, cwd=ws.root)
     v = verify_tag(name, ws)
+    if v.ok and role not in _json(ws, "roles.json").get(v.signer, []):
+        v = Verification(False, reason=f"signer {v.signer} does not hold role {role}")
     if not v.ok:
         core.git("tag", "-d", name, cwd=ws.root)
-        raise core.Rejected(f"tag deleted: not verifiable against approvals/keys ({v.reason})")
+        raise core.Rejected(f"tag deleted: {v.reason}")
     return v

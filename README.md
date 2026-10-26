@@ -81,18 +81,25 @@ never to files in a `baseline/*` tag, and `record_decision` / `propose_edit` nee
 client's elicitation prompt. If the client cannot elicit, the call is refused. Decisions are appended to
 `decisions/<stage>.md`. Set `SPECFLOW_ROOT` to use another workspace.
 
-## Approvals and baselines
+## Approvals and gates
 
-Approvers' public SSH keys live in `approvals/keys/<name>.pub` (protected from agents; changing them is a human review
-change). A gate baseline is an SSH-signed tag `baseline/G1` (needs: `model/00_needs.sysml`), `baseline/G2` (`model/`),
-`baseline/G3` (`specs/features/`), created by a human with their own key:
+Gates are opened by stakeholders, not by one owner. Each required role signs its own tag `approval/<gate>/<role>`
+with an SSH key whose public half is in `approvals/keys/<principal>.pub`. Protected configuration (agents cannot read
+or write `approvals/`):
 
-- `uv run python tools/approve.py baseline G2 -m "reason"` (needs `git config gpg.format ssh` and `user.signingkey`).
-- `uv run python tools/approve.py status` shows verification, signer and drift (exit 1 on drift).
+- `approvals/gates.json`: per gate (G1 needs, G2 model, G3 specs) the scope paths and required roles; `allow_single_person`
+  permits one person to hold all roles (prototype only; status reports `single_person`).
+- `approvals/roles.json`: principal (key file name) to roles.
 
-A tag counts as a baseline only if its signature verifies against `approvals/keys`. Agents can only read
-`approval_status`. Files in a baseline's scope cannot be changed by `propose_edit`.
+A gate is open only if every role has a valid tag from a principal holding that role, all tags cover the same scope
+content, and the scope has not changed since. There is no separate "gate open" tag; the state is derived.
+
+- `uv run python tools/approve.py approve G2 --role reviewer -m "reason"` signs on HEAD with your own key (needs
+  `git config gpg.format ssh` and `user.signingkey`; scope changes must be committed first).
+- `uv run python tools/approve.py status` shows per-role verification, problems and drift (exit 1 if any gate is not open).
+
+Agents only have the read-only `approval_status` tool. Files in an approved scope cannot be changed by `propose_edit`.
 
 ## Not yet built
 
-Multi-approver rules, impact analysis, evidence bundle, gate evaluation including spec results, step bindings. See `docs/retrospective.md` for findings.
+Impact analysis, evidence bundle, gate evaluation including spec results, step bindings. See `docs/retrospective.md` for findings.
