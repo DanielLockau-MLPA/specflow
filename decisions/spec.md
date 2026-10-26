@@ -28,3 +28,12 @@ Append-only. Entries are never edited or deleted.
 - decision: baseline/G3 created as signed tag.
 - rationale: Signature verified against approvals/keys, signer id_rsa_dl_devops_20250812. Signed tags are the approval record.
 - affected: SR-014
+
+## DL-010
+- date: 2026-10-26
+- type: review
+- participants: DanielLockau-MLPA
+- question: Gate G3 approval by stakeholder roles (supersedes the baseline/G3 tag in DL-005..007)?
+- decision: Approved: seven per-role signed tags approval/G3/<role> created; gate G3 open.
+- rationale: Verified with approve.py status: all roles valid, no drift. Prototype: one person holds all roles (allow_single_person=true). Old baseline/* tags no longer count.
+- affected: SR-014
