@@ -41,7 +41,7 @@ uv run behave specs/features                   # run all scenarios against the r
 uv run python tools/specflow.py run            # run the specs and record .specflow/results/last_run.json (G4 evidence)
 uv run python tools/specflow.py gate G4        # evaluate a gate: approvals, trace stages, spec run, unreviewed AI commits
 uv run python tools/specflow.py impact SR-004  # upstream/downstream elements, scenarios and gates needing re-approval
-uv run python tools/specflow.py audit approvals|waivers|changes|test-evidence|integrity|bundle
+uv run python tools/specflow.py audit G4 approvals|waivers|changes|test-evidence|integrity|bundle
 uv run python tools/steps_vocab.py             # regenerate docs/step_vocabulary.md
 uv run pytest tests                            # tests of the tooling
 uv run ruff check .                            # coding conventions and basic static analysis (default linter; --fix for safe fixes)
