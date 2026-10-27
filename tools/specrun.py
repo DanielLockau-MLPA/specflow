@@ -14,9 +14,9 @@ import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import approvals  # noqa: E402
-import specflow_core as core  # noqa: E402
-import tracecheck  # noqa: E402
+import approvals
+import specflow_core as core
+import tracecheck
 
 RESULT_SCOPE = ("model/", "specs/")
 
@@ -36,7 +36,7 @@ def run_behave(ws):
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "r.json"
         subprocess.run([sys.executable, "-m", "behave", "specs/features", "-f", "json", "-o", str(out), "--no-summary"],
-                       capture_output=True, text=True, cwd=ws.root, env={**os.environ, "SPECFLOW_ROOT": str(ws.root)})
+                       capture_output=True, text=True, cwd=ws.root, env={**os.environ, "SPECFLOW_ROOT": str(ws.root)}, check=False)
         data = json.loads(out.read_text(encoding="utf-8")) if out.exists() else []
     results = []
     for feature in data:

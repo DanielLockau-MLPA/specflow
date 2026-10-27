@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import specflow_core as core  # noqa: E402
+import specflow_core as core
 
 DECL = re.compile(r"<'((?:N|UC|SR|DR|SRC|STK)-\d+)'")
 

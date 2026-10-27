@@ -12,7 +12,6 @@ Waivers are signed tags waiver/<rule>/<element> (see tools/waivers.py). A waiver
 with a registered key, or a future expiry is invalid and ignored.
 """
 import argparse
-import datetime
 import hashlib
 import json
 import re
@@ -21,7 +20,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from arch import architecture, data_root, ids_and_names, read_model, trace_links  # noqa: E402
+from arch import architecture, data_root, ids_and_names, read_model, trace_links
 
 LEVELS = {"N": "need", "UC": "use case", "SR": "requirement (L1)", "DR": "requirement (L2)"}  # sources and stakeholders are not verified by scenarios
 ID_TAG = re.compile(r"^[A-Z]{1,3}-\d+$")

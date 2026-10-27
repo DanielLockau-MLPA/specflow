@@ -1,13 +1,13 @@
 import os
 import re
-import stat
 import shutil
+import stat
 import subprocess
 
 from behave import given, then, when
 
-import audit
 import approvals
+import audit
 import coverage_report
 import tracecheck
 from d_mcp_helpers import SERVERS, call, list_tools

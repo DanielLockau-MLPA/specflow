@@ -15,8 +15,8 @@ from pathlib import Path
 CODE_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(CODE_ROOT / "tools"))
 
-import approvals  # noqa: E402
-import specflow_core as core  # noqa: E402
+import approvals
+import specflow_core as core
 
 ALL_ROLES = ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management",
              "information-security", "implementation-team"]
@@ -138,7 +138,7 @@ class World:
         import re
         for f in sorted((self.root / "model").glob("*.sysml")):
             text = f.read_text(encoding="utf-8")
-            m = re.search(rf"<'{re.escape(element)}'.*?doc\s*/\*(.*?)\*/", text, re.S)
+            m = re.search(rf"<'{re.escape(element)}'.*?doc\s*/\*(.*?)\*/", text, re.DOTALL)
             if m:
                 f.write_text(text[:m.start(1)] + f" {new_text} " + text[m.end(1):], encoding="utf-8")
                 return f
@@ -154,6 +154,7 @@ class World:
     def sign_waiver(self, rule, element, rationale="accepted for this iteration", expiry=None, signer="alice"):
         """Create a waiver tag by hand so that invalid variants (no rationale, past expiry, other signer) are possible."""
         import datetime
+
         import waivers
         expiry = expiry or (datetime.date.today() + datetime.timedelta(days=30)).isoformat()
         lines = ([f"rationale: {rationale}"] if rationale else []) + [f"expiry: {expiry}"]
@@ -168,7 +169,7 @@ class World:
     def cli(self, *args, check=False):
         env = {**os.environ, "SPECFLOW_ROOT": str(self.root)}
         r = subprocess.run([sys.executable, str(CODE_ROOT / "tools/specflow.py"), *args], cwd=self.root,
-                           capture_output=True, text=True, env=env)
+                           capture_output=True, text=True, env=env, check=False)
         if check and r.returncode:
             raise RuntimeError(f"specflow {' '.join(args)} failed: {r.stdout}{r.stderr}")
         return r

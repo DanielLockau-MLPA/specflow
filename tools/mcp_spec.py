@@ -7,13 +7,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from mcp.server.mcpserver import MCPServer  # noqa: E402
+from mcp.server.mcpserver import MCPServer
 
-import coverage_report as coveragereport  # noqa: E402
-import mcp_shared  # noqa: E402
-import specflow_core as core  # noqa: E402
-import specrun  # noqa: E402
-import tracecheck  # noqa: E402
+import coverage_report as coveragereport
+import mcp_shared
+import specflow_core as core
+import specrun
+import tracecheck
 
 mcp = MCPServer("spec-mcp", instructions="Operations on the executable specification. Scenarios must carry model ID tags.")
 mcp_shared.register_common(mcp)

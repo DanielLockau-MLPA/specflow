@@ -14,10 +14,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import approvals  # noqa: E402
-import specflow_core as core  # noqa: E402
-import specrun  # noqa: E402
-import tracecheck  # noqa: E402
+import approvals
+import specflow_core as core
+import specrun
+import tracecheck
 
 AI_MARKERS = (f"{core.AI_TRAILER}:", "Co-authored-by: Copilot")
 ID_RE = re.compile(r"\b(?:N|UC|SR|DR|SRC|STK)-\d+\b")
@@ -45,7 +45,7 @@ def _changed_elements(ws, sha, scope):
             ids.update(ID_RE.findall(diff))
             continue
         text = core.git("show", f"{sha}:{name}", cwd=ws.root, check=False).split("\n")
-        for m in re.finditer(r"^@@ -\S+ \+(\d+)(?:,(\d+))?", diff, re.M):
+        for m in re.finditer(r"^@@ -\S+ \+(\d+)(?:,(\d+))?", diff, re.MULTILINE):
             start = int(m.group(1))
             for line in range(start, start + max(int(m.group(2) or 1), 1)):
                 for i in range(min(line, len(text)) - 1, -1, -1):

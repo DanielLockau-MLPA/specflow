@@ -35,20 +35,22 @@ async def sysml_mcp_backend(docs):
     if not SERVER.exists():
         raise RuntimeError(f"sysml-mcp not found at {SERVER}; run ./setup.sh --install")
     findings = []
-    async with stdio_client(StdioServerParameters(command="node", args=[str(SERVER)])) as (r, w):
-        async with ClientSession(r, w) as s:
-            await s.initialize()
-            for f, code in docs.items():
-                await s.call_tool("parse", {"code": code, "uri": f})
-            for f, code in docs.items():
-                res = await s.call_tool("validate", {"code": code, "uri": f})
-                d = json.loads("".join(c.text for c in res.content))
-                for e in d["syntaxErrors"]:
-                    findings.append({"file": f, "line": e["line"], "column": e["column"], "severity": "error",
-                                     "code": "syntax", "message": e["message"]})
-                for e in d["semanticIssues"]:
-                    findings.append({"file": f, "line": e["line"], "column": e["column"], "severity": e["severity"],
-                                     "code": e["code"], "message": e["message"]})
+    async with (
+        stdio_client(StdioServerParameters(command="node", args=[str(SERVER)])) as (r, w),
+        ClientSession(r, w) as s,
+    ):
+        await s.initialize()
+        for f, code in docs.items():
+            await s.call_tool("parse", {"code": code, "uri": f})
+        for f, code in docs.items():
+            res = await s.call_tool("validate", {"code": code, "uri": f})
+            d = json.loads("".join(c.text for c in res.content))
+            for e in d["syntaxErrors"]:
+                findings.append({"file": f, "line": e["line"], "column": e["column"], "severity": "error",
+                                 "code": "syntax", "message": e["message"]})
+            for e in d["semanticIssues"]:
+                findings.append({"file": f, "line": e["line"], "column": e["column"], "severity": e["severity"],
+                                 "code": e["code"], "message": e["message"]})
     return findings
 
 

@@ -10,7 +10,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from arch import ROOT  # noqa: E402
+from arch import ROOT
 
 FEATURES = ROOT / "specs/features"
 OUT = ROOT / "docs/step_vocabulary.md"

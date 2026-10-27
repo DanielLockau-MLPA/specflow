@@ -4,7 +4,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "steps"))
 
-from world import Keys, World  # noqa: E402
+from world import Keys, World
 
 
 def before_all(context):

@@ -25,7 +25,7 @@ def _parse(name, ws):
         return None
     rule, element, rev = m.group(1), m.group(2), int(m.group(3) or 0)
     body = core.git("tag", "--list", "--format=%(contents)", name, cwd=ws.root)
-    fields = dict(re.findall(r"^(rationale|expiry):\s*(.*)$", body, re.M))
+    fields = dict(re.findall(r"^(rationale|expiry):\s*(.*)$", body, re.MULTILINE))
     return rule, element, rev, fields
 
 

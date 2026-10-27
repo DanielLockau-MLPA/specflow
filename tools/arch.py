@@ -11,11 +11,10 @@ Usage:
     python tools/arch.py diagrams --render     # additionally pre-render .svg and .png (needs ./setup.sh --install)
 """
 import glob
+import os
 import re
-import shutil
 import subprocess
 import sys
-import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -53,7 +52,7 @@ def block(src, start):
 
 
 def strip_docs(text):
-    return re.sub(r"/\*.*?\*/", "", text, flags=re.S)
+    return re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
 
 
 def ids_and_names(model):
@@ -63,7 +62,7 @@ def ids_and_names(model):
         for m in re.finditer(r"(requirement|use case|item|part)\s+<'([A-Z]+-\d+)'>\s+(\w+)", src):
             _kind, eid, name = m.groups()
             name_to_id[name] = eid
-            doc = re.search(r"doc\s*/\*\s*(.*?)\s*\*/", block(src, m.end()), re.S)
+            doc = re.search(r"doc\s*/\*\s*(.*?)\s*\*/", block(src, m.end()), re.DOTALL)
             id_info[eid] = (name, doc.group(1) if doc else "")
     return name_to_id, id_info
 
@@ -259,7 +258,7 @@ def build_diagrams():
 
     diagrams.append(("02_agent_path_confirmation", "Agent-facing path and human confirmation",
                      "All agent traffic passes the input guard; state-changing calls need a human decision from outside the agent session (DR-024, DR-032).",
-                     "\n".join([
+                     "\n".join([  # noqa: FLY002 - one line per diagram row
                          "sequenceDiagram",
                          "  participant A as AI agent (MCP client)",
                          "  participant G as InputGuard",
@@ -287,7 +286,7 @@ def build_diagrams():
 
     diagrams.append(("03_approval_gate_path", "Approval and gate path (human only)",
                      "Approvals are signed git tags; the gate state is derived from them and the trace rules. Reachable only through the review CLI; there is no agent-facing port (DR-012 to DR-018).",
-                     "\n".join([
+                     "\n".join([  # noqa: FLY002 - one line per diagram row
                          "sequenceDiagram",
                          "  actor H as Human approver",
                          "  participant CLI as ReviewCli",
@@ -346,7 +345,7 @@ def build_diagrams():
 def render(mmd, base):
     cmd = [str(MMDC), "-i", str(mmd), "-p", str(PUPPETEER_CONFIG), "-c", str(MMDC_CONFIG), "-b", "white"]
     for ext, extra in (("svg", []), ("png", ["-s", "2"])):
-        r = subprocess.run(cmd + ["-o", str(base.with_suffix("." + ext))] + extra, capture_output=True, text=True)
+        r = subprocess.run(cmd + ["-o", str(base.with_suffix("." + ext))] + extra, capture_output=True, text=True, check=False)
         if r.returncode != 0:
             print(f"render failed for {mmd.name} ({ext}):\n{r.stderr[-400:]}", file=sys.stderr)
             return False

@@ -14,7 +14,13 @@ import coverage_report
 import specflow_core as core
 import tracecheck
 import waivers
-from b_support import (drop_dependencies, drop_satisfy, drop_scenario_tag, tag_first_scenario, untag_first_scenario)
+from b_support import (
+    drop_dependencies,
+    drop_satisfy,
+    drop_scenario_tag,
+    tag_first_scenario,
+    untag_first_scenario,
+)
 
 MODEL_DEFECTS = [
     (r"need (N-\d+) is covered by no use case", lambda w, e: drop_dependencies(w, rf"UC-\d+ covers {e}")),
@@ -230,7 +236,7 @@ def reference_reported(_, kind, element):
 
 @when("I build the trace graph twice")
 def build_graph_twice(context):
-    code = "import sys; sys.path.insert(0, %r); import tracecheck; sys.stdout.write(tracecheck.graph_json())" % str(core.CODE_ROOT / "tools")
+    code = f"import sys; sys.path.insert(0, {str(core.CODE_ROOT / 'tools')!r}); import tracecheck; sys.stdout.write(tracecheck.graph_json())"
     context.serialisations = [tracecheck.graph_json()]
     for seed in ("1", "2"):
         r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True,

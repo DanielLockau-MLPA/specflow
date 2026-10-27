@@ -10,7 +10,7 @@ TOOLS = Path(__file__).resolve().parent.parent / "tools"
 def run(root, backend_dir):
     env = {**os.environ, "SPECFLOW_ROOT": str(root), "SPECFLOW_PARSER_BACKEND": "fake_backend:parse",
            "PYTHONPATH": str(backend_dir)}
-    r = subprocess.run([sys.executable, str(TOOLS / "validate_model.py"), "--json"], capture_output=True, text=True, env=env)
+    r = subprocess.run([sys.executable, str(TOOLS / "validate_model.py"), "--json"], capture_output=True, text=True, env=env, check=False)
     return r.returncode, json.loads(r.stdout)
 
 

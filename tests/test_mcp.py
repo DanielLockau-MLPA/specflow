@@ -8,10 +8,10 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
-from mcp import Client, types  # noqa: E402
+from mcp import Client, types
 
-import mcp_model  # noqa: E402
-import specflow_core as core  # noqa: E402
+import mcp_model
+import specflow_core as core
 
 
 def sh(cwd, *a):
@@ -95,7 +95,7 @@ def test_propose_edit_needs_confirmation_and_proposal_branch(repo):
     assert call("propose_edit", {**args, "branch": "main"})[0]
     err, text = call("propose_edit", args)
     assert not err, text
-    log = subprocess.run(["git", "log", "-1", "--format=%B", "proposal/x"], cwd=repo, capture_output=True, text=True).stdout
+    log = subprocess.run(["git", "log", "-1", "--format=%B", "proposal/x"], cwd=repo, capture_output=True, text=True, check=True).stdout
     assert "AI-Authored-By:" in log and "Status: DRAFT" in log
     assert not (repo / "model/b.sysml").exists()
 

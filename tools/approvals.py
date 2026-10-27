@@ -54,7 +54,7 @@ def verify_tag(name, ws=None):
         f = Path(tmp) / "allowed_signers"
         f.write_text("\n".join(signers) + "\n", encoding="utf-8")
         r = subprocess.run(["git", "-c", "gpg.format=ssh", "-c", f"gpg.ssh.allowedSignersFile={f}", "verify-tag", name],
-                           cwd=ws.root, capture_output=True, text=True)
+                           cwd=ws.root, capture_output=True, text=True, check=False)
     if r.returncode:
         return Verification(False, reason="signature invalid or signer not authorised")
     m = re.search(r'Good "git" signature for (\S+)', r.stdout + r.stderr)

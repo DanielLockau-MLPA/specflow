@@ -101,7 +101,7 @@ def _log_file(stage, ws):
 
 def _all_entries(ws):
     d = ws.root / "decisions"
-    return [e for f in sorted(d.glob("*.md")) for e in re.findall(r"^## (DL-\d+)", f.read_text(encoding="utf-8"), re.M)] if d.exists() else []
+    return [e for f in sorted(d.glob("*.md")) for e in re.findall(r"^## (DL-\d+)", f.read_text(encoding="utf-8"), re.MULTILINE)] if d.exists() else []
 
 
 def record_decision(stage, kind, participants, question, decision, rationale, affected, ws=None):
@@ -136,7 +136,7 @@ def qa_recorded(stage, ws=None):
 # --- git: baselines and proposals (DR-003, DR-004, DR-018) ---------------------
 
 def git(*args, cwd=None, check=True):
-    r = subprocess.run(["git", *args], cwd=cwd or ROOT, capture_output=True, text=True)
+    r = subprocess.run(["git", *args], cwd=cwd or ROOT, capture_output=True, text=True, check=False)
     if check and r.returncode:
         raise RuntimeError(r.stderr.strip())
     return r.stdout.strip()
@@ -232,7 +232,7 @@ async def confirm(ctx, message, timeout=None):
         res = await asyncio.wait_for(ctx.elicit(message, Decision), timeout)
     except TimeoutError:
         raise Rejected("no human answer within the confirmation timeout; call aborted")
-    except Exception:
+    except Exception:  # noqa: BLE001 - fail closed on any channel error
         raise Rejected("no confirmation channel available; call aborted")
     if res.action != "accept" or not res.data.approve:
         raise Rejected("human declined or did not answer; call aborted")

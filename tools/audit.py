@@ -9,18 +9,16 @@ Exit code 1 when the queried integrity status is not ok.
 """
 import json
 import platform
-import re
 import sys
 from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import approvals  # noqa: E402
-import gate as gatelib  # noqa: E402
-import specflow_core as core  # noqa: E402
-import specrun  # noqa: E402
-import tracecheck  # noqa: E402
-import waivers  # noqa: E402
+import approvals
+import gate as gatelib
+import specflow_core as core
+import specrun
+import waivers
 
 SUBJECTS = ("approvals", "waivers", "changes", "test-evidence", "integrity")
 

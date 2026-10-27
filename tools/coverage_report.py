@@ -14,8 +14,8 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from arch import architecture, ids_and_names, read_model  # noqa: E402
-from tracecheck import ID_TAG, evaluate, load_model, load_scenarios, prefix  # noqa: E402
+from arch import architecture, ids_and_names, read_model
+from tracecheck import ID_TAG, evaluate, load_model, load_scenarios, prefix
 
 GATES = {"G1": ("needs",), "G2": ("needs", "model"), "G3": ("needs", "model", "spec"), "G4": ("needs", "model", "spec")}
 

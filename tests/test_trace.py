@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
-from tracecheck import check, load_model, load_scenarios  # noqa: E402
+from tracecheck import check, load_model, load_scenarios
 
 INFO = {i: ("x", "") for i in ["N-001", "N-002", "UC-01", "SR-001", "DR-001"]}
 LINKS = [("UC-01", "covers", "N-001"), ("UC-01", "exercises", "SR-001"),
@@ -41,6 +41,7 @@ def test_project_model_and_specs_are_trace_complete():
 
 def test_coverage_report_is_complete_and_deterministic():
     import json
+
     from coverage_report import build, markdown
 
     a, b = build(), build()

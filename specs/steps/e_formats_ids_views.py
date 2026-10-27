@@ -171,10 +171,9 @@ async def _list_stdio(script, root):
     from mcp.client.stdio import stdio_client
     params = StdioServerParameters(command=sys.executable, args=[str(CODE_ROOT / "tools" / script)],
                                    env={**os.environ, "SPECFLOW_ROOT": str(root)})
-    async with stdio_client(params) as (read, write):
-        async with ClientSession(read, write) as s:
-            await s.initialize()
-            return [t.name for t in (await s.list_tools()).tools], [p.name for p in (await s.list_prompts()).prompts]
+    async with stdio_client(params) as (read, write), ClientSession(read, write) as s:
+        await s.initialize()
+        return [t.name for t in (await s.list_tools()).tools], [p.name for p in (await s.list_prompts()).prompts]
 
 
 @when("a compliant MCP client connects to the {server} server")

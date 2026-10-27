@@ -16,8 +16,8 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import approvals  # noqa: E402
-import specflow_core as core  # noqa: E402
+import approvals
+import specflow_core as core
 
 
 def main():
