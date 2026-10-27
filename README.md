@@ -44,6 +44,7 @@ uv run python tools/specflow.py impact SR-004  # upstream/downstream elements, s
 uv run python tools/specflow.py audit approvals|waivers|changes|test-evidence|integrity|bundle
 uv run python tools/steps_vocab.py             # regenerate docs/step_vocabulary.md
 uv run pytest tests                            # tests of the tooling
+uv run ruff check .                            # coding conventions and basic static analysis (default linter; --fix for safe fixes)
 ```
 
 Validator warnings about unsatisfied or unverified requirements are expected for needs and L1 requirements,

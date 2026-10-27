@@ -86,8 +86,8 @@ check_system() {
 }
 
 check_project() {
-  if have uv && [ -x .venv/bin/python ] && uv run --no-sync python -c "import mcp, behave, pytest" >/dev/null 2>&1; then
-    ok required "python packages" "mcp, behave, pytest in .venv"
+  if have uv && [ -x .venv/bin/python ] && uv run --no-sync python -c "import mcp, behave, pytest, ruff" >/dev/null 2>&1; then
+    ok required "python packages" "mcp, behave, pytest, ruff in .venv"
   else miss required "python packages" "run: ./setup.sh --install  (uv sync)"; fi
 
   if [ -f tools/node/node_modules/sysml-v2-lsp/dist/server/mcpServer.js ]; then

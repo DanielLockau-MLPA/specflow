@@ -20,3 +20,8 @@ extraPaths = ["tools", "specs/steps"]
 
 [tool.ruff]
 src = ["tools", "specs/steps"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+]
