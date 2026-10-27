@@ -1,0 +1,3 @@
+- add requirement sources (applies from need level downwards) (can be from a norm, written communication with a human stakeholder or other written source)
+- make all requirements traceable to at least one requirement source
+- undraft the model files for opening gate

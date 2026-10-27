@@ -1,0 +1,4 @@
+- undraft features and scenarios before opening gate
+- scenario: assert that all approvals for a gate at a given revision are on the same commit to open the gate,
+- scenario: open a new revision of a gate if an approver signes a later commit as other approvers
+- scenario: allow an approver to specify the commit to sign to allow approval of gates if the repository already moved forward
