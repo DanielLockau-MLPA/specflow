@@ -109,3 +109,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Added AuditReporter (EvidenceBundle, AuditQuery) and RefGuardHook (RefProtectionOutsideAgent); GateEvaluator gets run and git ports; trace, impact and run read approvals (approvals is the base layer, unused approvalService trace/impact ports removed); waivers stay in ApprovalService; approval sequence shows the revision suffix.
 - rationale: Cross-check found model/code divergence; the model was changed rather than the code. Diagrams regenerated.
 - affected: DR-015, DR-020, DR-026, DR-031, DR-014
+
+## DL-022
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA
+- question: Does docs/sources/project-brief.md faithfully summarize the original brief?
+- decision: Confirmed by the requirements owner after review on 2026-10-27.
+- rationale: SRC-001 depends on the summary; confirmation is evidence for G1 approval of the source mapping.
+- affected: SRC-001, N-001, N-005, N-007, N-008
