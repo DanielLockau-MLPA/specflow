@@ -29,7 +29,7 @@ def main():
     b.add_argument("gate")
     b.add_argument("--role", required=True)
     b.add_argument("-m", "--message", required=True)
-    b.add_argument("--commit", help="commit to sign (default HEAD); must have the same gate scope as HEAD")
+    b.add_argument("--commit", help="commit to sign (default HEAD); may be earlier than HEAD; the gate stays closed at HEAD if the scope changed since")
     w = sub.add_parser("waive")
     w.add_argument("rule")
     w.add_argument("element")

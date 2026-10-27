@@ -100,7 +100,7 @@ or write `approvals/`):
 - `approvals/roles.json`: principal (key file name) to roles.
 
 A gate is open only if every role has a valid tag from a principal holding that role, all tags cover the same scope
-content, all are on the same commit, and the scope has not changed since. If an approver signs a later commit, a new revision starts and the others must re-sign; `approve --commit <sha>` signs an earlier commit when the scope is unchanged since. There is no separate "gate open" tag; the state is derived.
+content, all are on the same commit, and the scope has not changed since. If an approver signs a later commit, a new revision starts and the others must re-sign; `approve --commit <sha>` signs an earlier commit (a stable baseline) even if the scope changed since; the gate then stays closed on the newer content until it is approved there. There is no separate "gate open" tag; the state is derived.
 
 - `uv run python tools/approve.py roles` lists the exact role names (kebab-case, e.g. `requirements-owner`, not the model's `RequirementsOwner`) and who holds them.
 - `uv run python tools/approve.py approve G2 --role reviewer -m "reason"` signs on HEAD with your own key (needs

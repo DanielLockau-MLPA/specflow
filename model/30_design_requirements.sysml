@@ -59,7 +59,7 @@ package DesignRequirements {
 
     // Approvals, gates, impact
     requirement <'DR-012'> ApprovalRecord : DesignRequirement {
-        doc /* An approval shall be a signed git tag named approval/<gate>/<role>.<revision>, created by a registered human approver for the gate scope at one commit (HEAD by default; an approver may name an earlier commit only if the gate scope is identical at HEAD); the signature gives approver identity and date, the tag name gives role and gate, the tag message gives the rationale, and the content hash is computed from the scope at the tagged commit. A newer approval of the same role supersedes older ones, which stay in the history. The approvals of one gate revision are all on the same commit; an approval on a later commit starts a new revision that every role must sign again. */
+        doc /* An approval shall be a signed git tag named approval/<gate>/<role>.<revision>, created by a registered human approver for the gate scope at one commit (HEAD by default; an approver may name an earlier commit, e.g. a stable baseline, even if the gate scope changed since, in which case the gate stays closed at HEAD); the signature gives approver identity and date, the tag name gives role and gate, the tag message gives the rationale, and the content hash is computed from the scope at the tagged commit. A newer approval of the same role supersedes older ones, which stay in the history. The approvals of one gate revision are all on the same commit; an approval on a later commit starts a new revision that every role must sign again. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-013'> ApproverEligibility : DesignRequirement {

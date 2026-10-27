@@ -185,8 +185,8 @@ def protected_files(ws):
 def create_approval(gate, role, message, ws=None, commit=None):
     """Human action: sign the next revision approval/<gate>/<role>.<n> with the operator's SSH key (git config user.signingkey).
 
-    The tag is placed on `commit` (default HEAD). An earlier commit is accepted only if the gate scope is identical there
-    and at HEAD, so approvers can join a gate revision although the repository has moved on."""
+    The tag is placed on `commit` (default HEAD). An earlier commit is accepted so approvers can join a gate revision (a stable baseline)
+    although the repository has moved on; the gate then stays closed at HEAD while the scope differs from it."""
     ws = ws or core.Workspace()
     g = gates(ws).get(gate)
     if g is None or role not in g["roles"]:
@@ -201,8 +201,6 @@ def create_approval(gate, role, message, ws=None, commit=None):
             raise core.Rejected(f"unknown commit: {commit}")
         if not _is_ancestor(ws, target, "HEAD"):
             raise core.Rejected(f"commit {commit} is not part of the current history")
-        if fingerprint(ws, target, tuple(g["scope"])) != fingerprint(ws, "HEAD", tuple(g["scope"])):
-            raise core.Rejected(f"the scope of {gate} changed between {commit} and HEAD; sign HEAD or an unchanged commit")
     existing = role_tags(ws, gate, role)
     name = f"approval/{gate}/{role}.{(existing[-1][0] if existing else 0) + 1}"
     core.git("-c", "gpg.format=ssh", "tag", "-s", name, target, "-m", message, cwd=ws.root)

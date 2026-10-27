@@ -48,11 +48,12 @@ Feature: Approvals and gates
     Then the gate opens
 
   @SR-008 @DR-012
-  Scenario: Signing an earlier commit is refused when the gate scope changed since
+  Scenario: Signing an earlier commit is allowed when the gate scope changed since, but the gate stays closed
     Given all roles of gate "G2" except "reviewer" approved the current commit
     When the content of "SR-004" changes
-    And "alice" tries to approve gate "G2" as "reviewer" for the commit approved by the others
-    Then the approval is rejected
+    And "alice" approves gate "G2" as "reviewer" for the commit approved by the others
+    And I evaluate gate "G2"
+    Then the gate stays closed
 
   @SR-008 @DR-014
   Scenario Outline: A gate opens only when every required role has approved

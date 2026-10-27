@@ -73,3 +73,12 @@ Append-only. Entries are never edited or deleted.
 - decision: All approvals of a revision must be on the same commit; a later-commit signature opens a new revision; --commit signs an earlier commit if the gate scope is unchanged since.
 - rationale: Prevents mixing approvals of different states; supports repo moving forward during review.
 - affected: DR-012, DR-014
+
+## DL-020
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: Should signing an earlier commit be refused when the gate scope changed since?
+- decision: No: approvers may sign an earlier commit (stable baseline) even if the scope changed; the gate stays closed at HEAD until approved on the newer content.
+- rationale: Baselines mark stable versions that can be referenced; the derived gate state still protects HEAD. Supersedes the earlier refusal rule.
+- affected: DR-012, SR-008
