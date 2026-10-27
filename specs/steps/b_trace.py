@@ -1,5 +1,6 @@
 """Steps of 04_trace.feature, bound to tools/tracecheck.py, tools/gate.py, tools/waivers.py and tools/coverage_report.py."""
 import datetime
+import itertools
 import os
 import re
 import subprocess
@@ -185,7 +186,7 @@ def query_result(context):
     edges = {frozenset((a, b)) for a, _v, b in tracecheck.graph()["edges"]}
     for node, path in q["paths"].items():
         assert path[-1] == node
-        assert all(frozenset(pair) in edges for pair in zip(path, path[1:])), path
+        assert all(frozenset(pair) in edges for pair in itertools.pairwise(path)), path
         if q["from"] != "scenario":
             assert path[0] == q["from"]
         if q["to"] == "scenario":
