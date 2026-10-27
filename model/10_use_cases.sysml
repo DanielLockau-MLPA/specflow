@@ -1,5 +1,5 @@
 package ProjectUseCases {
-    doc /* Use cases covering the needs. Status: DRAFT. */
+    doc /* Use cases covering the needs. */
     private import ProjectNeeds::*;
     private import SystemRequirements::*;
 
@@ -285,5 +285,6 @@ package ProjectUseCases {
     dependency 'UC-11 exercises SR-014' from VerifyTraceability to SystemRequirements::SpecTraceCompleteness;
     dependency 'UC-11 exercises SR-015' from VerifyTraceability to SystemRequirements::TraceGateEnforcement;
     dependency 'UC-11 exercises SR-016' from VerifyTraceability to SystemRequirements::TraceQuery;
+    dependency 'UC-11 exercises SR-017' from VerifyTraceability to SystemRequirements::RequirementSourceTraceability;
     dependency 'UC-11 exercises SR-031' from VerifyTraceability to SystemRequirements::SegregationOfDuties;
 }

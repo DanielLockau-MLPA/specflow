@@ -14,7 +14,7 @@ import ids
 import specflow_core as core
 from world import CODE_ROOT
 
-OPEN_EXTENSIONS = {".sysml", ".feature", ".yaml", ".json", ".md"}
+OPEN_EXTENSIONS = {".sysml", ".feature", ".json", ".md"}
 # trust-anchor public keys in approvals/keys/ are key material, not artifacts
 ARTIFACT_SPECS = ("model/", "specs/features/", "decisions/", "trace/", "approvals/*.json")
 
@@ -26,8 +26,7 @@ def list_artifacts(context):
     assert context.artifacts, "no persistent artifacts found"
 
 
-# comment by DL: I think that yaml slipped in here by accident. Please trace back where this comes from and whether it is justified.
-@then('every artifact has one of the extensions ".sysml", ".feature", ".yaml", ".json" or ".md", except public key files under "approvals/keys"')
+@then('every artifact has one of the extensions ".sysml", ".feature", ".json" or ".md", except public key files under "approvals/keys"')
 def artifacts_open(context):
     bad = [a for a in context.artifacts if Path(a).suffix not in OPEN_EXTENSIONS]
     assert not bad, f"artifacts with non-open formats: {bad}"
@@ -85,14 +84,14 @@ def found_by_id(context, element):
 
 @when("the element is deleted")
 def delete_element(context):
-    # comment by DL: will this also work for the last element registered? -> this should be added as a scenario to check the implementation for robustness
     root = context.world.root
     for f in (root / "model").glob("*.sysml"):
         text = f.read_text(encoding="utf-8")
-        m = re.search(rf"^[ \t]*requirement <'{re.escape(context.element)}'>", text, re.MULTILINE)
+        m = re.search(rf"^[ \t]*(?:requirement|use case) <'{re.escape(context.element)}'>", text, re.MULTILINE)
         if m:
-            end = m.start() + arch.block(text, m.start()).__len__() + text[m.start():].index("{") + 2
-            text = text[:m.start()] + text[end:].lstrip("\n")
+            close = text.index("{", m.end()) + len(arch.block(text, m.end())) + 1
+            end = close + 1 if text[close:close + 2] != "}\n" else close + 2
+            text = text[:m.start()] + text[end:]
         text = re.sub(rf"^.*\b{re.escape(context.name)}\b.*;\n", "", text, flags=re.MULTILINE)
         f.write_text(text, encoding="utf-8")
     context.world.commit("delete element")

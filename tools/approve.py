@@ -6,7 +6,9 @@
   uv run python tools/approve.py waive need-covered N-003 --rationale "Covered in iteration 3" --expiry 2027-03-31
 
 Each stakeholder runs `approve` for their own role with their own SSH key (git config gpg.format ssh,
-user.signingkey). A gate opens when all required roles have signed the same scope content.
+user.signingkey). A gate opens when all required roles have signed the same commit (one gate revision) and its scope
+has not changed since. If the repository moved on without touching the scope, an approver can join the existing
+revision with `--commit <sha>`; signing a later commit starts a new revision that all roles must sign again.
 """
 import argparse
 import json
@@ -27,6 +29,7 @@ def main():
     b.add_argument("gate")
     b.add_argument("--role", required=True)
     b.add_argument("-m", "--message", required=True)
+    b.add_argument("--commit", help="commit to sign (default HEAD); must have the same gate scope as HEAD")
     w = sub.add_parser("waive")
     w.add_argument("rule")
     w.add_argument("element")
@@ -56,7 +59,7 @@ def main():
         print(json.dumps(st, indent=2))
         return 0 if all(g["open"] for g in st.values()) else 1
     try:
-        v = approvals.create_approval(a.gate, a.role, a.message)
+        v = approvals.create_approval(a.gate, a.role, a.message, commit=a.commit)
     except core.Rejected as e:
         print(e, file=sys.stderr)
         return 1

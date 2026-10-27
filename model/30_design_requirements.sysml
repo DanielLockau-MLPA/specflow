@@ -1,5 +1,5 @@
 package DesignRequirements {
-    doc /* L2 design requirements. Each derives from L1 requirements and is allocated to a part in package Architecture. Status: DRAFT. */
+    doc /* L2 design requirements. Each derives from L1 requirements and is allocated to a part in package Architecture. */
     private import SystemRequirements::*;
 
     requirement def DesignRequirement {
@@ -59,7 +59,7 @@ package DesignRequirements {
 
     // Approvals, gates, impact
     requirement <'DR-012'> ApprovalRecord : DesignRequirement {
-        doc /* An approval shall be a signed git tag named approval/<gate>/<role>, created by a registered human approver for the gate scope at one commit; the signature gives approver identity and date, the tag name gives role and gate, the tag message gives the rationale, and the content hash is computed from the scope at the tagged commit. A newer approval of the same role supersedes older ones, which stay in the history. */
+        doc /* An approval shall be a signed git tag named approval/<gate>/<role>.<revision>, created by a registered human approver for the gate scope at one commit (HEAD by default; an approver may name an earlier commit only if the gate scope is identical at HEAD); the signature gives approver identity and date, the tag name gives role and gate, the tag message gives the rationale, and the content hash is computed from the scope at the tagged commit. A newer approval of the same role supersedes older ones, which stay in the history. The approvals of one gate revision are all on the same commit; an approval on a later commit starts a new revision that every role must sign again. */
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-013'> ApproverEligibility : DesignRequirement {
@@ -67,7 +67,7 @@ package DesignRequirements {
         attribute :>> kind = Kind::normative;
     }
     requirement <'DR-014'> GateEvaluation : DesignRequirement {
-        doc /* The gate evaluator shall derive the gate state and open a gate only if all required roles hold valid approvals for the current scope content, the trace rules of the gate report no unwaived gap, no AI-authored change in scope is unreviewed, and for the implementation gate all scenarios pass. No separate gate-open record exists. */
+        doc /* The gate evaluator shall derive the gate state and open a gate only if all required roles hold valid approvals on the same commit for the current scope content, the trace rules of the gate report no unwaived gap, no AI-authored change in scope is unreviewed, and for the implementation gate all scenarios pass. No separate gate-open record exists. */
         attribute :>> kind = Kind::functional;
     }
     requirement <'DR-015'> WaiverRecord : DesignRequirement {
@@ -127,6 +127,14 @@ package DesignRequirements {
         doc /* Confirmation of a state-changing tool call shall be requested from the human through a channel outside the agent session (client confirmation dialog or terminal prompt); the agent shall receive only the decision, and a missing or negative answer shall abort the call. */
         attribute :>> kind = Kind::security;
     }
+    requirement <'DR-033'> SourceTraceRules : DesignRequirement {
+        doc /* The trace service shall evaluate the source rules need-sourced, source-stakeholder and source-cited in stage needs, and source-traceable in stage model, where a use case or requirement reaches a source if a covers, derives or cites chain leads to it; sources are cited at the highest possible level and inherited downwards. */
+        attribute :>> kind = Kind::functional;
+    }
+    requirement <'DR-034'> SourceDeclaration : DesignRequirement {
+        doc /* Requirement sources shall be declared as SysML items with the short name SRC-<number>, a kind (norm, communication or document) and a reference to the written source; stakeholders shall be declared as parts with the short name STK-<number>; needs link to sources with 'cites' and sources link to stakeholders with 'raisedBy' dependencies. */
+        attribute :>> kind = Kind::functional;
+    }
 
     // Quality and format
     requirement <'DR-027'> ViewExport : DesignRequirement {
@@ -134,11 +142,11 @@ package DesignRequirements {
         attribute :>> kind = Kind::functional;
     }
     requirement <'DR-028'> StableIdScheme : DesignRequirement {
-        doc /* IDs shall be declared as SysML short names, follow the pattern <PREFIX>-<number>, be unique across the workspace, and never be reused after deletion. */
+        doc /* IDs shall be declared as SysML short names, follow the pattern <PREFIX>-<number> with the prefixes N, SRC, STK, UC, SR and DR, be unique across the workspace, and never be reused after deletion. */
         attribute :>> kind = Kind::quality;
     }
     requirement <'DR-029'> OpenFormatsOnly : DesignRequirement {
-        doc /* Persistent artifacts shall be limited to .sysml, .feature, YAML, JSON and Markdown files in the repository. */
+        doc /* Persistent artifacts shall be limited to .sysml, .feature, JSON and Markdown files in the repository. */
         attribute :>> kind = Kind::quality;
     }
     requirement <'DR-030'> HeadlessCli : DesignRequirement {
@@ -197,6 +205,8 @@ package DesignRequirements {
     dependency 'DR-028 derives SR-022' from StableIdScheme to UnambiguousIds;
     dependency 'DR-029 derives SR-020' from OpenFormatsOnly to OpenFormats;
     dependency 'DR-030 derives SR-021' from HeadlessCli to CiReproducible;
+    dependency 'DR-033 derives SR-017' from SourceTraceRules to RequirementSourceTraceability;
+    dependency 'DR-034 derives SR-017' from SourceDeclaration to RequirementSourceTraceability;
     dependency 'DR-031 derives SR-032' from AuditQuery to RequirementsToTestEvidence;
     dependency 'DR-031 derives SR-030' from AuditQuery to ChangeRecords;
 }

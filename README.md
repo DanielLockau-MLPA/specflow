@@ -60,7 +60,11 @@ Arrows point from the sender of a request to its receiver.
 
 Trace gaps are waived by a signed tag `waiver/<rule>/<element>[.n]` whose message has the lines `rationale:` and `expiry: YYYY-MM-DD`.
 It counts only with a verified signer who is a registered non-agent principal, a rationale and a future expiry; newer
-revisions supersede older ones. Create one with `uv run python tools/approve.py waive ...`.
+revisions supersede older ones. Create one with `uv run python tools/approve.py waive ...`. Details: [docs/waivers.md](docs/waivers.md).
+
+## Sources
+
+Requirement sources (`SRC-nnn`: norms, written communication, other documents) are in `model/05_sources.sysml`, each raised by a stakeholder (`STK-nnn`, in `model/00_needs.sysml`). Needs `cite` sources; UC/SR/DR reach sources through the trace chain (`tracecheck.py` rules `need-sourced`, `source-stakeholder`, `source-cited`, `source-traceable`). `docs/sources/project-brief.md` is the summarized original brief.
 
 ## Optional: SysON (graphical model review)
 
@@ -96,7 +100,7 @@ or write `approvals/`):
 - `approvals/roles.json`: principal (key file name) to roles.
 
 A gate is open only if every role has a valid tag from a principal holding that role, all tags cover the same scope
-content, and the scope has not changed since. There is no separate "gate open" tag; the state is derived.
+content, all are on the same commit, and the scope has not changed since. If an approver signs a later commit, a new revision starts and the others must re-sign; `approve --commit <sha>` signs an earlier commit when the scope is unchanged since. There is no separate "gate open" tag; the state is derived.
 
 - `uv run python tools/approve.py roles` lists the exact role names (kebab-case, e.g. `requirements-owner`, not the model's `RequirementsOwner`) and who holds them.
 - `uv run python tools/approve.py approve G2 --role reviewer -m "reason"` signs on HEAD with your own key (needs

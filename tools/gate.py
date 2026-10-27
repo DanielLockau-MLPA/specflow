@@ -20,7 +20,7 @@ import specrun  # noqa: E402
 import tracecheck  # noqa: E402
 
 AI_MARKERS = (f"{core.AI_TRAILER}:", "Co-authored-by: Copilot")
-ID_RE = re.compile(r"\b(?:N|UC|SR|DR)-\d+\b")
+ID_RE = re.compile(r"\b(?:N|UC|SR|DR|SRC|STK)-\d+\b")
 
 
 def _ai_commits(ws, scope, exclude):

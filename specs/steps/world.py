@@ -24,11 +24,10 @@ COPY = ("model", "specs/features", "decisions")
 
 
 def sh(cwd, *args, check=True, env=None):
-    # comment by DL: I added check=False below, but why not just use the subprocess.run provided check?
-    r = subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env, check=False)
-    if check and r.returncode:
-        raise RuntimeError(f"{' '.join(args)}: {r.stderr.strip()}")
-    return r
+    try:
+        return subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env, check=check)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"{' '.join(args)}: {e.stderr.strip()}") from e
 
 
 class Keys:
@@ -122,11 +121,11 @@ class World:
     def roles_of(self, gate):
         return approvals.gates(self.ws)[gate]["roles"]
 
-    def approve(self, gate, role, signer="alice", message="approved"):
+    def approve(self, gate, role, signer="alice", message="approved", commit=None):
         """Create the next approval revision signed by `signer`; raises core.Rejected when refused."""
         self.use_key(signer)
         try:
-            return approvals.create_approval(gate, role, message, self.ws)
+            return approvals.create_approval(gate, role, message, self.ws, commit=commit)
         finally:
             self.use_key("alice")
 
@@ -146,15 +145,11 @@ class World:
         raise AssertionError(f"element {element} not found")
 
     def make_gap(self):
-        """Remove every use case coverage of need N-001 and commit; returns (rule, element) of the new trace gap."""
-        import re
-        for f in sorted((self.root / "model").glob("*.sysml")):
-            text = f.read_text(encoding="utf-8")
-            new = re.sub(r"^\s*dependency 'UC-\d+ covers N-001'[^;]*;\n", "", text, flags=re.M)
-            if new != text:
-                f.write_text(new, encoding="utf-8")
-        self.commit("remove coverage of N-001")
-        return "need-covered", "N-001"
+        """Remove the allocation of DR-001 and commit; returns (rule, element) of the single new trace gap."""
+        from b_support import drop_satisfy
+        assert drop_satisfy(self, "DR-001"), "DR-001 is not allocated"
+        self.commit("remove allocation of DR-001")
+        return "l2-allocated", "DR-001"
 
     def sign_waiver(self, rule, element, rationale="accepted for this iteration", expiry=None, signer="alice"):
         """Create a waiver tag by hand so that invalid variants (no rationale, past expiry, other signer) are possible."""

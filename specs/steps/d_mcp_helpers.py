@@ -26,8 +26,7 @@ def call(server, name, args, cb=None):
     async def run():
         async with Client(server, elicitation_callback=cb, mode="legacy") as c:
             r = await c.call_tool(name, args)
-            # comment by DL: a verification issue here on the type deferred for x.text suggests that type hints are not appropriately used in the definition of MCP server functions and data structures
-            return r.is_error, "".join(x.text for x in r.content)
+            return r.is_error, "".join(x.text for x in r.content if isinstance(x, types.TextContent))
     return asyncio.run(run())
 
 

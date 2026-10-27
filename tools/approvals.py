@@ -4,7 +4,7 @@ Each stakeholder role signs `approval/<gate>/<role>.<n>` (n = revision; an unver
 with a key whose public half is in approvals/keys/<principal>.pub.
 approvals/gates.json lists the gate scopes and required roles; approvals/roles.json maps principals to roles.
 A gate is open when every required role has a valid tag signed by a principal holding that role, all tags cover the
-same scope content, and the working tree has not drifted from it. There is no separate "gate open" tag: the state
+same scope content on the same commit (a gate revision), and the working tree has not drifted from it. There is no separate "gate open" tag: the state
 is derived. Tags are created by humans (tools/approve.py); agents can only read status.
 """
 import hashlib
@@ -106,6 +106,28 @@ def drift(gate, ws=None, commit="HEAD"):
     return sorted({c for c in changed + untracked if c})
 
 
+def _revision(ws, roles):
+    """Gate revision = the commit being approved. Returns the newest approved commit, the roles that approved it,
+    the roles still missing on it, and all commits that hold current approvals; None without valid approvals."""
+    by_commit = {}
+    for role, e in roles.items():
+        if e["valid"]:
+            by_commit.setdefault(e["commit"], []).append(role)
+    if not by_commit:
+        return None
+    commits = list(by_commit)
+    newest = next((c for c in commits if all(o == c or _is_ancestor(ws, o, c) for o in commits)), None)
+    if newest is None:
+        newest = max(commits, key=lambda c: int(core.git("show", "-s", "--format=%ct", c, cwd=ws.root)))
+    return {"commit": newest, "approved": sorted(by_commit[newest]),
+            "missing": [r for r in roles if r not in by_commit[newest]],
+            "commits": {c: sorted(rs) for c, rs in by_commit.items()}}
+
+
+def _is_ancestor(ws, older, newer):
+    return subprocess.run(["git", "merge-base", "--is-ancestor", older, newer], cwd=ws.root, check=False).returncode == 0
+
+
 def gate_status(gate, ws=None):
     ws = ws or core.Workspace()
     cfg = _json(ws, "gates.json")
@@ -121,11 +143,13 @@ def gate_status(gate, ws=None):
             commit = core.git("rev-parse", f"{tag}^{{commit}}", cwd=ws.root)
             fp = fingerprint(ws, commit, scope)
             entry["scope_fingerprint"] = fp
+            entry["commit"] = commit
             prints.add(fp)
             signers.add(v.signer)
             entry["stale"] = bool(drift(gate, ws, commit))
         roles[role] = entry
     missing = [r for r, e in roles.items() if not e["valid"]]
+    revision = _revision(ws, roles)
     stale = [r for r, e in roles.items() if e.get("stale")]
     single = len(signers) == 1 and not missing
     problems = []
@@ -133,12 +157,15 @@ def gate_status(gate, ws=None):
         problems.append(f"missing or invalid approvals: {', '.join(missing)}")
     if len(prints) > 1:
         problems.append("approvals cover different scope content")
+    elif revision and len(revision["commits"]) > 1:
+        problems.append(f"approvals are on different commits; the newest revision {revision['commit'][:12]} "
+                        f"still needs: {', '.join(revision['missing'])}")
     if stale:
         problems.append(f"scope changed since approval: {', '.join(stale)}")
     if single and not cfg.get("allow_single_person", False):
         problems.append("separation of duties: one person signed all roles")
     return {"gate": gate, "open": not problems, "problems": problems, "single_person": single,
-            "roles": roles, "drift": drift(gate, ws) if not missing else []}
+            "revision": revision, "roles": roles, "drift": drift(gate, ws) if not missing else []}
 
 
 def status(ws=None):
@@ -155,17 +182,30 @@ def protected_files(ws):
     return files
 
 
-def create_approval(gate, role, message, ws=None):
-    """Human action: sign the next revision approval/<gate>/<role>.<n> on HEAD with the operator's SSH key (git config user.signingkey)."""
+def create_approval(gate, role, message, ws=None, commit=None):
+    """Human action: sign the next revision approval/<gate>/<role>.<n> with the operator's SSH key (git config user.signingkey).
+
+    The tag is placed on `commit` (default HEAD). An earlier commit is accepted only if the gate scope is identical there
+    and at HEAD, so approvers can join a gate revision although the repository has moved on."""
     ws = ws or core.Workspace()
     g = gates(ws).get(gate)
     if g is None or role not in g["roles"]:
         raise core.Rejected(f"role {role} is not required for gate {gate}; valid: {', '.join(g['roles']) if g else '(gate unknown)'}")
     if drift(gate, ws):
         raise core.Rejected("scope has uncommitted changes; commit them first so the approval covers what is signed")
+    target = "HEAD"
+    if commit:
+        try:
+            target = core.git("rev-parse", "--verify", f"{commit}^{{commit}}", cwd=ws.root)
+        except RuntimeError:
+            raise core.Rejected(f"unknown commit: {commit}")
+        if not _is_ancestor(ws, target, "HEAD"):
+            raise core.Rejected(f"commit {commit} is not part of the current history")
+        if fingerprint(ws, target, tuple(g["scope"])) != fingerprint(ws, "HEAD", tuple(g["scope"])):
+            raise core.Rejected(f"the scope of {gate} changed between {commit} and HEAD; sign HEAD or an unchanged commit")
     existing = role_tags(ws, gate, role)
     name = f"approval/{gate}/{role}.{(existing[-1][0] if existing else 0) + 1}"
-    core.git("-c", "gpg.format=ssh", "tag", "-s", name, "-m", message, cwd=ws.root)
+    core.git("-c", "gpg.format=ssh", "tag", "-s", name, target, "-m", message, cwd=ws.root)
     v = verify_tag(name, ws)
     if v.ok and role not in _json(ws, "roles.json").get(v.signer, []):
         v = Verification(False, reason=f"signer {v.signer} does not hold role {role}")

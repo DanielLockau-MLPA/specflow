@@ -23,6 +23,36 @@ Feature: Traceability checks and queries
     When I run the trace check for stage "needs"
     Then the report contains a violation of rule "need-covered" for the element "N-001"
 
+  @SR-017 @DR-033
+  Scenario Outline: Source rules report needs without sources and sources without stakeholders
+    Given a model in which <defect>
+    When I run the trace check for stage "needs"
+    Then the report contains a violation of rule "<rule>" for the element "<element>"
+
+    Examples:
+      | defect                                 | rule               | element |
+      | need N-003 cites no source             | need-sourced       | N-003   |
+      | source SRC-002 names no stakeholder    | source-stakeholder | SRC-002 |
+      | source SRC-004 is cited by no need     | source-cited       | SRC-004 |
+
+  @SR-017 @DR-033
+  Scenario Outline: Use cases and requirements must reach a source through their trace chain
+    Given a model in which <defect>
+    When I run the trace check for stage "model"
+    Then the report contains a violation of rule "source-traceable" for the element "<element>"
+
+    Examples:
+      | defect                                         | element |
+      | use case UC-03 covers no need                  | UC-03   |
+      | requirement SR-001 derives from no need        | SR-001  |
+      | requirement DR-001 derives from no L1 requirement | DR-001 |
+
+  @SR-017 @DR-033
+  Scenario: A complete set of needs and sources has no violations
+    Given a model with complete trace links
+    When I run the trace check for stage "needs"
+    Then the report contains no violations
+
   @SR-013 @DR-009
   Scenario: A complete model has no trace violations
     Given a model with complete trace links
@@ -74,6 +104,13 @@ Feature: Traceability checks and queries
       | whose expiry has passed |
       | signed by the agent    |
 
+  @SR-017 @DR-034
+  Scenario: Sources and stakeholders are declared as identified model elements
+    Given a valid model
+    When I list the requirement sources of the model
+    Then each source has a kind, a reference and a stakeholder
+    And each stakeholder has an ID
+
   @SR-016 @DR-008
   Scenario Outline: Trace queries work in both directions
     Given a model and a specification with complete trace links
@@ -86,6 +123,9 @@ Feature: Traceability checks and queries
       | scenario | N-001 |
       | SR-004 | DR-002  |
       | DR-002 | SR-004  |
+      | DR-002 | SRC     |
+      | SRC-002 | STK    |
+      | STK-006 | N-008  |
 
   @SR-016 @DR-010
   Scenario: A reference to a removed element is reported as dangling

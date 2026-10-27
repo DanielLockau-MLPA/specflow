@@ -2,7 +2,7 @@
   "allow_single_person": true,
   "gates": {
     "G1": {
-      "scope": ["model/00_needs.sysml"],
+      "scope": ["model/00_needs.sysml", "model/05_sources.sysml"],
       "roles": ["requirements-owner", "systems-engineer", "reviewer", "agent-operator", "quality-management", "information-security", "implementation-team"],
       "trace": ["needs"]
     },

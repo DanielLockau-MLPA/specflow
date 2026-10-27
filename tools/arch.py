@@ -60,7 +60,7 @@ def ids_and_names(model):
     """Map element name -> short-name ID, and ID -> (name, first doc line)."""
     name_to_id, id_info = {}, {}
     for src in model.values():
-        for m in re.finditer(r"(requirement|use case)\s+<'([A-Z]+-\d+)'>\s+(\w+)", src):
+        for m in re.finditer(r"(requirement|use case|item|part)\s+<'([A-Z]+-\d+)'>\s+(\w+)", src):
             _kind, eid, name = m.groups()
             name_to_id[name] = eid
             doc = re.search(r"doc\s*/\*\s*(.*?)\s*\*/", block(src, m.end()), re.S)

@@ -1,5 +1,5 @@
 package SystemRequirements {
-    doc /* L1 system requirements. Status: DRAFT. Kinds: functional, quality, normative, security (constraints). */
+    doc /* L1 system requirements. Kinds: functional, quality, normative, security (constraints). */
     private import ProjectNeeds::*;
     private import ProjectUseCases::*;
 
@@ -77,6 +77,10 @@ package SystemRequirements {
         doc /* The system shall answer trace queries in both directions between any two levels (need, use case, requirement, element, scenario, test result) and detect dangling or stale references after changes. */
         attribute :>> kind = Kind::functional;
     }
+    requirement <'SR-017'> RequirementSourceTraceability : SystemRequirement {
+        doc /* The system shall record the sources of the needs (norms, written communication with a stakeholder, other written documents) together with the stakeholder who raised each source, and shall check that every need cites at least one source, every source names a stakeholder and is cited by a need, and that every use case and requirement reaches a source through its trace chain. */
+        attribute :>> kind = Kind::functional;
+    }
 
     // Quality
     requirement <'SR-020'> OpenFormats : SystemRequirement {
@@ -88,7 +92,7 @@ package SystemRequirements {
         attribute :>> kind = Kind::quality;
     }
     requirement <'SR-022'> UnambiguousIds : SystemRequirement {
-        doc /* Every need, use case, requirement, design element and scenario shall have a stable unique ID that survives renaming. */
+        doc /* Every need, requirement source, stakeholder, use case, requirement, design element and scenario shall have a stable unique ID that survives renaming. */
         attribute :>> kind = Kind::quality;
     }
 
@@ -137,6 +141,8 @@ package SystemRequirements {
     dependency 'SR-014 derives N-005' from SpecTraceCompleteness to EndToEndTraceability;
     dependency 'SR-015 derives N-002' from TraceGateEnforcement to AgreeOnDesign;
     dependency 'SR-016 derives N-005' from TraceQuery to EndToEndTraceability;
+    dependency 'SR-017 derives N-005' from RequirementSourceTraceability to EndToEndTraceability;
+    dependency 'SR-017 derives N-008' from RequirementSourceTraceability to CertifiableWorkflow;
     dependency 'SR-012 derives N-002' from ApprovalReset to AgreeOnDesign;
     dependency 'SR-001 derives N-001' from QAndABeforeDrafting to TurnRequirementsIntoDesign;
     dependency 'SR-002 derives N-001' from DraftModelFromBaseline to TurnRequirementsIntoDesign;

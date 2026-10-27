@@ -82,3 +82,21 @@ Append-only. Entries are never edited or deleted.
 - decision: Approval tags are named approval/<gate>/<role>.<n>; an unversioned tag is revision 0; the newest valid revision per role counts; older revisions stay as history.
 - rationale: A fixed tag name could not be re-signed without deleting evidence; the dot suffix avoids a git ref file/directory conflict with unversioned tags.
 - affected: DR-012
+
+## DL-017
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: How are requirements traced to their sources?
+- decision: Sources are SRC-nnn items (model/05_sources.sysml) raised by STK-nnn stakeholders; needs cite sources directly (tracing as high as possible), UC/SR/DR inherit via the trace chain. Rules need-sourced, source-stakeholder, source-cited, source-traceable.
+- rationale: Requirements may have several sources; tracing at need level avoids duplication. docs/sources/project-brief.md needs owner confirmation at G1.
+- affected: SR-017, DR-033, DR-034, N-005, N-008
+
+## DL-018
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: Review findings: YAML remnant, drafts, waiver docs
+- decision: YAML removed from DR-029 and specs (origin: early design); DRAFT markers removed from model docs; waivers documented in docs/waivers.md; delete of last element covered by a scenario.
+- rationale: User review comments on the step implementation.
+- affected: DR-029, SR-022, DR-028

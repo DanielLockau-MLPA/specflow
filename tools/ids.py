@@ -1,6 +1,6 @@
 """ID scheme and uniqueness (SR-022, DR-028).
 
-An ID is `N|UC|SR|DR-<digits>`. It cannot be registered when it exists in the model or ever existed in the model
+An ID is `N|UC|SR|DR|SRC|STK-<digits>`. It cannot be registered when it exists in the model or ever existed in the model
 history, so IDs are never reused after deletion. Elements are looked up by ID, so renaming does not affect them.
 
 Usage: uv run python tools/ids.py check SR-100     Exit code 1 when the ID cannot be registered.
@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import specflow_core as core  # noqa: E402
 
-DECL = re.compile(r"<'((?:N|UC|SR|DR)-\d+)'")
+DECL = re.compile(r"<'((?:N|UC|SR|DR|SRC|STK)-\d+)'")
 
 
 def used_ids(ws):
@@ -29,7 +29,7 @@ def check_new_id(new_id, ws=None):
     """Return None when the ID can be registered, otherwise the reason it cannot."""
     ws = ws or core.Workspace()
     if not core.ID_PATTERN.fullmatch(new_id):
-        return f"{new_id} does not follow the scheme (N|UC|SR|DR)-<number>"
+        return f"{new_id} does not follow the scheme (N|UC|SR|DR|SRC|STK)-<number>"
     if new_id in used_ids(ws):
         return f"{new_id} is already used or was used before and is never reused"
     return None

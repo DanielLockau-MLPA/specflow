@@ -20,7 +20,7 @@ ROOT = Path(os.environ.get("SPECFLOW_ROOT", Path(__file__).resolve().parent.pare
 PROTECTED = (".git", ".approvals", "approvals")
 STAGES = ("model", "spec")
 BASELINES = {"requirements": "G1", "model": "G2", "spec": "G3"}
-ID_PATTERN = re.compile(r"^(N|UC|SR|DR)-\d+$")
+ID_PATTERN = re.compile(r"^(N|UC|SR|DR|SRC|STK)-\d+$")
 SESSION_ID = os.environ.get("SPECFLOW_SESSION", f"s-{uuid.uuid4().hex[:8]}")
 AI_TRAILER = "AI-Authored-By"
 

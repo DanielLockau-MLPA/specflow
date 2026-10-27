@@ -7,7 +7,7 @@ Feature: Open formats, IDs and views
   @SR-020 @DR-029
   Scenario: Persistent artifacts use only open text formats
     When I list all persistent artifacts of the project
-    Then every artifact has one of the extensions ".sysml", ".feature", ".yaml", ".json" or ".md", except public key files under "approvals/keys"
+    Then every artifact has one of the extensions ".sysml", ".feature", ".json" or ".md", except public key files under "approvals/keys"
 
   @SR-020
   Scenario: The model can be read without the toolchain
@@ -23,6 +23,8 @@ Feature: Open formats, IDs and views
     Examples:
       | id      | outcome  |
       | SR-100  | accepted |
+      | SRC-100 | accepted |
+      | STK-100 | accepted |
       | SR-001  | rejected |
       | sr_1    | rejected |
       | XX-001  | rejected |
@@ -34,6 +36,19 @@ Feature: Open formats, IDs and views
     Then the element is still found by the ID "SR-004"
     When the element is deleted
     Then the ID "SR-004" cannot be registered again
+
+  @SR-022 @DR-028
+  Scenario Outline: The ID of a deleted element is never reused, also for the last element of a level
+    Given the element "<id>" with the name "<name>"
+    When the element is deleted
+    Then the ID "<id>" cannot be registered again
+
+    Examples:
+      | id     | name                 |
+      | N-010  | ReproducibleChecks   |
+      | UC-11  | VerifyTraceability   |
+      | SR-045 | AiContributionMarked |
+      | DR-032 | HumanConfirmationChannel |
 
   @SR-009 @DR-027
   Scenario: Diagrams are exported as Mermaid text

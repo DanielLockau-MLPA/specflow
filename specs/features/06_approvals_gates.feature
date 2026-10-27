@@ -20,6 +20,41 @@ Feature: Approvals and gates
     And the older approval remains in the history
 
   @SR-008 @DR-014
+  Scenario: All approvals of a gate revision must be on the same commit
+    Given gate "G2" is open
+    And the repository moves forward without changing the scope of gate "G2"
+    When "alice" approves gate "G2" as "reviewer" again
+    And I evaluate gate "G2"
+    Then the gate is not open
+    And the newest revision of gate "G2" is approved only by "reviewer"
+    And the report lists the other roles of gate "G2" as still missing
+
+  @SR-008 @DR-014
+  Scenario: A signature on a later commit opens a new gate revision
+    Given gate "G2" is open
+    And the repository moves forward without changing the scope of gate "G2"
+    When "alice" approves gate "G2" as "reviewer" again
+    Then the newest revision of gate "G2" is approved only by "reviewer"
+    When the other roles of gate "G2" approve the same commit
+    And I evaluate gate "G2"
+    Then the gate opens
+
+  @SR-008 @DR-012
+  Scenario: An approver can sign an earlier commit after the repository moved forward
+    Given all roles of gate "G2" except "reviewer" approved the current commit
+    And the repository moves forward without changing the scope of gate "G2"
+    When "alice" approves gate "G2" as "reviewer" for the commit approved by the others
+    And I evaluate gate "G2"
+    Then the gate opens
+
+  @SR-008 @DR-012
+  Scenario: Signing an earlier commit is refused when the gate scope changed since
+    Given all roles of gate "G2" except "reviewer" approved the current commit
+    When the content of "SR-004" changes
+    And "alice" tries to approve gate "G2" as "reviewer" for the commit approved by the others
+    Then the approval is rejected
+
+  @SR-008 @DR-014
   Scenario Outline: A gate opens only when every required role has approved
     Given the gate "<gate>" requires the roles "<required>"
     And the roles "<approved>" hold valid approvals for the current content

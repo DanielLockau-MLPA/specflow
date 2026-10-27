@@ -8,6 +8,7 @@ import sys
 from behave import given, then, when
 
 import approvals
+import arch
 import coverage_report
 import specflow_core as core
 import tracecheck
@@ -20,6 +21,10 @@ MODEL_DEFECTS = [
     (r"requirement (SR-\d+) derives from no need", lambda w, e: drop_dependencies(w, rf"{e} derives N-\d+")),
     (r"requirement (DR-\d+) derives from no L1 requirement", lambda w, e: drop_dependencies(w, rf"{e} derives SR-\d+")),
     (r"requirement (DR-\d+) is allocated to no element", drop_satisfy),
+    (r"need (N-\d+) cites no source", lambda w, e: drop_dependencies(w, rf"{e} cites SRC-\d+")),
+    (r"source (SRC-\d+) names no stakeholder", lambda w, e: drop_dependencies(w, rf"{e} raisedBy STK-\d+")),
+    (r"source (SRC-\d+) is cited by no need", lambda w, e: drop_dependencies(w, rf"N-\d+ cites {e}")),
+    (r"use case (UC-\d+) covers no need", lambda w, e: drop_dependencies(w, rf"{e} covers N-\d+")),
 ]
 
 
@@ -76,7 +81,7 @@ def no_violations(context):
 @given("a trace report with an unwaived gap")
 def unwaived_gap(context):
     context.gap = context.world.make_gap()
-    assert context.gap in {(v["rule"], v["element"]) for v in tracecheck.evaluate(("needs",))["violations"]}
+    assert context.gap in {(v["rule"], v["element"]) for v in tracecheck.evaluate(("model",))["violations"]}
 
 
 @given("all required roles have approved")
@@ -138,6 +143,34 @@ def gap_with_invalid_waiver(context, problem):
         context.world.approve_all(gate)
 
 
+# --- requirement sources -------------------------------------------------------
+
+@when("I list the requirement sources of the model")
+def list_sources(context):
+    text = "\n".join(f.read_text(encoding="utf-8") for f in sorted((context.world.root / "model").glob("*.sysml")))
+    context.model_text = text
+    context.sources = {}
+    for m in re.finditer(r"item <'(SRC-\d+)'>\s+\w+\s*:\s*RequirementSource\s*\{", text):
+        body = arch.block(text, m.start())
+        context.sources[m.group(1)] = {k: re.search(rf'attribute :>> {k} = "([^"]+)";', body) for k in ("kind", "reference")}
+    assert context.sources, "no requirement sources declared"
+
+
+@then("each source has a kind, a reference and a stakeholder")
+def sources_complete(context):
+    links = tracecheck.load_model()[1]
+    for sid, attrs in context.sources.items():
+        assert attrs["kind"] and attrs["kind"].group(1) in ("norm", "communication", "document"), sid
+        assert attrs["reference"], sid
+        assert any(a == sid and verb == "raisedBy" and b.startswith("STK-") for a, verb, b in links), sid
+
+
+@then("each stakeholder has an ID")
+def stakeholders_have_ids(context):
+    declared = re.findall(r"part\s+(<'[^']*'>\s+)?\w+\s*:\s*Stakeholder\b", context.model_text)
+    assert declared and all(d and re.fullmatch(r"<'STK-\d+'>\s+", d) for d in declared), declared
+
+
 # --- queries, references, determinism ------------------------------------------
 
 @when('I query the trace from "{src}" to "{dst}"')
@@ -158,7 +191,7 @@ def query_result(context):
         if q["to"] == "scenario":
             assert ".feature:" in node
         else:
-            assert node == q["to"]
+            assert node == q["to"] or tracecheck.prefix(node) == q["to"]
 
 
 @given('an approved link to element "{element}"')

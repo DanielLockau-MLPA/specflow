@@ -220,3 +220,56 @@ def tags_retained(context):
 def gate_remains_open(context, gate):
     rep = gatelib.evaluate(gate, context.world.ws)
     assert rep["open"], rep["problems"]
+
+
+@given('the repository moves forward without changing the scope of gate "{gate}"')
+def repository_moves_forward(context, gate):
+    before = approvals.fingerprint(context.world.ws, "HEAD", tuple(approvals.gates(context.world.ws)[gate]["scope"]))
+    context.world.commit("unrelated change")
+    after = approvals.fingerprint(context.world.ws, "HEAD", tuple(approvals.gates(context.world.ws)[gate]["scope"]))
+    assert before == after
+
+
+@given('all roles of gate "{gate}" except "{role}" approved the current commit')
+def others_approved(context, gate, role):
+    for r in context.world.roles_of(gate):
+        if r != role:
+            context.world.approve(gate, r)
+    context.approved_commit = context.world.git("rev-parse", "HEAD").stdout.strip()
+
+
+@when('"{signer}" approves gate "{gate}" as "{role}" for the commit approved by the others')
+def approve_earlier_commit(context, signer, gate, role):
+    context.world.approve(gate, role, signer, commit=context.approved_commit)
+
+
+@when('"{signer}" tries to approve gate "{gate}" as "{role}" for the commit approved by the others')
+def try_approve_earlier_commit(context, signer, gate, role):
+    try:
+        context.world.approve(gate, role, signer, commit=context.approved_commit)
+        context.rejected = False
+    except core.Rejected:
+        context.rejected = True
+    assert not approvals.role_tags(context.world.ws, gate, role) or not context.rejected, "a rejected approval must leave no tag"
+
+
+@when('the other roles of gate "{gate}" approve the same commit')
+def others_approve_head(context, gate):
+    for r in context.world.roles_of(gate):
+        if r != context.role:
+            context.world.approve(gate, r)
+
+
+@then('the newest revision of gate "{gate}" is approved only by "{role}"')
+def newest_revision_only(context, gate, role):
+    context.gate, context.role = gate, role
+    revision = approvals.gate_status(gate, context.world.ws)["revision"]
+    assert revision["commit"] == context.world.git("rev-parse", "HEAD").stdout.strip(), revision
+    assert revision["approved"] == [role], revision
+
+
+@then('the report lists the other roles of gate "{gate}" as still missing')
+def others_missing(context, gate):
+    revision = approvals.gate_status(gate, context.world.ws)["revision"]
+    assert revision["missing"] == [r for r in context.world.roles_of(gate) if r != context.role], revision
+    assert any("different commits" in p for p in context.report["problems"]), context.report["problems"]

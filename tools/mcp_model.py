@@ -28,7 +28,7 @@ def _info():
 
 @mcp.tool()
 def list_elements(kind: str | None = None) -> list[dict]:
-    """List model elements (id, name). kind: N, UC, SR or DR; omit for all."""
+    """List model elements (id, name). kind: N, UC, SR, DR, SRC or STK; omit for all."""
     return [{"id": i, "name": n} for i, (n, _d) in sorted(_info().items()) if kind is None or i.startswith(f"{kind}-")]
 
 
@@ -74,7 +74,7 @@ def validate() -> dict:
 
 
 @mcp.tool()
-def render(view: str | None = None) -> object:
+def render(view: str | None = None) -> list[dict[str, str]] | str:
     """Return the Mermaid text of a view; without a name, list the available views."""
     views = {slug: (title, src) for slug, title, _d, src in arch.build_diagrams()}
     if view is None:

@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from arch import architecture, data_root, ids_and_names, read_model, trace_links  # noqa: E402
 
-LEVELS = {"N": "need", "UC": "use case", "SR": "requirement (L1)", "DR": "requirement (L2)"}
+LEVELS = {"N": "need", "UC": "use case", "SR": "requirement (L1)", "DR": "requirement (L2)"}  # sources and stakeholders are not verified by scenarios
 ID_TAG = re.compile(r"^[A-Z]{1,3}-\d+$")
 STAGES = ("needs", "model", "spec")
 
@@ -53,6 +53,23 @@ def load_scenarios():
     return scenarios
 
 
+def reaches_source(start, links):
+    """True if a source (SRC) is reachable from `start` along covers, derives and cites links (sources are cited at the highest level)."""
+    step = defaultdict(set)
+    for a, verb, b in links:
+        if verb in ("covers", "derives", "cites"):
+            step[a].add(b)
+    seen, todo = set(), [start]
+    while todo:
+        for t in step[todo.pop()]:
+            if prefix(t) == "SRC":
+                return True
+            if t not in seen:
+                seen.add(t)
+                todo.append(t)
+    return False
+
+
 def check(stage, id_info, links, allocated, scenarios):
     v = []
 
@@ -68,6 +85,13 @@ def check(stage, id_info, links, allocated, scenarios):
         for i in ids:
             if prefix(i) == "N" and i not in covered:
                 add("need-covered", i, "no use case covers this need")
+            if prefix(i) == "N" and not any(prefix(t) == "SRC" for t in out[(i, "cites")]):
+                add("need-sourced", i, "this need cites no requirement source")
+            if prefix(i) == "SRC":
+                if not any(prefix(t) == "STK" for t in out[(i, "raisedBy")]):
+                    add("source-stakeholder", i, "this requirement source names no stakeholder")
+                if not any(b == i for a, verb, b in links if verb == "cites"):
+                    add("source-cited", i, "no need cites this requirement source")
     elif stage == "model":
         for i in ids:
             p = prefix(i)
@@ -80,6 +104,9 @@ def check(stage, id_info, links, allocated, scenarios):
                     add("l2-derives-l1", i, "L2 requirement derives from no L1 requirement")
                 if i not in allocated:
                     add("l2-allocated", i, "L2 requirement is allocated to no design element")
+        for i in ids:
+            if prefix(i) in ("UC", "SR", "DR") and not reaches_source(i, links):
+                add("source-traceable", i, "no requirement source is reachable through covers/derives/cites links")
         for a, verb, b in links:
             for x in (a, b):
                 if x not in id_info:

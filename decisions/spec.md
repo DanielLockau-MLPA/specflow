@@ -64,3 +64,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Verified manually by the user on 2026-10-26: the SysML model files load into SysON.
 - rationale: Evidence for the @manual scenario that the automated run skips; the G4 approvers attest it.
 - affected: SR-009, DR-027
+
+## DL-019
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: How are approvals bound to commits?
+- decision: All approvals of a revision must be on the same commit; a later-commit signature opens a new revision; --commit signs an earlier commit if the gate scope is unchanged since.
+- rationale: Prevents mixing approvals of different states; supports repo moving forward during review.
+- affected: DR-012, DR-014

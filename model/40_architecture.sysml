@@ -1,5 +1,5 @@
 package Architecture {
-    doc /* Logical architecture of the system of interest, its external context, and the allocation of L2 requirements (satisfy). Status: DRAFT. Technology choices are bindings, not part of the logical structure. */
+    doc /* Logical architecture of the system of interest, its external context, and the allocation of L2 requirements (satisfy). Technology choices are bindings, not part of the logical structure. */
     private import DesignRequirements::*;
 
     // Interfaces
@@ -168,6 +168,8 @@ package Architecture {
     satisfy TraceIndex by context.toolchain.traceService;
     satisfy TraceRules by context.toolchain.traceService;
     satisfy StaleReferenceDetection by context.toolchain.traceService;
+    satisfy SourceTraceRules by context.toolchain.traceService;
+    satisfy SourceDeclaration by context.toolchain.traceService;
     satisfy CoverageReportFormat by context.toolchain.traceService;
     satisfy ApprovalRecord by context.toolchain.approvalService;
     satisfy ApproverEligibility by context.toolchain.approvalService;
