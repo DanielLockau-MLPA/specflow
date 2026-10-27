@@ -44,7 +44,7 @@ Source: [`01b_view_services.mmd`](diagrams/01b_view_services.mmd) · [PNG](diagr
 
 ## View: governance
 
-Human-only governance: review CLI, approvals and gate evaluation. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ApprovalPort, CliPort, GatePort. Together the views 01a-01d cover every connection of the detailed diagram 01.
+Human-only governance: review CLI, approvals and gate evaluation. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ApprovalPort, AuditPort, CliPort, GatePort. Together the views 01a-01d cover every connection of the detailed diagram 01.
 
 [![View: governance](diagrams/01c_view_governance.svg)](diagrams/01c_view_governance.svg)
 

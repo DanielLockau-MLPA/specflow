@@ -24,6 +24,7 @@ flowchart LR
   SR014["SR-014<br/>SpecTraceCompleteness"]
   SR015["SR-015<br/>TraceGateEnforcement"]
   SR016["SR-016<br/>TraceQuery"]
+  SR017["SR-017<br/>RequirementSourceTraceability"]
   SR020["SR-020<br/>OpenFormats"]
   SR021["SR-021<br/>CiReproducible"]
   SR022["SR-022<br/>UnambiguousIds"]
@@ -40,6 +41,8 @@ flowchart LR
   SR014 -->|derives| N005
   SR015 -->|derives| N002
   SR016 -->|derives| N005
+  SR017 -->|derives| N005
+  SR017 -->|derives| N008
   SR012 -->|derives| N002
   SR001 -->|derives| N001
   SR002 -->|derives| N001

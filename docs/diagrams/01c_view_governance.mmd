@@ -2,11 +2,21 @@ flowchart LR
   gateEvaluator["GateEvaluator"]
   approvalService["ApprovalService"]
   reviewCli["ReviewCli"]
+  traceService["TraceService"]
+  impactAnalyzer["ImpactAnalyzer"]
+  specRunner["SpecRunner"]
+  auditReporter["AuditReporter"]
   tagStore["ApprovalTagStore"]
   human["Human"]
   gateEvaluator -->|ApprovalPort| approvalService
   reviewCli -->|ApprovalPort| approvalService
   reviewCli -->|GatePort| gateEvaluator
+  traceService -->|ApprovalPort| approvalService
+  impactAnalyzer -->|ApprovalPort| approvalService
+  specRunner -->|ApprovalPort| approvalService
+  auditReporter -->|GatePort| gateEvaluator
+  auditReporter -->|ApprovalPort| approvalService
+  reviewCli -->|AuditPort| auditReporter
   tagStore -->|GatePort| gateEvaluator
   human -->|CliPort| reviewCli
   style human fill:#eee,stroke:#999

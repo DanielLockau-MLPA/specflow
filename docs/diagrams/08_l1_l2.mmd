@@ -31,6 +31,8 @@ flowchart LR
   DR030["DR-030<br/>HeadlessCli"]
   DR031["DR-031<br/>AuditQuery"]
   DR032["DR-032<br/>HumanConfirmationChannel"]
+  DR033["DR-033<br/>SourceTraceRules"]
+  DR034["DR-034<br/>SourceDeclaration"]
   SR001["SR-001<br/>QAndABeforeDrafting"]
   SR002["SR-002<br/>DraftModelFromBaseline"]
   SR003["SR-003<br/>DraftSpecFromModel"]
@@ -47,6 +49,7 @@ flowchart LR
   SR014["SR-014<br/>SpecTraceCompleteness"]
   SR015["SR-015<br/>TraceGateEnforcement"]
   SR016["SR-016<br/>TraceQuery"]
+  SR017["SR-017<br/>RequirementSourceTraceability"]
   SR020["SR-020<br/>OpenFormats"]
   SR021["SR-021<br/>CiReproducible"]
   SR022["SR-022<br/>UnambiguousIds"]
@@ -105,5 +108,7 @@ flowchart LR
   DR028 -->|derives| SR022
   DR029 -->|derives| SR020
   DR030 -->|derives| SR021
+  DR033 -->|derives| SR017
+  DR034 -->|derives| SR017
   DR031 -->|derives| SR032
   DR031 -->|derives| SR030

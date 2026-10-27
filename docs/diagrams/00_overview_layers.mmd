@@ -23,6 +23,8 @@ flowchart LR
     approvalService["ApprovalService"]
     gateEvaluator["GateEvaluator"]
     tagStore["ApprovalTagStore"]
+    auditReporter["AuditReporter"]
+    refGuardHook["RefGuardHook"]
   end
   subgraph extagent["MCP client + AI agent"]
     mcpClient["McpClient"]
@@ -44,6 +46,7 @@ flowchart LR
   guards -->|Mcp| agentfacing
   guards -->|Human| exthuman
   guards -->|Workspace| extrepo
+  services -->|Approval| governance
   services -->|Workspace| guards
   style extagent fill:#eee,stroke:#999
   style exthuman fill:#eee,stroke:#999

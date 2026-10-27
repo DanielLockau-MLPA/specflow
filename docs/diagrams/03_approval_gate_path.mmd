@@ -7,7 +7,7 @@ sequenceDiagram
   participant TG as ApprovalTagStore
   participant R as Repository
   H->>CLI: approve(gate, role, rationale)
-  CLI->>AP: sign approval/<gate>/<role>
+  CLI->>AP: sign approval/<gate>/<role>.<n>
   AP->>AP: check registered key, role mapping, clean scope
   AP->>TG: create signed tag
   TG->>R: store tag

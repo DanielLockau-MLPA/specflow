@@ -100,3 +100,12 @@ Append-only. Entries are never edited or deleted.
 - decision: YAML removed from DR-029 and specs (origin: early design); DRAFT markers removed from model docs; waivers documented in docs/waivers.md; delete of last element covered by a scenario.
 - rationale: User review comments on the step implementation.
 - affected: DR-029, SR-022, DR-028
+
+## DL-021
+- date: 2026-10-27
+- type: review
+- participants: DanielLockau-MLPA, AI agent
+- question: Align the architecture with the implemented structure?
+- decision: Added AuditReporter (EvidenceBundle, AuditQuery) and RefGuardHook (RefProtectionOutsideAgent); GateEvaluator gets run and git ports; trace, impact and run read approvals (approvals is the base layer, unused approvalService trace/impact ports removed); waivers stay in ApprovalService; approval sequence shows the revision suffix.
+- rationale: Cross-check found model/code divergence; the model was changed rather than the code. Diagrams regenerated.
+- affected: DR-015, DR-020, DR-026, DR-031, DR-014

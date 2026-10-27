@@ -13,6 +13,7 @@ package Architecture {
     port def CliPort { doc /* Command-line interaction of a human or CI job. */ }
     port def ApprovalPort { doc /* Submission and query of approvals, waivers and invalidations. */ }
     port def GatePort { doc /* Gate evaluation requests and results. */ }
+    port def AuditPort { doc /* Audit and evidence queries per gate and baseline. */ }
     port def ImpactPort { doc /* Impact analysis requests and results. */ }
     port def RunPort { doc /* Execution of specifications and results. */ }
     port def LogPort { doc /* Appending to and reading from the decision log. */ }
@@ -30,11 +31,16 @@ package Architecture {
         port ws : WorkspacePort; port git : GitPort; port trace : TraceQueryPort;
         port impact : ImpactPort; port log : LogPort; port ids : IdPort; port run : RunPort;
     }
-    part def SpecRunner { port run : RunPort[*]; port ws : WorkspacePort; }
-    part def TraceService { port query : TraceQueryPort[*]; port ws : WorkspacePort; }
-    part def ImpactAnalyzer { port impact : ImpactPort[*]; port trace : TraceQueryPort; }
-    part def ApprovalService { port approvals : ApprovalPort[*]; port git : GitPort; port trace : TraceQueryPort; port impact : ImpactPort; }
-    part def GateEvaluator { port gates : GatePort[*]; port approvals : ApprovalPort; port trace : TraceQueryPort; }
+    part def SpecRunner { port run : RunPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
+    part def TraceService { port query : TraceQueryPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
+    part def ImpactAnalyzer { port impact : ImpactPort[*]; port trace : TraceQueryPort; port approvals : ApprovalPort; }
+    part def ApprovalService { port approvals : ApprovalPort[*]; port git : GitPort; }
+    part def GateEvaluator { port gates : GatePort[*]; port approvals : ApprovalPort; port trace : TraceQueryPort; port run : RunPort; port git : GitPort; }
+    part def AuditReporter {
+        port audit : AuditPort[*]; port gates : GatePort; port approvals : ApprovalPort;
+        port trace : TraceQueryPort; port run : RunPort; port ws : WorkspacePort;
+    }
+    part def RefGuardHook { port git : GitPort; }
     part def ApprovalTagStore { port git : GitPort; port ws : WorkspacePort; port gate : GatePort; }
     part def DecisionLogService { port log : LogPort[*]; port ws : WorkspacePort; }
     part def PromptLibrary { port mcp : McpPort; }
@@ -42,7 +48,7 @@ package Architecture {
     part def ViewExporter { port views : ViewPort; port ws : WorkspacePort; }
     part def ReviewCli {
         port human : CliPort; port trace : TraceQueryPort; port approvals : ApprovalPort;
-        port gate : GatePort; port impact : ImpactPort; port run : RunPort;
+        port gate : GatePort; port impact : ImpactPort; port run : RunPort; port audit : AuditPort;
     }
     part def WorkspaceGuard {
         doc /* Single entry to the file system: components connect here and are limited to the canonical workspace root. */
@@ -76,6 +82,8 @@ package Architecture {
         part approvalService : ApprovalService;
         part gateEvaluator : GateEvaluator;
         part tagStore : ApprovalTagStore;
+        part auditReporter : AuditReporter;
+        part refGuardHook : RefGuardHook;
         part decisionLog : DecisionLogService;
         part promptLibrary : PromptLibrary;
         part workspaceGuard : WorkspaceGuard;
@@ -90,18 +98,25 @@ package Architecture {
         connect modelMcp.trace to traceService.query;
         connect specMcp.trace to traceService.query;
         connect impactAnalyzer.trace to traceService.query;
-        connect approvalService.trace to traceService.query;
         connect gateEvaluator.trace to traceService.query;
         connect reviewCli.trace to traceService.query;
         connect modelMcp.impact to impactAnalyzer.impact;
         connect specMcp.impact to impactAnalyzer.impact;
         connect reviewCli.impact to impactAnalyzer.impact;
-        connect approvalService.impact to impactAnalyzer.impact;
 
         // Approvals, gates, baselines (human-driven; no agent-facing port)
         connect gateEvaluator.approvals to approvalService.approvals;
         connect reviewCli.approvals to approvalService.approvals;
         connect reviewCli.gate to gateEvaluator.gates;
+        connect traceService.approvals to approvalService.approvals;
+        connect impactAnalyzer.approvals to approvalService.approvals;
+        connect specRunner.approvals to approvalService.approvals;
+        connect gateEvaluator.run to specRunner.run;
+        connect auditReporter.gates to gateEvaluator.gates;
+        connect auditReporter.approvals to approvalService.approvals;
+        connect auditReporter.trace to traceService.query;
+        connect auditReporter.run to specRunner.run;
+        connect reviewCli.audit to auditReporter.audit;
         connect tagStore.gate to gateEvaluator.gates;
 
         // Spec execution, log, IDs, views
@@ -119,6 +134,7 @@ package Architecture {
         connect specRunner.ws to workspaceGuard.clients;
         connect traceService.ws to workspaceGuard.clients;
         connect tagStore.ws to workspaceGuard.clients;
+        connect auditReporter.ws to workspaceGuard.clients;
         connect decisionLog.ws to workspaceGuard.clients;
         connect idRegistry.ws to workspaceGuard.clients;
         connect viewExporter.ws to workspaceGuard.clients;
@@ -151,6 +167,8 @@ package Architecture {
         connect toolchain.specMcp.git to repo.git;
         connect toolchain.approvalService.git to repo.git;
         connect toolchain.tagStore.git to repo.git;
+        connect toolchain.gateEvaluator.git to repo.git;
+        connect toolchain.refGuardHook.git to repo.git;
     }
 
     part context : SystemContext;
@@ -179,17 +197,17 @@ package Architecture {
     satisfy ImpactAnalysis by context.toolchain.impactAnalyzer;
     satisfy TamperEvidentApprovals by context.toolchain.tagStore;
     satisfy DriftDetection by context.toolchain.tagStore;
-    satisfy EvidenceBundle by context.toolchain.tagStore;
+    satisfy EvidenceBundle by context.toolchain.auditReporter;
     satisfy DecisionLogFormat by context.toolchain.decisionLog;
     satisfy WorkflowPrompts by context.toolchain.promptLibrary;
     satisfy PathContainment by context.toolchain.workspaceGuard;
     satisfy UntrustedContentHandling by context.toolchain.inputGuard;
     satisfy ConfidentialityExclusions by context.toolchain.confidentialityFilter;
     satisfy HumanConfirmationChannel by context.toolchain.confirmationChannel;
-    satisfy RefProtectionOutsideAgent by context.toolchain.tagStore;
+    satisfy RefProtectionOutsideAgent by context.toolchain.refGuardHook;
     satisfy ViewExport by context.toolchain.viewExporter;
     satisfy StableIdScheme by context.toolchain.idRegistry;
     satisfy OpenFormatsOnly by context.toolchain;
     satisfy HeadlessCli by context.toolchain.reviewCli;
-    satisfy AuditQuery by context.toolchain.reviewCli;
+    satisfy AuditQuery by context.toolchain.auditReporter;
 }

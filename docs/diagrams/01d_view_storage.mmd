@@ -5,16 +5,20 @@ flowchart LR
   specRunner["SpecRunner"]
   traceService["TraceService"]
   tagStore["ApprovalTagStore"]
+  auditReporter["AuditReporter"]
   decisionLog["DecisionLogService"]
   idRegistry["IdRegistry"]
   viewExporter["ViewExporter"]
   repo["GitRepository"]
   approvalService["ApprovalService"]
+  gateEvaluator["GateEvaluator"]
+  refGuardHook["RefGuardHook"]
   modelMcp -->|WorkspacePort| workspaceGuard
   specMcp -->|WorkspacePort| workspaceGuard
   specRunner -->|WorkspacePort| workspaceGuard
   traceService -->|WorkspacePort| workspaceGuard
   tagStore -->|WorkspacePort| workspaceGuard
+  auditReporter -->|WorkspacePort| workspaceGuard
   decisionLog -->|WorkspacePort| workspaceGuard
   idRegistry -->|WorkspacePort| workspaceGuard
   viewExporter -->|WorkspacePort| workspaceGuard
@@ -23,4 +27,6 @@ flowchart LR
   specMcp -->|GitPort| repo
   approvalService -->|GitPort| repo
   tagStore -->|GitPort| repo
+  gateEvaluator -->|GitPort| repo
+  refGuardHook -->|GitPort| repo
   style repo fill:#eee,stroke:#999

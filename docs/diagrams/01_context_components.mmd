@@ -13,6 +13,8 @@ flowchart LR
     approvalService["ApprovalService"]
     gateEvaluator["GateEvaluator"]
     tagStore["ApprovalTagStore"]
+    auditReporter["AuditReporter"]
+    refGuardHook["RefGuardHook"]
     decisionLog["DecisionLogService"]
     promptLibrary["PromptLibrary"]
     workspaceGuard["WorkspaceGuard"]
@@ -26,16 +28,23 @@ flowchart LR
   modelMcp -->|TraceQueryPort| traceService
   specMcp -->|TraceQueryPort| traceService
   impactAnalyzer -->|TraceQueryPort| traceService
-  approvalService -->|TraceQueryPort| traceService
   gateEvaluator -->|TraceQueryPort| traceService
   reviewCli -->|TraceQueryPort| traceService
   modelMcp -->|ImpactPort| impactAnalyzer
   specMcp -->|ImpactPort| impactAnalyzer
   reviewCli -->|ImpactPort| impactAnalyzer
-  approvalService -->|ImpactPort| impactAnalyzer
   gateEvaluator -->|ApprovalPort| approvalService
   reviewCli -->|ApprovalPort| approvalService
   reviewCli -->|GatePort| gateEvaluator
+  traceService -->|ApprovalPort| approvalService
+  impactAnalyzer -->|ApprovalPort| approvalService
+  specRunner -->|ApprovalPort| approvalService
+  gateEvaluator -->|RunPort| specRunner
+  auditReporter -->|GatePort| gateEvaluator
+  auditReporter -->|ApprovalPort| approvalService
+  auditReporter -->|TraceQueryPort| traceService
+  auditReporter -->|RunPort| specRunner
+  reviewCli -->|AuditPort| auditReporter
   tagStore -->|GatePort| gateEvaluator
   specMcp -->|RunPort| specRunner
   reviewCli -->|RunPort| specRunner
@@ -49,6 +58,7 @@ flowchart LR
   specRunner -->|WorkspacePort| workspaceGuard
   traceService -->|WorkspacePort| workspaceGuard
   tagStore -->|WorkspacePort| workspaceGuard
+  auditReporter -->|WorkspacePort| workspaceGuard
   decisionLog -->|WorkspacePort| workspaceGuard
   idRegistry -->|WorkspacePort| workspaceGuard
   viewExporter -->|WorkspacePort| workspaceGuard
@@ -69,6 +79,8 @@ flowchart LR
   specMcp -->|GitPort| repo
   approvalService -->|GitPort| repo
   tagStore -->|GitPort| repo
+  gateEvaluator -->|GitPort| repo
+  refGuardHook -->|GitPort| repo
   style human fill:#eee,stroke:#999
   style mcpClient fill:#eee,stroke:#999
   style repo fill:#eee,stroke:#999

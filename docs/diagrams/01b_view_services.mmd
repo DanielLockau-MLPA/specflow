@@ -3,23 +3,24 @@ flowchart LR
   traceService["TraceService"]
   specMcp["SpecMcpServer"]
   impactAnalyzer["ImpactAnalyzer"]
-  approvalService["ApprovalService"]
   gateEvaluator["GateEvaluator"]
   reviewCli["ReviewCli"]
   specRunner["SpecRunner"]
+  auditReporter["AuditReporter"]
   decisionLog["DecisionLogService"]
   idRegistry["IdRegistry"]
   viewExporter["ViewExporter"]
   modelMcp -->|TraceQueryPort| traceService
   specMcp -->|TraceQueryPort| traceService
   impactAnalyzer -->|TraceQueryPort| traceService
-  approvalService -->|TraceQueryPort| traceService
   gateEvaluator -->|TraceQueryPort| traceService
   reviewCli -->|TraceQueryPort| traceService
   modelMcp -->|ImpactPort| impactAnalyzer
   specMcp -->|ImpactPort| impactAnalyzer
   reviewCli -->|ImpactPort| impactAnalyzer
-  approvalService -->|ImpactPort| impactAnalyzer
+  gateEvaluator -->|RunPort| specRunner
+  auditReporter -->|TraceQueryPort| traceService
+  auditReporter -->|RunPort| specRunner
   specMcp -->|RunPort| specRunner
   reviewCli -->|RunPort| specRunner
   modelMcp -->|LogPort| decisionLog
