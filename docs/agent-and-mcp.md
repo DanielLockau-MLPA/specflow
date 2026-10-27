@@ -5,12 +5,54 @@ an assistant: it reads, asks, drafts and runs checks; it does not approve.
 
 ## Registration
 
-Register as stdio commands with the repository as working directory (or set `SPECFLOW_ROOT`):
+Both servers are stdio servers started by the client. They need `SPECFLOW_ROOT` (the workspace they operate on; default is the checkout that holds `tools/`) and a working `uv` environment. Use absolute paths. In the examples `/path/to/specflow` is the tool checkout and `/path/to/workspace` the project repository (the same directory when you work on this repository itself).
+
+Server names are yours to choose; they become part of the prompt and tool names in the client. Use `model-mcp` and `spec-mcp`.
+
+### GitHub Copilot CLI
+
+**Per workspace (recommended).** Create `.mcp.json` (local to your checkout) or `.github/mcp.json` (committed and shared) in the workspace root. The CLI loads it when you start `copilot` in that repository after you confirm folder trust; project definitions override `~/.copilot/mcp-config.json`:
+
+```json
+{
+  "mcpServers": {
+    "model-mcp": {
+      "type": "local",
+      "command": "uv",
+      "args": ["run", "--project", "/path/to/specflow", "python", "/path/to/specflow/tools/mcp_model.py"],
+      "env": {"SPECFLOW_ROOT": "/path/to/workspace"},
+      "tools": ["*"]
+    },
+    "spec-mcp": {
+      "type": "local",
+      "command": "uv",
+      "args": ["run", "--project", "/path/to/specflow", "python", "/path/to/specflow/tools/mcp_spec.py"],
+      "env": {"SPECFLOW_ROOT": "/path/to/workspace"},
+      "tools": ["*"]
+    }
+  }
+}
+```
+
+**For one session only.** Pass the same JSON (or `@file.json`) at start-up; it augments the user configuration for that session:
 
 ```bash
-uv run python tools/mcp_model.py
-uv run python tools/mcp_spec.py
+copilot --additional-mcp-config @/path/to/specflow-mcp.json
 ```
+
+**User-wide.** `copilot mcp add model-mcp --env SPECFLOW_ROOT=/path/to/workspace -- uv run --project /path/to/specflow python /path/to/specflow/tools/mcp_model.py` (same for `spec-mcp`) writes to `~/.copilot/mcp-config.json`, or use `/mcp add` in a session. User-wide entries point at one workspace, so prefer the per-workspace file when you have several projects.
+
+Check with `/mcp` (lists servers and their status) and `/env` inside the session. `--disable-mcp-server <name>` turns a server off for a session. A new server added with `/mcp add` is available immediately; after editing a file, restart the session.
+
+### Other clients
+
+Any MCP client works: configure a stdio server with the same command, arguments and environment. VS Code uses `.vscode/mcp.json` with the top-level key `servers` instead of `mcpServers` (Copilot CLI does not read that file); Claude Code uses `.mcp.json` in the project root or `claude mcp add`.
+
+### Rules for the registration
+
+- Register the servers for the agent only. Do not give the agent client any approval keys or credentials for protected refs.
+- The client must support elicitation (human confirmation); otherwise `record_decision` and `propose_edit` are refused.
+- Keep machine-specific paths out of committed files: commit `.github/mcp.json` only if paths are relative to a shared layout, otherwise use the untracked `.mcp.json`.
 
 ## Tools
 

@@ -19,8 +19,7 @@ export SPECFLOW_ROOT=~/work/my-project          # a git repository
 uv run python tools/specflow.py validate
 ```
 
-MCP servers use the same variable: register `uv run python tools/mcp_model.py` and `tools/mcp_spec.py` as stdio servers
-with `SPECFLOW_ROOT` set in the client configuration.
+MCP servers use the same variable: register them as stdio servers with `SPECFLOW_ROOT` set in the client configuration; see [Registration](agent-and-mcp.md#registration) for a ready-to-use Copilot CLI configuration.
 
 ## Workspace layout to create
 
