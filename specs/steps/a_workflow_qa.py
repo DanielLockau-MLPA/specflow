@@ -17,7 +17,7 @@ def log_file(context, stage):
 
 def entries(context, stage):
     text = log_file(context, stage).read_text(encoding="utf-8") if log_file(context, stage).exists() else ""
-    return {m.group(1): m.group(2) for m in re.finditer(r"^## (DL-\d+)\n(.*?)(?=^## |\Z)", text, re.M | re.S)}
+    return {m.group(1): m.group(2) for m in re.finditer(r"^## (DL-\d+)\n(.*?)(?=^## |\Z)", text, re.MULTILINE | re.DOTALL)}
 
 
 @when('I fetch the workflow prompt "{prompt}"')
@@ -92,7 +92,7 @@ def entry_fields(context):
     all_ids = [i for s in core.STAGES for i in entries(context, s)]
     assert len(all_ids) == len(set(all_ids))
     body = entries(context, context.stage)[context.new_id]
-    values = dict(re.findall(r"^- (\w+): (.*)$", body, re.M))
+    values = dict(re.findall(r"^- (\w+): (.*)$", body, re.MULTILINE))
     assert all(values.get(f) for f in FIELDS), values
     assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", values["date"])
     assert values["participants"] == "alice, agent" and values["affected"] == "SR-004"

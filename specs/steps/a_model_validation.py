@@ -2,7 +2,6 @@
 import json
 import os
 import re
-import sys
 
 from behave import given, then, when
 
@@ -38,6 +37,7 @@ def syntax_error(context, element):
     f = sr004_file(context)
     text = f.read_text(encoding="utf-8")
     header = re.search(rf"requirement\s+<'{element}'>[^{{]*\{{\n", text)
+    assert header is not None
     f.write_text(text[:header.end()] + "        attribute ;; broken\n" + text[header.end():], encoding="utf-8")
     context.defect = (element, "syntax")
 
@@ -46,7 +46,7 @@ def syntax_error(context, element):
 def undocumented(context):
     f = sr004_file(context)
     text = f.read_text(encoding="utf-8")
-    new = re.sub(r"(requirement\s+<'SR-004'>[^{]*\{\n)\s*doc /\*.*?\*/\n", r"\1", text, count=1, flags=re.S)
+    new = re.sub(r"(requirement\s+<'SR-004'>[^{]*\{\n)\s*doc /\*.*?\*/\n", r"\1", text, count=1, flags=re.DOTALL)
     assert new != text
     f.write_text(new, encoding="utf-8")
     context.defect = ("SR-004", "requirement-doc")

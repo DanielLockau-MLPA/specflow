@@ -26,6 +26,7 @@ def list_artifacts(context):
     assert context.artifacts, "no persistent artifacts found"
 
 
+# comment by DL: I think that yaml slipped in here by accident. Please trace back where this comes from and whether it is justified.
 @then('every artifact has one of the extensions ".sysml", ".feature", ".yaml", ".json" or ".md", except public key files under "approvals/keys"')
 def artifacts_open(context):
     bad = [a for a in context.artifacts if Path(a).suffix not in OPEN_EXTENSIONS]
@@ -84,14 +85,15 @@ def found_by_id(context, element):
 
 @when("the element is deleted")
 def delete_element(context):
+    # comment by DL: will this also work for the last element registered? -> this should be added as a scenario to check the implementation for robustness
     root = context.world.root
     for f in (root / "model").glob("*.sysml"):
         text = f.read_text(encoding="utf-8")
-        m = re.search(rf"^[ \t]*requirement <'{re.escape(context.element)}'>", text, re.M)
+        m = re.search(rf"^[ \t]*requirement <'{re.escape(context.element)}'>", text, re.MULTILINE)
         if m:
             end = m.start() + arch.block(text, m.start()).__len__() + text[m.start():].index("{") + 2
             text = text[:m.start()] + text[end:].lstrip("\n")
-        text = re.sub(rf"^.*\b{re.escape(context.name)}\b.*;\n", "", text, flags=re.M)
+        text = re.sub(rf"^.*\b{re.escape(context.name)}\b.*;\n", "", text, flags=re.MULTILINE)
         f.write_text(text, encoding="utf-8")
     context.world.commit("delete element")
     assert context.element not in core.model_ids(context.world.ws), "element still in the model"
@@ -123,7 +125,7 @@ def export_renders(context):
     assert shutil.which("node"), "node is required to check the Mermaid files"
     assert (CODE_ROOT / "tools/node/node_modules").is_dir(), "tools/node is not installed (./setup.sh --install)"
     for f in sorted(context.export_dir.glob("*.mmd")):
-        r = subprocess.run(["node", "tools/node/check_mermaid.mjs", str(f)], cwd=CODE_ROOT, capture_output=True, text=True)
+        r = subprocess.run(["node", "tools/node/check_mermaid.mjs", str(f)], cwd=CODE_ROOT, capture_output=True, text=True, check=False)
         assert r.returncode == 0, f"{f.name}: {r.stdout}{r.stderr}"
 
 
@@ -134,13 +136,13 @@ SYSON_SKIP = "manual: needs SysON UI import"
 @when("I load the model files into the graphical review tool")
 def load_into_syson(context):
     # SysON has no import API; import is a UI action, so this scenario can only be verified manually.
-    r = subprocess.run(["curl", "-sf", "--max-time", "5", SYSON_URL], capture_output=True, text=True)
+    r = subprocess.run(["curl", "-sf", "--max-time", "5", SYSON_URL], capture_output=True, text=True, check=False)
     context.syson_reachable = r.returncode == 0
     context.scenario.skip(SYSON_SKIP)
 
 
 @then("the model elements are displayed")
-def elements_displayed(context):
+def elements_displayed(_):
     raise AssertionError("SysON import must be verified manually")
 
 

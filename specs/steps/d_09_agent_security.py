@@ -123,8 +123,8 @@ def calls_every_tool(context):
                 else:
                     context.guard[(sname, tool.name)] = "no input document or state"
                     continue
-                for key in calls:
-                    calls[key].clear()
+                for value in calls.values():
+                    value.clear()
                 answer_cb = answer(approve=False)  # the human declines: the guard is observed without changing state
                 call(server, tool.name, args, answer_cb)
                 context.guard[(sname, tool.name)] = {k: list(v) for k, v in calls.items()}
@@ -154,7 +154,7 @@ def routed_through_guard(context):
 
 def decisions(w):
     f = w.root / "decisions/model.md"
-    return re.findall(r"^## (DL-\d+)", f.read_text(encoding="utf-8"), re.M) if f.exists() else []
+    return re.findall(r"^## (DL-\d+)", f.read_text(encoding="utf-8"), re.MULTILINE) if f.exists() else []
 
 
 @given("an MCP client calls a state-changing tool")
@@ -190,7 +190,7 @@ def no_answer(context):
 def agent_confirms(context):
     names = {t.name: t for s in SERVERS.values() for t in list_tools(s)}
     context.accepting = [n for n, t in names.items()
-                         if re.search(r"confirm|answer|consent", n, re.I)
+                         if re.search(r"confirm|answer|consent", n, re.IGNORECASE)
                          or set((t.input_schema or {}).get("properties", {})) & {"approve", "confirm", "confirmed", "answer"}]
     context.confirm_call = call(MODEL, "confirm", {"approve": True})
     # the agent also tries to smuggle the answer into the call itself; there is no confirmation channel in its session

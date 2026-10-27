@@ -24,7 +24,8 @@ COPY = ("model", "specs/features", "decisions")
 
 
 def sh(cwd, *args, check=True, env=None):
-    r = subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env)
+    # comment by DL: I added check=False below, but why not just use the subprocess.run provided check?
+    r = subprocess.run(args, cwd=cwd, capture_output=True, text=True, env=env, check=False)
     if check and r.returncode:
         raise RuntimeError(f"{' '.join(args)}: {r.stderr.strip()}")
     return r

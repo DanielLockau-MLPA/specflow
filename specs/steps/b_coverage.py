@@ -77,7 +77,7 @@ def stable_order(context):
         assert all(r["gaps"] == sorted(r["gaps"]) for r in data["levels"])
     else:
         assert a.startswith("# Coverage report") and "## Levels" in a and "## Gates" in a
-        gate_rows = re.findall(r"^\| (G\d) \|", a, re.M)
+        gate_rows = re.findall(r"^\| (G\d) \|", a, re.MULTILINE)
         assert gate_rows == sorted(gate_rows) and gate_rows
 
 
@@ -136,7 +136,7 @@ FAILURES = {
     "the model has a syntax error": break_syntax,
     "the trace has a gap": lambda w: w.make_gap(),
     "a scenario fails": lambda w: synthetic_spec(w, [("@SR-004", "failing")]),
-    "a gate has unmet conditions": lambda w: None,
+    "a gate has unmet conditions": lambda _: None,
 }
 
 
@@ -213,7 +213,7 @@ def no_network(context):
 
     context.add_cleanup(restore)
     probe = subprocess.run([sys.executable, "-c", "import socket; socket.create_connection(('127.0.0.1', 9))"],
-                           capture_output=True, text=True)
+                           capture_output=True, text=True, check=False)
     assert "network access is disabled" in probe.stderr, probe.stderr
 
 

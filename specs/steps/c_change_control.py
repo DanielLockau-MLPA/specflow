@@ -8,9 +8,7 @@ import approvals
 import audit
 import gate as gatelib
 import impact
-import specflow_core as core
 import tracecheck
-import waivers
 from c_approvals_gates import record_run
 
 ID = re.compile(r"[A-Z]{1,3}-\d+")

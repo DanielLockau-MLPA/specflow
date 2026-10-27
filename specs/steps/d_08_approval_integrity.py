@@ -137,7 +137,7 @@ def reports_drift(context):
 
 def _push(w, host, *refspec):
     r = subprocess.run(["git", "push", str(host), *refspec], cwd=w.root, capture_output=True, text=True,
-                       env={**os.environ, "SPECFLOW_KEYS_DIR": str(w.root / "approvals/keys")})
+                       env={**os.environ, "SPECFLOW_KEYS_DIR": str(w.root / "approvals/keys")}, check=False)
     return r.returncode, r.stderr
 
 
@@ -188,7 +188,7 @@ def hook_independent(context):
     code, err = context.control
     assert code == 0, err  # the hook accepts a valid signature, so the rejections above are decided by signature checks
     source = (CODE_ROOT / "tools/hooks/pre-receive").read_text(encoding="utf-8")
-    assert not re.search(r"^\s*(import|from)\s+(specflow_core|mcp\w*|approvals|gate)\b", source, re.M)
+    assert not re.search(r"^\s*(import|from)\s+(specflow_core|mcp\w*|approvals|gate)\b", source, re.MULTILINE)
     assert not (context.host / "tools").exists()
 
 
@@ -210,7 +210,7 @@ def list_them(context):
 def no_ref_tools(context):
     pattern = r"approv|waiv|\btags?\b|\bref\b|\bsign"
     related = {n for (_s, n), t in context.listed.items()
-               if re.search(pattern, n, re.I) or re.search(r"approval (tag|ref)|waiver|\bsigns?\b", t.description, re.I)}
+               if re.search(pattern, n, re.IGNORECASE) or re.search(r"approval (tag|ref)|waiver|\bsigns?\b", t.description, re.IGNORECASE)}
     assert related == {"approval_status"}, related
     ref_params = {"tag", "ref", "role", "gate", "signature", "key", "branch"}
     for (_s, name), t in context.listed.items():

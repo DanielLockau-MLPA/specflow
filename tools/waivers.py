@@ -4,6 +4,7 @@ The tag message carries `rationale: ...` and `expiry: YYYY-MM-DD`; the approver 
 counts only with a valid signature from a registered key, a human signer (not an agent principal), a rationale and an
 expiry in the future. Newer revisions supersede older ones. Waivers are created by humans (tools/approve.py waive).
 """
+# comment by DL: this needs to be accompanied by documentation, the waiver process is not clear by just reading this file
 import datetime
 import re
 

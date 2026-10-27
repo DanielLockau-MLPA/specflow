@@ -186,7 +186,7 @@ def remove_element(context, element):
 
 
 @then('the trace check reports a {kind} reference to "{element}"')
-def reference_reported(context, kind, element):
+def reference_reported(_, kind, element):
     rule = {"dangling": "link-dangling", "stale": "link-stale"}[kind]
     found = tracecheck.evaluate(("refs",))["violations"]
     assert any(v["rule"] == rule and v["element"] == element for v in found), found
@@ -200,7 +200,7 @@ def build_graph_twice(context):
     context.serialisations = [tracecheck.graph_json()]
     for seed in ("1", "2"):
         r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True,
-                           env={**os.environ, "PYTHONHASHSEED": seed})
+                           env={**os.environ, "PYTHONHASHSEED": seed}, check=False)
         assert r.returncode == 0, r.stderr
         context.serialisations.append(r.stdout)
 

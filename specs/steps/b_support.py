@@ -39,14 +39,14 @@ def feature_files(world):
 
 def drop_dependencies(world, label_regex):
     """Remove every `dependency '<label>' ...;` statement whose label matches."""
-    pattern = re.compile(rf"^[ \t]*dependency '{label_regex}'[^;]*;\n", re.M)
+    pattern = re.compile(rf"^[ \t]*dependency '{label_regex}'[^;]*;\n", re.MULTILINE)
     return rewrite(model_files(world), lambda t: pattern.sub("", t))
 
 
 def drop_satisfy(world, element):
     name = arch.ids_and_names(arch.read_model(world.root))[0]
     by_id = {i: n for n, i in name.items()}
-    pattern = re.compile(rf"^[ \t]*satisfy {by_id[element]} by [\w.]+;\n", re.M)
+    pattern = re.compile(rf"^[ \t]*satisfy {by_id[element]} by [\w.]+;\n", re.MULTILINE)
     return rewrite(model_files(world), lambda t: pattern.sub("", t))
 
 
@@ -56,7 +56,7 @@ def drop_scenario_tag(world, tag):
 
 def tag_first_scenario(world, tag):
     def add(text):
-        return re.sub(r"^([ \t]*@\S.*)$", rf"\1 @{tag}", text, count=1, flags=re.M)
+        return re.sub(r"^([ \t]*@\S.*)$", rf"\1 @{tag}", text, count=1, flags=re.MULTILINE)
     return rewrite(feature_files(world)[:1], add)
 
 
