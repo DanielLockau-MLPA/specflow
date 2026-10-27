@@ -53,3 +53,9 @@ candidates for iteration 2. It is input for the next planning round, not a decis
 - Binding scenarios to real steps exposed four wording defects in reviewed specs (wrong upstream ID, tag name without revision, wrong trace stage, over-broad format rule). Executing specs is itself a review.
 - Per-scenario throwaway git workspaces with test keys made approval, waiver and hook scenarios testable without touching the real repository; the real suite must never run inside such a workspace (recursion).
 - Remaining gaps: pre-receive hook does not check the signer's role; only `read_document` applies the confidentiality filter; decision IDs are count-based; refusal steps match substrings; MCP tool names differ from the scenario wording; SysON import is manual.
+
+## Iteration 2 review findings (code review before G4)
+
+- Code review found that requirements were not traceable to sources or stakeholders; added SRC/STK items, needs-level citation and `source-traceable` rules. Source reconstruction (`docs/sources/project-brief.md`) must be confirmed by the owner.
+- Review also found missing edge cases: approvals on different commits, signing an earlier commit, deleting the last element. Gate revisions are now commit-bound.
+- Lesson: a trace-gap test fixture must produce exactly one violation; adding rules changed the old fixture's behaviour.
