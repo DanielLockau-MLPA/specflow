@@ -69,12 +69,16 @@ Requirement sources (`SRC-nnn`: norms, written communication, other documents) a
 
 ## Optional: SysON (graphical model review)
 
-`docker compose -f tools/syson/docker-compose.yml up -d`, then open <http://localhost:8080>.
+Using SysOn can be useful as an interaction point for people which are not focused on text-based modeling.
+
+To run SysOn via docker, execute `docker compose -f tools/syson/docker-compose.yml up -d`, then open <http://localhost:8080>.
+
 The `.sysml` files in git remain the source of truth.
 
 ## Conventions
 
-- IDs are SysML short names: `N-` need, `UC-` use case, `SR-` L1, `DR-` L2. They are never reused.
+- IDs are SysML short names: `SRC-` requirement source, N-` need, `UC-` use case, `SR-` L1 requirement, `DR-` L2 requirement.
+  They must never be reused.
 - Agents propose changes on `proposal/*` branches only; commits made with AI assistance carry a `Co-authored-by` trailer.
 - Generated files (`docs/diagrams*`, `docs/step_vocabulary.md`) are not edited by hand.
 
