@@ -51,7 +51,7 @@ Any MCP client works: configure a stdio server with the same command, arguments 
 ### Rules for the registration
 
 - Register the servers for the agent only. Do not give the agent client any approval keys or credentials for protected refs.
-- The client must support elicitation (human confirmation); otherwise `record_decision` and `propose_edit` are refused.
+- State-changing tools need a human confirmation. If the client cannot answer MCP elicitation (Copilot CLI cannot), use [out-of-band confirmation](#out-of-band-confirmation); otherwise `record_decision` and `propose_edit` are refused.
 - Keep machine-specific paths out of committed files: commit `.github/mcp.json` only if paths are relative to a shared layout, otherwise use the untracked `.mcp.json`.
 
 ## Tools
@@ -97,6 +97,31 @@ All prompts share the rules: ask first, one topic at a time; do not draft before
 | InputGuard | all agent-facing traffic passes it; content is labelled untrusted; state-changing tools need a human confirmation |
 | ConfirmationChannel | the human decision is requested through the client's elicitation prompt, outside the agent's control; if the client cannot elicit, the call is refused |
 | Approved scopes | `propose_edit` refuses files in the scope of a gate that has approval tags, unless the operator unlocked the branch (see [Unlocking a proposal branch](#unlocking-a-proposal-branch)) |
+
+## Out-of-band confirmation
+
+`SPECFLOW_CONFIRM_MODE` (operator setting in the server `env`) selects how the human confirms `propose_edit` and `record_decision`:
+
+| Mode | Behaviour |
+|---|---|
+| `elicit` (default) | ask through the MCP client's confirmation dialog; refuse if the client cannot elicit |
+| `auto` | try the client dialog, fall back to out-of-band if the client cannot elicit |
+| `oob` | always out-of-band |
+
+Out-of-band flow:
+
+1. The agent calls the tool. The server stores a pending request in `.specflow/pending/` and waits (`SPECFLOW_CONFIRM_TIMEOUT` seconds, default 300 out-of-band). It tells the agent the request ID.
+2. In a **separate terminal**, outside the agent session, list and decide:
+
+   ```bash
+   uv run python tools/confirm_oob.py list
+   uv run python tools/confirm_oob.py approve <id> [--key ~/.ssh/id_ed25519]   # or: deny <id>
+   ```
+
+   The command shows the request text and signs the decision with your SSH key (`--key`, else `git config user.signingkey`). It refuses to run without an interactive terminal.
+3. The server verifies the signature against `approvals/keys/<principal>.pub`; the principal must hold a role in `approvals/roles.json`. The signed text contains the request ID and the SHA-256 of the exact request message, so a signature cannot be reused for another request or another message. An invalid, unknown or missing signature, a denial or a timeout aborts the call.
+
+Security notes: a signature needs your private key, so keep it passphrase-protected and do not load it into an `ssh-agent` that the agent session can reach. The agent can read pending requests and could run the command, but cannot sign. As with approvals, the boundary is your key, not the terminal. Do not leave `oob` or `auto` configured in a shared `.github/mcp.json` unless every approver keeps the key discipline.
 
 ## Unlocking a proposal branch
 

@@ -234,9 +234,12 @@ def propose_edit(path, content, branch, message, ws=None, session=None):
 # --- confirmation (DR-032) -----------------------------------------------------
 
 async def confirm(ctx, message, timeout=None):
-    """Ask the human through the MCP client's elicitation UI; only an explicit yes lets the call proceed.
+    """Ask the human before a state-changing call; only an explicit yes lets the call proceed.
 
-    No answer within the timeout (SPECFLOW_CONFIRM_TIMEOUT seconds, default 120) aborts the call.
+    Channel (operator setting SPECFLOW_CONFIRM_MODE): `elicit` (default) asks through the MCP client's elicitation UI;
+    `oob` waits for a decision signed in a separate terminal (tools/confirm_oob.py); `auto` tries elicitation and falls
+    back to `oob` if the client cannot elicit. No answer within SPECFLOW_CONFIRM_TIMEOUT seconds (default 120, 300 for
+    `oob`) aborts the call.
     """
     import asyncio
 
@@ -245,12 +248,22 @@ async def confirm(ctx, message, timeout=None):
     class Decision(BaseModel):
         approve: bool
 
-    timeout = timeout if timeout is not None else float(os.environ.get("SPECFLOW_CONFIRM_TIMEOUT", "120"))
+    mode = os.environ.get("SPECFLOW_CONFIRM_MODE", "elicit")
+    if mode not in ("elicit", "oob", "auto"):
+        raise Rejected(f"invalid SPECFLOW_CONFIRM_MODE {mode!r}; call aborted")
+    configured = os.environ.get("SPECFLOW_CONFIRM_TIMEOUT")
+    if mode == "oob":
+        import confirm_oob
+        return await confirm_oob.confirm(ctx, message, timeout if timeout is not None else float(configured or 300))
+    timeout = timeout if timeout is not None else float(configured or 120)
     try:
         res = await asyncio.wait_for(ctx.elicit(message, Decision), timeout)
     except TimeoutError:
         raise Rejected("no human answer within the confirmation timeout; call aborted")
     except Exception:  # noqa: BLE001 - fail closed on any channel error
+        if mode == "auto":
+            import confirm_oob
+            return await confirm_oob.confirm(ctx, message, float(configured or 300))
         raise Rejected("no confirmation channel available; call aborted")
     if res.action != "accept" or not res.data.approve:
         raise Rejected("human declined or did not answer; call aborted")
