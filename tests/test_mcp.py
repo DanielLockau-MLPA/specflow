@@ -106,6 +106,20 @@ def test_propose_edit_refuses_baseline_files(repo, approver):
     assert err and "baseline" in text
 
 
+def test_unlocked_branch_allows_baseline_files_with_trailer(repo, approver, monkeypatch):
+    approve_gate(repo, "G2", approver)
+    args = {"path": "model/a.sysml", "content": "z", "message": "m"}
+    monkeypatch.setenv("SPECFLOW_UNLOCK_BRANCHES", "proposal/open*")
+    assert call("propose_edit", {**args, "branch": "proposal/other"})[0]
+    assert call("propose_edit", {**args, "branch": "main"})[0]
+    err, text = call("propose_edit", {**args, "branch": "proposal/open-1"})
+    assert not err, text
+    log = subprocess.run(["git", "log", "-1", "--format=%B", "proposal/open-1"], cwd=repo, capture_output=True, text=True, check=True).stdout
+    assert "Unlocked-Baseline: model/a.sysml" in log
+    err, _ = call("propose_edit", {"path": "approvals/gates.json", "content": "{}", "branch": "proposal/open-1", "message": "m"})
+    assert err
+
+
 def test_decision_log_validates_ids_and_appends(repo):
     shutil.copytree(core.CODE_ROOT / "model", repo / "model", dirs_exist_ok=True)
     base = {"stage": "model", "kind": "qa", "participants": ["h"], "question": "q", "decision": "d", "rationale": "r"}

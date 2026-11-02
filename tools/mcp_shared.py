@@ -45,7 +45,10 @@ def register_common(mcp):
         ws.resolve(path)
         if not branch.startswith("proposal/"):
             raise core.Rejected("writes are only accepted on branches matching proposal/*")
-        await core.confirm(ctx, f"Commit {path} to branch {branch}: {message}")
+        rel = ws.resolve(path).relative_to(ws.root).as_posix()
+        note = " [UNLOCKED: approved baseline file, re-approval required]" if (
+            core.unlocked_branch(branch) and rel in core.baseline_files(ws)) else ""
+        await core.confirm(ctx, f"Commit {path} to branch {branch}{note}: {message}")
         return {"branch": branch, "commit": core.propose_edit(path, content, branch, message), "status": "DRAFT"}
 
 

@@ -9,7 +9,7 @@ the scope content, the trace rules and, for G4, the recorded spec run.
 - `approvals/roles.json`: principal (key file name) → roles.
 - `approvals/keys/<principal>.pub`: the principal's SSH public key.
 
-Agents cannot read or write `approvals/`. Files of an approved scope cannot be changed through `propose_edit`.
+Agents cannot read or write `approvals/`. Files of an approved scope cannot be changed through `propose_edit` unless the operator unlocks the proposal branch ([how](agent-and-mcp.md#unlocking-a-proposal-branch)); the change then needs re-approval.
 
 ## Role names
 

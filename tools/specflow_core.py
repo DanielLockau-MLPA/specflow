@@ -187,15 +187,32 @@ def _require_append_only(ws, rel, content, branch):
             return
 
 
+def unlocked_branch(branch):
+    """True if the operator unlocked `branch` for edits of approved scope files (SPECFLOW_UNLOCK_BRANCHES).
+
+    The variable is set in the MCP server configuration by the human operator: a comma-separated list of
+    proposal/* branch names or fnmatch patterns. The agent cannot change the environment of a running server.
+    """
+    import fnmatch
+    patterns = [p.strip() for p in os.environ.get("SPECFLOW_UNLOCK_BRANCHES", "").split(",") if p.strip()]
+    return any(p.startswith("proposal/") and fnmatch.fnmatchcase(branch, p) for p in patterns)
+
+
 def propose_edit(path, content, branch, message, ws=None, session=None):
-    """Commit `content` to `path` on a proposal/* branch using a temporary worktree; the checkout is untouched."""
+    """Commit `content` to `path` on a proposal/* branch using a temporary worktree; the checkout is untouched.
+
+    Files of an approved baseline are refused unless the operator unlocked the branch; the commit then carries an
+    `Unlocked-Baseline` trailer and the changed scope needs re-approval before it can be merged and opened.
+    """
     ws = ws or Workspace()
     if not re.fullmatch(r"proposal/[\w.\-/]+", branch):
         raise Rejected("writes are only accepted on branches matching proposal/*")
     target = ws.resolve(path)
     rel = target.relative_to(ws.root).as_posix()
-    if rel in baseline_files(ws):
-        raise Rejected(f"{rel} belongs to an approved baseline; use the change process")
+    unlocked = rel in baseline_files(ws)
+    if unlocked and not unlocked_branch(branch):
+        raise Rejected(f"{rel} belongs to an approved baseline; use the change process "
+                       "(the operator can unlock the proposal branch with SPECFLOW_UNLOCK_BRANCHES)")
     if rel.startswith("decisions/"):
         _require_append_only(ws, rel, content, branch)
     with tempfile.TemporaryDirectory() as tmp:
@@ -207,7 +224,8 @@ def propose_edit(path, content, branch, message, ws=None, session=None):
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_text(content, encoding="utf-8")
             git("add", rel, cwd=wt)
-            git("commit", "-q", "-m", f"{message}\n\nStatus: DRAFT\n{AI_TRAILER}: {session or SESSION_ID}", cwd=wt)
+            trailer = f"\nUnlocked-Baseline: {rel}" if unlocked else ""
+            git("commit", "-q", "-m", f"{message}\n\nStatus: DRAFT{trailer}\n{AI_TRAILER}: {session or SESSION_ID}", cwd=wt)
             return git("rev-parse", "HEAD", cwd=wt)
         finally:
             git("worktree", "remove", "--force", str(wt), cwd=ws.root)

@@ -96,7 +96,21 @@ All prompts share the rules: ask first, one topic at a time; do not draft before
 | ConfidentialityFilter | content from paths in `.specflow/exclusions.json` or with a marker (default `CONFIDENTIAL`) is withheld from the agent; exclusions are logged. Currently applied by `read_document` only |
 | InputGuard | all agent-facing traffic passes it; content is labelled untrusted; state-changing tools need a human confirmation |
 | ConfirmationChannel | the human decision is requested through the client's elicitation prompt, outside the agent's control; if the client cannot elicit, the call is refused |
-| Approved scopes | `propose_edit` refuses files in the scope of a gate that has approval tags |
+| Approved scopes | `propose_edit` refuses files in the scope of a gate that has approval tags, unless the operator unlocked the branch (see [Unlocking a proposal branch](#unlocking-a-proposal-branch)) |
+
+## Unlocking a proposal branch
+
+Changing the model or specs after approval is a normal part of the process (see [gates and approvals](gates-and-approvals.md)). By default the agent cannot do it, because `propose_edit` refuses every file in the scope of a gate with approval tags. The human operator can unlock named proposal branches:
+
+```json
+"env": {"SPECFLOW_ROOT": "/path/to/workspace", "SPECFLOW_UNLOCK_BRANCHES": "proposal/railguard,proposal/fix-*"}
+```
+
+- The variable lists `proposal/*` branch names or `fnmatch` patterns, comma-separated. It is read from the server's environment, which the agent cannot change. Remove it (and restart the session) to lock again.
+- It applies only to `propose_edit` on matching branches. `main`, other branches, `approvals/`, `.git` and the decision logs (append-only) stay protected.
+- The confirmation prompt is marked `[UNLOCKED: approved baseline file, re-approval required]`; the commit carries an `Unlocked-Baseline: <path>` trailer in addition to `Status: DRAFT` and `AI-Authored-By:`.
+- Nothing is approved by this. The baseline tags still point at the approved commit. Merging the branch changes the gate scope, so the gates report stale approvals until every role re-signs ([gates and approvals](gates-and-approvals.md)). Review the branch like any other change before merging.
+- Restrict the pattern to the branch you are working on; do not use `proposal/*` permanently.
 
 ## Typical session
 
