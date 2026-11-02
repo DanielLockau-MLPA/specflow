@@ -118,3 +118,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Confirmed by the requirements owner after review on 2026-10-27.
 - rationale: SRC-001 depends on the summary; confirmation is evidence for G1 approval of the source mapping.
 - affected: SRC-001, N-001, N-005, N-007, N-008
+
+## DL-023
+- date: 2026-11-02
+- type: review
+- participants: DanielLockau-MLPA, Copilot
+- question: Is the architecture still consistent with the implementation after the proposal-branch unlock and out-of-band confirmation?
+- decision: Architecture cross-check found four divergences to fix in the model: (1) MCP servers need an ApprovalPort connection to ApprovalService; (2) confirmation path runs via the MCP client (elicitation) or out-of-band signed confirmation, terminal-prompt fallback replaced by out-of-band; (3) operator configuration (SPECFLOW_ROOT, SPECFLOW_UNLOCK_BRANCHES, SPECFLOW_CONFIRM_MODE, exclusions) is not modelled; (4) DR-003 and its scenario must allow the operator-unlocked proposal branch.
+- rationale: Review of model/40_architecture.sysml against tools/mcp_shared.py, tools/specflow_core.py and tools/confirm_oob.py; user asked for the edits through the MCP.
+- affected: DR-003, DR-032, DR-013, SR-040
