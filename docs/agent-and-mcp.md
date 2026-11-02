@@ -121,6 +121,8 @@ Out-of-band flow:
    The command shows the request text and signs the decision with your SSH key (`--key`, else `git config user.signingkey`). It refuses to run without an interactive terminal.
 3. The server verifies the signature against `approvals/keys/<principal>.pub`; the principal must hold a role in `approvals/roles.json`. The signed text contains the request ID and the SHA-256 of the exact request message, so a signature cannot be reused for another request or another message. An invalid, unknown or missing signature, a denial or a timeout aborts the call.
 
+Client timeout: the MCP client aborts a tool call after its own timeout (Copilot CLI: the `timeout` field of a server entry, in milliseconds, or `copilot mcp add --timeout <ms>`), which can be shorter than the server's wait. If a confirmation call fails with `MCP error -32001: Request timed out`, set `"timeout"` on both servers above `SPECFLOW_CONFIRM_TIMEOUT` (for example `"timeout": 360000`) and run `confirm_oob.py list` in the second terminal as soon as the agent starts the call.
+
 Security notes: a signature needs your private key, so keep it passphrase-protected and do not load it into an `ssh-agent` that the agent session can reach. The agent can read pending requests and could run the command, but cannot sign. As with approvals, the boundary is your key, not the terminal. Do not leave `oob` or `auto` configured in a shared `.github/mcp.json` unless every approver keeps the key discipline.
 
 ## Unlocking a proposal branch
