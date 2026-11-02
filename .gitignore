@@ -11,3 +11,4 @@ docs/diagrams/*.png
 docs/diagrams.html
 .specflow/results/
 .specflow/exclusion.log
+/.mcp.json
