@@ -136,3 +136,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Noted deviation: the human approved the DL-023 record out-of-band and committed it by hand before the agent reported the result. Content is unchanged and correct; subsequent edits go through the MCP servers end to end.
 - rationale: Client timeout (-32001) prevented the agent from seeing the completed call; transparency of the audit trail requires recording the deviation.
 - affected: DR-032, SR-040
+
+## DL-025
+- date: 2026-11-03
+- type: review
+- participants: DanielLockau-MLPA, Copilot
+- question: Should the toolchain adopt Doorstop or StrictDoc, or stay with the SysML v2 centred model, Gherkin specs and signed gates?
+- decision: Keep the foundational MBSE-inspired, SysML v2 centred toolchain. Neither Doorstop nor StrictDoc is adopted. A feature comparison is documented in docs/tooling-comparison.md.
+- rationale: Research on 2026-11-03 found no existing tool covering the SysML v2 model with architecture allocation and diagrams, signed per-role gates, agent-safe MCP access or the execution railguard. Doorstop and StrictDoc could replace only the trace checker and would add a second data model plus link conversion; the existing SysML v2 MCP servers need a REST API server, not git text files.
+- affected: SR-020, DR-029

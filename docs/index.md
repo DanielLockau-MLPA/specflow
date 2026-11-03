@@ -11,6 +11,7 @@ Hand-written guides:
 | [agent-and-mcp.md](agent-and-mcp.md) | MCP servers, tools, prompts, guards |
 | [waivers.md](waivers.md) | Accepting a trace gap with a signed, time-limited waiver |
 | [retrospective.md](retrospective.md) | Findings from dogfooding the workflow |
+| [tooling-comparison.md](tooling-comparison.md) | Feature comparison with existing tools (build versus reuse, DL-025) |
 
 Generated files (do not edit by hand): [diagrams.md](diagrams.md) and `diagrams/` (from `tools/arch.py`), [step_vocabulary.md](step_vocabulary.md) (from `tools/steps_vocab.py`).
 `sources/` holds input documents of this project.
