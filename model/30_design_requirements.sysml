@@ -17,7 +17,7 @@ package DesignRequirements {
         attribute :>> kind = Kind::functional;
     }
     requirement <'DR-003'> ProposeOnBranchOnly : DesignRequirement {
-        doc /* Propose-edit tools shall write only to branches matching proposal/*, and shall refuse any write to a baseline ref or to a file of an approved baseline. */
+        doc /* Propose-edit tools shall write only to branches matching proposal/*, and shall refuse any write to a baseline ref or to a file of an approved baseline, unless the operator unlocked that proposal branch (DR-035); an unlocked write shall be marked in the confirmation request and in the commit trailer, and still requires human confirmation. */
         attribute :>> kind = Kind::security;
     }
     requirement <'DR-004'> AiAuthorshipMarking : DesignRequirement {
@@ -124,7 +124,7 @@ package DesignRequirements {
     }
 
     requirement <'DR-032'> HumanConfirmationChannel : DesignRequirement {
-        doc /* Confirmation of a state-changing tool call shall be requested from the human through a channel outside the agent session (client confirmation dialog or terminal prompt); the agent shall receive only the decision, and a missing or negative answer shall abort the call. */
+        doc /* Confirmation of a state-changing tool call shall be requested from the human through a channel outside the agent session (client confirmation dialog, or a confirmation signed by a registered approver key in a separate terminal); the agent shall receive only the decision, and a missing, unsigned, unverifiable or negative answer shall abort the call. */
         attribute :>> kind = Kind::security;
     }
     requirement <'DR-033'> SourceTraceRules : DesignRequirement {
@@ -134,6 +134,10 @@ package DesignRequirements {
     requirement <'DR-034'> SourceDeclaration : DesignRequirement {
         doc /* Requirement sources shall be declared as SysML items with the short name SRC-<number>, a kind (norm, communication or document) and a reference to the written source; stakeholders shall be declared as parts with the short name STK-<number>; needs link to sources with 'cites' and sources link to stakeholders with 'raisedBy' dependencies. */
         attribute :>> kind = Kind::functional;
+    }
+    requirement <'DR-035'> OperatorControlledSettings : DesignRequirement {
+        doc /* Security-relevant settings (workspace root, unlocked proposal branches, confirmation mode and timeout, confidentiality exclusions) shall be read only from the operator configuration at server start; no tool input or agent-reachable file shall set or change them, and a change takes effect only after a restart. */
+        attribute :>> kind = Kind::security;
     }
 
     // Quality and format
@@ -207,6 +211,8 @@ package DesignRequirements {
     dependency 'DR-030 derives SR-021' from HeadlessCli to CiReproducible;
     dependency 'DR-033 derives SR-017' from SourceTraceRules to RequirementSourceTraceability;
     dependency 'DR-034 derives SR-017' from SourceDeclaration to RequirementSourceTraceability;
+    dependency 'DR-035 derives SR-040' from OperatorControlledSettings to NoAgentWriteToBaseline;
+    dependency 'DR-035 derives SR-044' from OperatorControlledSettings to NoSecretsToLlm;
     dependency 'DR-031 derives SR-032' from AuditQuery to RequirementsToTestEvidence;
     dependency 'DR-031 derives SR-030' from AuditQuery to ChangeRecords;
 }
