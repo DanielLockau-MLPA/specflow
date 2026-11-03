@@ -4,6 +4,7 @@ import datetime
 from behave import given, then, when
 
 import approvals
+import exectrace
 import gate as gatelib
 import specflow_core as core
 import specrun
@@ -20,7 +21,7 @@ def scenario_results(failing=0):
 
 
 def record_run(world, failing=0):
-    return specrun.record(world.ws, scenario_results(failing))
+    return specrun.record(world.ws, scenario_results(failing), sorted(exectrace.inventory()))
 
 
 def approve_roles(context, gate, roles):
