@@ -16,6 +16,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import exectrace  # noqa: F401  (starts the railguard function trace when SPECFLOW_TRACE_DIR is set)
+
 TOOLS = Path(__file__).resolve().parent
 COMMANDS = {"validate": "validate_model.py", "trace": "tracecheck.py", "run": "specrun.py", "coverage": "coverage_report.py",
             "gate": "gate.py", "impact": "impact.py", "audit": "audit.py", "id": "ids.py",

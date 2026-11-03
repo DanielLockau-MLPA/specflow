@@ -18,6 +18,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+import exectrace  # noqa: F401  (starts the railguard function trace when SPECFLOW_TRACE_DIR is set)
+
 ROOT = Path(__file__).resolve().parent.parent
 
 

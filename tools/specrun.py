@@ -15,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import approvals
+import exectrace
 import specflow_core as core
 import tracecheck
 
@@ -35,9 +36,12 @@ def _status_counts(scenarios):
 def run_behave(ws):
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "r.json"
+        trace_dir = Path(tmp) / "trace"
         subprocess.run([sys.executable, "-m", "behave", "specs/features", "-f", "json", "-o", str(out), "--no-summary"],
-                       capture_output=True, text=True, cwd=ws.root, env={**os.environ, "SPECFLOW_ROOT": str(ws.root)}, check=False)
+                       capture_output=True, text=True, cwd=ws.root, check=False,
+                       env={**os.environ, "SPECFLOW_ROOT": str(ws.root), "SPECFLOW_TRACE_DIR": str(trace_dir)})
         data = json.loads(out.read_text(encoding="utf-8")) if out.exists() else []
+        executed = exectrace.merge(trace_dir)
     results = []
     for feature in data:
         for el in feature.get("elements", []):
@@ -52,14 +56,14 @@ def run_behave(ws):
                 "manual": "manual" in el.get("tags", []),
                 "duration": round(sum(s.get("result", {}).get("duration", 0) for s in steps), 6),
                 "detail": "\n".join(failed["result"].get("error_message", []))[:600] if failed else ""})
-    return sorted(results, key=lambda r: r["location"])
+    return sorted(results, key=lambda r: r["location"]), executed
 
 
-def record(ws, scenarios):
-    """Store a run as evidence for the current content."""
+def record(ws, scenarios, executed=None):
+    """Store a run as evidence for the current content; `executed` are the functions the run entered (None: not traced)."""
     head = core.git("rev-parse", "HEAD", cwd=ws.root)
     payload = {"head": head, "fingerprint": approvals.fingerprint(ws, head, RESULT_SCOPE),
-               "summary": _status_counts(scenarios), "scenarios": scenarios}
+               "summary": _status_counts(scenarios), "scenarios": scenarios, "executed_functions": executed}
     f = result_file(ws)
     f.parent.mkdir(parents=True, exist_ok=True)
     f.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
@@ -68,7 +72,7 @@ def record(ws, scenarios):
 
 def run(ws=None):
     ws = ws or core.Workspace()
-    return record(ws, run_behave(ws))
+    return record(ws, *run_behave(ws))
 
 
 def load(ws):

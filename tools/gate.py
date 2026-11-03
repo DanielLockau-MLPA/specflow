@@ -15,6 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import approvals
+import exectrace
 import specflow_core as core
 import specrun
 import tracecheck
@@ -85,6 +86,10 @@ def evaluate(gate, ws=None, run_specs=False):
                                    "manual": [s["location"] for s in manual]}
             if bad:
                 problems.append(f"{len(bad)} scenario(s) did not pass; first: {bad[0]['location']} ({bad[0]['status']})")
+            if cfg.get("railguard"):
+                guard = exectrace.report(payload.get("executed_functions"), ws.root)
+                report["railguard"] = {k: v for k, v in guard.items() if k != "problems"}
+                problems += guard["problems"]
 
     current = [e["tag"] for e in status["roles"].values() if e["valid"]]
     reviewed = [core.git("rev-parse", f"{t}^{{commit}}", cwd=ws.root) for t in current]

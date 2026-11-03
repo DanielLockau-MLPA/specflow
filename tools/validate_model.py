@@ -20,6 +20,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import exectrace  # noqa: F401  (starts the railguard function trace when SPECFLOW_TRACE_DIR is set)
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = Path(os.environ.get("SPECFLOW_ROOT", ROOT)).resolve()
 SERVER = ROOT / "tools/node/node_modules/sysml-v2-lsp/dist/server/mcpServer.js"

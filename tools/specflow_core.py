@@ -15,6 +15,8 @@ from pathlib import Path
 
 from mcp.server.mcpserver.exceptions import ToolError
 
+import exectrace  # noqa: F401  (starts the railguard function trace when SPECFLOW_TRACE_DIR is set)
+
 CODE_ROOT = Path(__file__).resolve().parent.parent
 ROOT = Path(os.environ.get("SPECFLOW_ROOT", Path(__file__).resolve().parent.parent)).resolve()
 PROTECTED = (".git", ".approvals", "approvals")

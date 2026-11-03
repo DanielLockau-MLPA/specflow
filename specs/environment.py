@@ -3,7 +3,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "steps"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
+import exectrace  # noqa: F401  (the behave process takes part in the railguard function trace)
 from world import Keys, World
 
 
