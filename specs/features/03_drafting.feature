@@ -59,3 +59,18 @@ Feature: Agent drafting of model and specification
     Given an approved model baseline
     When the agent proposes a change to a file of that baseline
     Then the write is rejected
+
+  @DR-003 @DR-035 @SR-040
+  Scenario: An operator-unlocked proposal branch accepts a change to a baseline file
+    Given an approved model baseline
+    And the operator unlocked the proposal branch "proposal/model-draft"
+    When the agent proposes a change to a file of that baseline
+    Then the write is accepted
+    And the commit on the proposal branch carries the trailer "Unlocked-Baseline"
+
+  @DR-003 @DR-035 @SR-040
+  Scenario: An unlock of another proposal branch does not open this one
+    Given an approved model baseline
+    And the operator unlocked the proposal branch "proposal/other-draft"
+    When the agent proposes a change to a file of that baseline
+    Then the write is rejected
