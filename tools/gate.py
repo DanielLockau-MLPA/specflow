@@ -118,6 +118,8 @@ def main(argv):
         print(f"{gate}: {'OPEN' if rep['open'] else 'CLOSED'}")
         for p in rep["problems"]:
             print(f"  - {p}")
+        if rep.get("railguard"):
+            print("\n".join(exectrace.describe(rep["railguard"])))
     return 0 if rep["open"] else 1
 
 

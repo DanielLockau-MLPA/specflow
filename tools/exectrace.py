@@ -103,9 +103,22 @@ def report(executed, root, functions=None):
     done = set(executed)
     unexecuted = sorted(functions - done - set(allowed))
     problems += [f"function never executed by a scenario: {k}" for k in unexecuted]
+    skipped = sorted(set(allowed) & functions - done)
     return {"traced": True, "functions": len(functions), "executed": len(functions & done),
-            "unexecuted": unexecuted, "allowlisted": sorted(set(allowed) & functions - done),
+            "unexecuted": unexecuted, "allowlisted": skipped,
+            "allowlist_reasons": {k: allowed[k] for k in skipped},
             "stale_allowlist": sorted(set(allowed) - functions), "problems": problems}
+
+
+def describe(rep):
+    """Text lines of a report: the summary and every allowlisted function with its reason."""
+    if not rep.get("traced"):
+        return []
+    lines = [(f"railguard: {rep['executed']} of {rep['functions']} functions executed, "
+              f"{len(rep['allowlisted'])} allowlisted")]
+    lines += [f"  allowlisted {k}: {v}" for k, v in rep["allowlist_reasons"].items()]
+    lines += [f"  stale allowlist entry: {k}" for k in rep["stale_allowlist"]]
+    return lines
 
 
 def main(argv):
@@ -113,7 +126,8 @@ def main(argv):
         print(__doc__)
         return 2
     rep = report(merge(argv[1]), Path(os.environ.get("SPECFLOW_ROOT", CODE_DIR.parent)))
-    print(json.dumps(rep, indent=2, sort_keys=True) if "--json" in argv else "\n".join(rep["problems"]) or "OK")
+    print(json.dumps(rep, indent=2, sort_keys=True) if "--json" in argv
+          else "\n".join([*rep["problems"], *describe(rep)]) or "OK")
     return 1 if rep["problems"] else 0
 
 

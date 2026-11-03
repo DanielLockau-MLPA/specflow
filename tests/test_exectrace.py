@@ -45,3 +45,13 @@ def test_report_flags_unexecuted_functions_and_honours_reasoned_allowlist(tmp_pa
 def test_report_without_trace_is_not_evidence(tmp_path):
     rep = exectrace.report(None, tmp_path, {"tools/a.py:f"})
     assert not rep["traced"] and rep["problems"]
+
+
+def test_describe_lists_allowlisted_functions_with_reasons(tmp_path):
+    (tmp_path / "specs").mkdir()
+    (tmp_path / exectrace.ALLOWLIST).write_text(
+        '{"entries":[{"function":"tools/a.py:g","reason":"manual only"}]}', encoding="utf-8")
+    rep = exectrace.report(["tools/a.py:f"], tmp_path, {"tools/a.py:f", "tools/a.py:g"})
+    text = "\n".join(exectrace.describe(rep))
+    assert "1 of 2 functions executed, 1 allowlisted" in text
+    assert "allowlisted tools/a.py:g: manual only" in text
