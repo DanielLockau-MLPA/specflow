@@ -47,7 +47,8 @@ Check: `uv run python tools/specflow.py gate G2 [--run] [--json]`; the report li
 The spec says what must be in the implementation; the railguard (SR-018) finds what is in it without being specified.
 `specrun` starts behave with `SPECFLOW_TRACE_DIR`; `tools/exectrace.py` (standard-library `sys.monitoring`, started by one import
 in every entry point) records each function of `tools/` that is entered, in the behave process and in every subprocess,
-and the merged list is stored in `.specflow/results/last_run.json`. The G4 check compares it with a static inventory of all
+and the merged list is stored in `.specflow/results/last_run.json`. This file is the recorded run evidence and is committed to the
+repository (it is outside the model/specs fingerprint, so committing it does not invalidate the run). The G4 check compares it with a static inventory of all
 functions in `tools/`; each function that was never entered keeps G4 closed unless `specs/railguard_allowlist.json`
 lists it with a reason:
 

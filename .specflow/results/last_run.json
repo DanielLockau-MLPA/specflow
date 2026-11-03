@@ -1,0 +1,1955 @@
+{
+  "executed_functions": [
+    "tools/approvals.py:Verification",
+    "tools/approvals.py:Verification.__annotate__",
+    "tools/approvals.py:_is_ancestor",
+    "tools/approvals.py:_json",
+    "tools/approvals.py:_revision",
+    "tools/approvals.py:_scope",
+    "tools/approvals.py:_signers",
+    "tools/approvals.py:create_approval",
+    "tools/approvals.py:current_tag",
+    "tools/approvals.py:drift",
+    "tools/approvals.py:fingerprint",
+    "tools/approvals.py:gate_status",
+    "tools/approvals.py:gates",
+    "tools/approvals.py:protected_files",
+    "tools/approvals.py:role_tags",
+    "tools/approvals.py:status",
+    "tools/approvals.py:verify_tag",
+    "tools/arch.py:architecture",
+    "tools/arch.py:block",
+    "tools/arch.py:build_diagrams",
+    "tools/arch.py:build_diagrams.<locals>.chain",
+    "tools/arch.py:conn_kind",
+    "tools/arch.py:data_root",
+    "tools/arch.py:ids_and_names",
+    "tools/arch.py:mm",
+    "tools/arch.py:read_model",
+    "tools/arch.py:strip_docs",
+    "tools/arch.py:trace_links",
+    "tools/audit.py:_cfg",
+    "tools/audit.py:approval_records",
+    "tools/audit.py:bundle",
+    "tools/audit.py:change_records",
+    "tools/audit.py:integrity",
+    "tools/audit.py:main",
+    "tools/audit.py:query",
+    "tools/audit.py:test_evidence",
+    "tools/coverage_report.py:build",
+    "tools/coverage_report.py:build.<locals>.row",
+    "tools/coverage_report.py:main",
+    "tools/coverage_report.py:markdown",
+    "tools/exectrace.py:_key",
+    "tools/exectrace.py:_walk",
+    "tools/exectrace.py:inventory",
+    "tools/exectrace.py:load_allowlist",
+    "tools/exectrace.py:merge",
+    "tools/exectrace.py:report",
+    "tools/exectrace.py:start",
+    "tools/exectrace.py:start.<locals>.flush",
+    "tools/exectrace.py:start.<locals>.on_start",
+    "tools/gate.py:_ai_commits",
+    "tools/gate.py:_changed_elements",
+    "tools/gate.py:evaluate",
+    "tools/gate.py:main",
+    "tools/ids.py:check_new_id",
+    "tools/ids.py:used_ids",
+    "tools/impact.py:_closure",
+    "tools/impact.py:analyse",
+    "tools/impact.py:element_file",
+    "tools/mcp_model.py:__annotate__",
+    "tools/mcp_model.py:_info",
+    "tools/mcp_model.py:read_element",
+    "tools/mcp_model.py:request_model_draft",
+    "tools/mcp_model.py:search",
+    "tools/mcp_shared.py:register_common",
+    "tools/mcp_shared.py:register_common.<locals>.__annotate__",
+    "tools/mcp_shared.py:register_common.<locals>.approval_status",
+    "tools/mcp_shared.py:register_common.<locals>.propose_edit",
+    "tools/mcp_shared.py:register_common.<locals>.read_document",
+    "tools/mcp_shared.py:register_common.<locals>.record_decision",
+    "tools/mcp_shared.py:register_prompts",
+    "tools/mcp_shared.py:register_prompts.<locals>.__annotate__",
+    "tools/mcp_shared.py:register_prompts.<locals>.model_qa",
+    "tools/mcp_shared.py:register_prompts.<locals>.spec_qa",
+    "tools/mcp_spec.py:__annotate__",
+    "tools/mcp_spec.py:draft_scenarios",
+    "tools/specflow.py:main",
+    "tools/specflow_core.py:Rejected",
+    "tools/specflow_core.py:Workspace",
+    "tools/specflow_core.py:Workspace.__init__",
+    "tools/specflow_core.py:Workspace.resolve",
+    "tools/specflow_core.py:_all_entries",
+    "tools/specflow_core.py:_exclusions",
+    "tools/specflow_core.py:_log_file",
+    "tools/specflow_core.py:_require_append_only",
+    "tools/specflow_core.py:add_exclusion_marker",
+    "tools/specflow_core.py:baseline_exists",
+    "tools/specflow_core.py:baseline_files",
+    "tools/specflow_core.py:confirm",
+    "tools/specflow_core.py:confirm.<locals>.Decision",
+    "tools/specflow_core.py:confirm.<locals>.Decision.__annotate__",
+    "tools/specflow_core.py:filter_content",
+    "tools/specflow_core.py:git",
+    "tools/specflow_core.py:list_decisions",
+    "tools/specflow_core.py:model_ids",
+    "tools/specflow_core.py:propose_edit",
+    "tools/specflow_core.py:qa_recorded",
+    "tools/specflow_core.py:record_decision",
+    "tools/specflow_core.py:require_preconditions",
+    "tools/specflow_core.py:unlocked_branch",
+    "tools/specflow_core.py:untrusted",
+    "tools/specrun.py:_status_counts",
+    "tools/specrun.py:freshness",
+    "tools/specrun.py:load",
+    "tools/specrun.py:main",
+    "tools/specrun.py:record",
+    "tools/specrun.py:result_file",
+    "tools/specrun.py:run",
+    "tools/specrun.py:run_behave",
+    "tools/tracecheck.py:check",
+    "tools/tracecheck.py:check.<locals>.add",
+    "tools/tracecheck.py:element_hash",
+    "tools/tracecheck.py:evaluate",
+    "tools/tracecheck.py:evaluate.<locals>.is_waived",
+    "tools/tracecheck.py:graph",
+    "tools/tracecheck.py:graph_json",
+    "tools/tracecheck.py:load_model",
+    "tools/tracecheck.py:load_scenarios",
+    "tools/tracecheck.py:load_waivers",
+    "tools/tracecheck.py:main",
+    "tools/tracecheck.py:prefix",
+    "tools/tracecheck.py:query",
+    "tools/tracecheck.py:reaches_source",
+    "tools/tracecheck.py:reference_findings",
+    "tools/tracecheck.py:summary",
+    "tools/validate_model.py:_backend",
+    "tools/validate_model.py:_element_at",
+    "tools/validate_model.py:_undocumented_requirements",
+    "tools/validate_model.py:collect",
+    "tools/validate_model.py:main",
+    "tools/validate_model.py:sysml_mcp_backend",
+    "tools/waivers.py:_parse",
+    "tools/waivers.py:element_key",
+    "tools/waivers.py:load"
+  ],
+  "fingerprint": "f1b33aa88f868b8e7a60b9876cf023ed27dced1829c057552e970da6b97039f8",
+  "head": "02fccacaba7659d488bb9a73e67207a9b689ecd8",
+  "scenarios": [
+    {
+      "detail": "",
+      "duration": 0.008971,
+      "location": "specs/features/01_workflow_qa.feature:17",
+      "manual": false,
+      "scenario": "Q&A prompts instruct the agent to ask first -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-001",
+        "DR-022"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002506,
+      "location": "specs/features/01_workflow_qa.feature:18",
+      "manual": false,
+      "scenario": "Q&A prompts instruct the agent to ask first -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-001",
+        "DR-022"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.013205,
+      "location": "specs/features/01_workflow_qa.feature:28",
+      "manual": false,
+      "scenario": "Drafting is refused without a recorded Q&A for the stage -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-001"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.012232,
+      "location": "specs/features/01_workflow_qa.feature:29",
+      "manual": false,
+      "scenario": "Drafting is refused without a recorded Q&A for the stage -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-001"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.003721,
+      "location": "specs/features/01_workflow_qa.feature:32",
+      "manual": false,
+      "scenario": "A decision entry carries all mandatory fields",
+      "status": "passed",
+      "tags": [
+        "SR-007",
+        "DR-021"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.013119,
+      "location": "specs/features/01_workflow_qa.feature:38",
+      "manual": false,
+      "scenario": "The decision log is append-only",
+      "status": "passed",
+      "tags": [
+        "SR-007",
+        "DR-021"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.001754,
+      "location": "specs/features/01_workflow_qa.feature:45",
+      "manual": false,
+      "scenario": "A decision cannot reference an unknown element",
+      "status": "passed",
+      "tags": [
+        "SR-007",
+        "SR-022"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 3.046835,
+      "location": "specs/features/02_model_validation.feature:16",
+      "manual": false,
+      "scenario": "Findings carry location, element and severity -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-004",
+        "DR-002"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 2.88378,
+      "location": "specs/features/02_model_validation.feature:17",
+      "manual": false,
+      "scenario": "Findings carry location, element and severity -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-004",
+        "DR-002"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 3.393566,
+      "location": "specs/features/02_model_validation.feature:20",
+      "manual": false,
+      "scenario": "A valid model validates without errors",
+      "status": "passed",
+      "tags": [
+        "SR-004"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 3.063716,
+      "location": "specs/features/02_model_validation.feature:26",
+      "manual": false,
+      "scenario": "The parser backend can be replaced",
+      "status": "passed",
+      "tags": [
+        "DR-002"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002585,
+      "location": "specs/features/02_model_validation.feature:32",
+      "manual": false,
+      "scenario": "The model server exposes the documented tools",
+      "status": "passed",
+      "tags": [
+        "DR-001",
+        "SR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.521323,
+      "location": "specs/features/02_model_validation.feature:37",
+      "manual": false,
+      "scenario": "Reading and searching elements by ID",
+      "status": "passed",
+      "tags": [
+        "DR-001"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.234243,
+      "location": "specs/features/03_drafting.feature:14",
+      "manual": false,
+      "scenario": "A model draft is delivered as a proposal",
+      "status": "passed",
+      "tags": [
+        "SR-002",
+        "DR-003"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.016113,
+      "location": "specs/features/03_drafting.feature:22",
+      "manual": false,
+      "scenario": "Specification drafting requires an approved model",
+      "status": "passed",
+      "tags": [
+        "SR-003"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.311928,
+      "location": "specs/features/03_drafting.feature:28",
+      "manual": false,
+      "scenario": "Drafted scenarios reference the model elements they verify",
+      "status": "passed",
+      "tags": [
+        "SR-003",
+        "DR-005",
+        "DR-006"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.525627,
+      "location": "specs/features/03_drafting.feature:36",
+      "manual": false,
+      "scenario": "A scenario without a valid ID tag is invalid",
+      "status": "passed",
+      "tags": [
+        "DR-006"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002158,
+      "location": "specs/features/03_drafting.feature:42",
+      "manual": false,
+      "scenario": "The spec server exposes the documented tools",
+      "status": "passed",
+      "tags": [
+        "DR-005"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.019985,
+      "location": "specs/features/03_drafting.feature:53",
+      "manual": false,
+      "scenario": "Proposals are only accepted on proposal branches -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.005463,
+      "location": "specs/features/03_drafting.feature:54",
+      "manual": false,
+      "scenario": "Proposals are only accepted on proposal branches -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.005386,
+      "location": "specs/features/03_drafting.feature:55",
+      "manual": false,
+      "scenario": "Proposals are only accepted on proposal branches -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.228078,
+      "location": "specs/features/03_drafting.feature:58",
+      "manual": false,
+      "scenario": "Files of an approved baseline cannot be changed by a proposal",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.249427,
+      "location": "specs/features/03_drafting.feature:64",
+      "manual": false,
+      "scenario": "An operator-unlocked proposal branch accepts a change to a baseline file",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "DR-035",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.230477,
+      "location": "specs/features/03_drafting.feature:72",
+      "manual": false,
+      "scenario": "An unlock of another proposal branch does not open this one",
+      "status": "passed",
+      "tags": [
+        "DR-003",
+        "DR-035",
+        "SR-040"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.015891,
+      "location": "specs/features/03_drafting.feature:8",
+      "manual": false,
+      "scenario": "Model drafting requires an approved requirement baseline",
+      "status": "passed",
+      "tags": [
+        "SR-002"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.245233,
+      "location": "specs/features/04_trace.feature:103",
+      "manual": false,
+      "scenario": "Invalid waivers are not accepted -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-015"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.245478,
+      "location": "specs/features/04_trace.feature:104",
+      "manual": false,
+      "scenario": "Invalid waivers are not accepted -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-015"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.253059,
+      "location": "specs/features/04_trace.feature:105",
+      "manual": false,
+      "scenario": "Invalid waivers are not accepted -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-015"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.49405,
+      "location": "specs/features/04_trace.feature:108",
+      "manual": false,
+      "scenario": "Sources and stakeholders are declared as identified model elements",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-034"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.55343,
+      "location": "specs/features/04_trace.feature:122",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.520246,
+      "location": "specs/features/04_trace.feature:123",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.507229,
+      "location": "specs/features/04_trace.feature:124",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.507886,
+      "location": "specs/features/04_trace.feature:125",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.552019,
+      "location": "specs/features/04_trace.feature:126",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.5 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.52352,
+      "location": "specs/features/04_trace.feature:127",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.6 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.517413,
+      "location": "specs/features/04_trace.feature:128",
+      "manual": false,
+      "scenario": "Trace queries work in both directions -- @1.7 ",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-008"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.371706,
+      "location": "specs/features/04_trace.feature:131",
+      "manual": false,
+      "scenario": "A reference to a removed element is reported as dangling",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-010"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.369395,
+      "location": "specs/features/04_trace.feature:137",
+      "manual": false,
+      "scenario": "A link whose target changed since approval is reported as stale",
+      "status": "passed",
+      "tags": [
+        "SR-016",
+        "DR-010"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.67628,
+      "location": "specs/features/04_trace.feature:143",
+      "manual": false,
+      "scenario": "The trace graph is deterministic",
+      "status": "passed",
+      "tags": [
+        "DR-008",
+        "SR-021"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.014207,
+      "location": "specs/features/04_trace.feature:15",
+      "manual": false,
+      "scenario": "Model trace rules report orphans and gaps -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.013412,
+      "location": "specs/features/04_trace.feature:16",
+      "manual": false,
+      "scenario": "Model trace rules report orphans and gaps -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.014264,
+      "location": "specs/features/04_trace.feature:17",
+      "manual": false,
+      "scenario": "Model trace rules report orphans and gaps -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.014174,
+      "location": "specs/features/04_trace.feature:18",
+      "manual": false,
+      "scenario": "Model trace rules report orphans and gaps -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.010719,
+      "location": "specs/features/04_trace.feature:21",
+      "manual": false,
+      "scenario": "A need without a use case is reported at the needs stage",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011649,
+      "location": "specs/features/04_trace.feature:34",
+      "manual": false,
+      "scenario": "Source rules report needs without sources and sources without stakeholders -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.01216,
+      "location": "specs/features/04_trace.feature:35",
+      "manual": false,
+      "scenario": "Source rules report needs without sources and sources without stakeholders -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011478,
+      "location": "specs/features/04_trace.feature:36",
+      "manual": false,
+      "scenario": "Source rules report needs without sources and sources without stakeholders -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.013278,
+      "location": "specs/features/04_trace.feature:46",
+      "manual": false,
+      "scenario": "Use cases and requirements must reach a source through their trace chain -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011766,
+      "location": "specs/features/04_trace.feature:47",
+      "manual": false,
+      "scenario": "Use cases and requirements must reach a source through their trace chain -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.013687,
+      "location": "specs/features/04_trace.feature:48",
+      "manual": false,
+      "scenario": "Use cases and requirements must reach a source through their trace chain -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.503175,
+      "location": "specs/features/04_trace.feature:51",
+      "manual": false,
+      "scenario": "A complete set of needs and sources has no violations",
+      "status": "passed",
+      "tags": [
+        "SR-017",
+        "DR-033"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.501729,
+      "location": "specs/features/04_trace.feature:57",
+      "manual": false,
+      "scenario": "A complete model has no trace violations",
+      "status": "passed",
+      "tags": [
+        "SR-013",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011054,
+      "location": "specs/features/04_trace.feature:70",
+      "manual": false,
+      "scenario": "Spec trace rules report unverified requirements and bad references -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-014",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.014562,
+      "location": "specs/features/04_trace.feature:71",
+      "manual": false,
+      "scenario": "Spec trace rules report unverified requirements and bad references -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-014",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011319,
+      "location": "specs/features/04_trace.feature:72",
+      "manual": false,
+      "scenario": "Spec trace rules report unverified requirements and bad references -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-014",
+        "DR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.541407,
+      "location": "specs/features/04_trace.feature:84",
+      "manual": false,
+      "scenario": "Trace gaps keep the gate closed -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.520876,
+      "location": "specs/features/04_trace.feature:85",
+      "manual": false,
+      "scenario": "Trace gaps keep the gate closed -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.65863,
+      "location": "specs/features/04_trace.feature:88",
+      "manual": false,
+      "scenario": "A waiver lets the gate open and stays visible",
+      "status": "passed",
+      "tags": [
+        "SR-015",
+        "DR-015"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.634208,
+      "location": "specs/features/05_coverage_and_run.feature:23",
+      "manual": false,
+      "scenario": "The coverage report exists as JSON and Markdown -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-005",
+        "DR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.670437,
+      "location": "specs/features/05_coverage_and_run.feature:24",
+      "manual": false,
+      "scenario": "The coverage report exists as JSON and Markdown -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-005",
+        "DR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.070975,
+      "location": "specs/features/05_coverage_and_run.feature:27",
+      "manual": false,
+      "scenario": "Each scenario result carries its ID tags, status and duration",
+      "status": "passed",
+      "tags": [
+        "SR-006",
+        "DR-007"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.07896,
+      "location": "specs/features/05_coverage_and_run.feature:34",
+      "manual": false,
+      "scenario": "A failing scenario is reported with its requirement IDs",
+      "status": "passed",
+      "tags": [
+        "SR-006"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 3.055769,
+      "location": "specs/features/05_coverage_and_run.feature:47",
+      "manual": false,
+      "scenario": "CLI commands return non-zero exit codes on failure -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-021",
+        "DR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.533891,
+      "location": "specs/features/05_coverage_and_run.feature:48",
+      "manual": false,
+      "scenario": "CLI commands return non-zero exit codes on failure -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-021",
+        "DR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.5686,
+      "location": "specs/features/05_coverage_and_run.feature:49",
+      "manual": false,
+      "scenario": "CLI commands return non-zero exit codes on failure -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-021",
+        "DR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.523668,
+      "location": "specs/features/05_coverage_and_run.feature:50",
+      "manual": false,
+      "scenario": "CLI commands return non-zero exit codes on failure -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-021",
+        "DR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 8.541289,
+      "location": "specs/features/05_coverage_and_run.feature:53",
+      "manual": false,
+      "scenario": "Identical inputs give identical results",
+      "status": "passed",
+      "tags": [
+        "SR-021"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 4.627525,
+      "location": "specs/features/05_coverage_and_run.feature:59",
+      "manual": false,
+      "scenario": "The commands need no agent and no network",
+      "status": "passed",
+      "tags": [
+        "SR-021",
+        "DR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.064171,
+      "location": "specs/features/05_coverage_and_run.feature:8",
+      "manual": false,
+      "scenario": "The coverage report covers every level and lists gaps",
+      "status": "passed",
+      "tags": [
+        "SR-005",
+        "DR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.017377,
+      "location": "specs/features/06_approvals_gates.feature:103",
+      "manual": false,
+      "scenario": "Only registered human keys with the role can approve -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-031",
+        "DR-013"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.018852,
+      "location": "specs/features/06_approvals_gates.feature:104",
+      "manual": false,
+      "scenario": "Only registered human keys with the role can approve -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-031",
+        "DR-013"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002878,
+      "location": "specs/features/06_approvals_gates.feature:105",
+      "manual": false,
+      "scenario": "Only registered human keys with the role can approve -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-031",
+        "DR-013"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.018741,
+      "location": "specs/features/06_approvals_gates.feature:108",
+      "manual": false,
+      "scenario": "A signer without the role mapping is rejected",
+      "status": "passed",
+      "tags": [
+        "SR-031",
+        "DR-013"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.419416,
+      "location": "specs/features/06_approvals_gates.feature:114",
+      "manual": false,
+      "scenario": "Single-person approval opens a gate only when explicitly allowed",
+      "status": "passed",
+      "tags": [
+        "SR-031",
+        "DR-013"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.348869,
+      "location": "specs/features/06_approvals_gates.feature:123",
+      "manual": false,
+      "scenario": "Changing approved content makes the approvals of that gate stale",
+      "status": "passed",
+      "tags": [
+        "SR-012",
+        "DR-016"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.521206,
+      "location": "specs/features/06_approvals_gates.feature:130",
+      "manual": false,
+      "scenario": "An unrelated gate stays open",
+      "status": "passed",
+      "tags": [
+        "SR-012",
+        "DR-016"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.059204,
+      "location": "specs/features/06_approvals_gates.feature:16",
+      "manual": false,
+      "scenario": "A newer approval supersedes an older one and the older one stays in history",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-012"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.512659,
+      "location": "specs/features/06_approvals_gates.feature:23",
+      "manual": false,
+      "scenario": "All approvals of a gate revision must be on the same commit",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.529191,
+      "location": "specs/features/06_approvals_gates.feature:33",
+      "manual": false,
+      "scenario": "A signature on a later commit opens a new gate revision",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.231488,
+      "location": "specs/features/06_approvals_gates.feature:43",
+      "manual": false,
+      "scenario": "An approver can sign an earlier commit after the repository moved forward",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-012"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.233275,
+      "location": "specs/features/06_approvals_gates.feature:51",
+      "manual": false,
+      "scenario": "Signing an earlier commit is allowed when the gate scope changed since, but the gate stays closed",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-012"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.080256,
+      "location": "specs/features/06_approvals_gates.feature:68",
+      "manual": false,
+      "scenario": "A gate opens only when every required role has approved -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.047571,
+      "location": "specs/features/06_approvals_gates.feature:69",
+      "manual": false,
+      "scenario": "A gate opens only when every required role has approved -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.077485,
+      "location": "specs/features/06_approvals_gates.feature:70",
+      "manual": false,
+      "scenario": "A gate opens only when every required role has approved -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.25297,
+      "location": "specs/features/06_approvals_gates.feature:71",
+      "manual": false,
+      "scenario": "A gate opens only when every required role has approved -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.232021,
+      "location": "specs/features/06_approvals_gates.feature:74",
+      "manual": false,
+      "scenario": "A gate does not open while a trace gap is unwaived",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.054754,
+      "location": "specs/features/06_approvals_gates.feature:8",
+      "manual": false,
+      "scenario": "An approval is a signed tag carrying the mandatory information",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-012"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.33206,
+      "location": "specs/features/06_approvals_gates.feature:82",
+      "manual": false,
+      "scenario": "The implementation gate needs passing scenarios",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.23138,
+      "location": "specs/features/06_approvals_gates.feature:89",
+      "manual": false,
+      "scenario": "An approval for outdated content does not count",
+      "status": "passed",
+      "tags": [
+        "SR-008",
+        "DR-014"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.566277,
+      "location": "specs/features/07_change_control.feature:16",
+      "manual": false,
+      "scenario": "Impact analysis lists upstream and downstream elements -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-010",
+        "DR-017"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.508111,
+      "location": "specs/features/07_change_control.feature:17",
+      "manual": false,
+      "scenario": "Impact analysis lists upstream and downstream elements -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-010",
+        "DR-017"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.318486,
+      "location": "specs/features/07_change_control.feature:20",
+      "manual": false,
+      "scenario": "A change to approved content requires re-approval",
+      "status": "passed",
+      "tags": [
+        "SR-010",
+        "SR-012"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.222163,
+      "location": "specs/features/07_change_control.feature:27",
+      "manual": false,
+      "scenario": "A change to approved content is attributable",
+      "status": "passed",
+      "tags": [
+        "SR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.217497,
+      "location": "specs/features/07_change_control.feature:34",
+      "manual": false,
+      "scenario": "A change without reason or approver is incomplete",
+      "status": "passed",
+      "tags": [
+        "SR-030"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.57817,
+      "location": "specs/features/07_change_control.feature:40",
+      "manual": false,
+      "scenario": "Evidence per gate links requirements to test results",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-020"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.325964,
+      "location": "specs/features/07_change_control.feature:55",
+      "manual": false,
+      "scenario": "Audit queries work without the agent -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-031"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.916279,
+      "location": "specs/features/07_change_control.feature:56",
+      "manual": false,
+      "scenario": "Audit queries work without the agent -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-031"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.896357,
+      "location": "specs/features/07_change_control.feature:57",
+      "manual": false,
+      "scenario": "Audit queries work without the agent -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-031"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.933876,
+      "location": "specs/features/07_change_control.feature:58",
+      "manual": false,
+      "scenario": "Audit queries work without the agent -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-031"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.477895,
+      "location": "specs/features/07_change_control.feature:59",
+      "manual": false,
+      "scenario": "Audit queries work without the agent -- @1.5 ",
+      "status": "passed",
+      "tags": [
+        "SR-032",
+        "DR-031"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.158075,
+      "location": "specs/features/08_approval_integrity.feature:17",
+      "manual": false,
+      "scenario": "Invalid approval tags are reported -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.224087,
+      "location": "specs/features/08_approval_integrity.feature:18",
+      "manual": false,
+      "scenario": "Invalid approval tags are reported -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.028546,
+      "location": "specs/features/08_approval_integrity.feature:29",
+      "manual": false,
+      "scenario": "Waivers must be valid to count -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.028626,
+      "location": "specs/features/08_approval_integrity.feature:30",
+      "manual": false,
+      "scenario": "Waivers must be valid to count -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.029092,
+      "location": "specs/features/08_approval_integrity.feature:31",
+      "manual": false,
+      "scenario": "Waivers must be valid to count -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.11073,
+      "location": "specs/features/08_approval_integrity.feature:34",
+      "manual": false,
+      "scenario": "A valid waiver is listed in every report",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.244179,
+      "location": "specs/features/08_approval_integrity.feature:48",
+      "manual": false,
+      "scenario": "Drift from the approved content is detected -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-019"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 1.259326,
+      "location": "specs/features/08_approval_integrity.feature:49",
+      "manual": false,
+      "scenario": "Drift from the approved content is detected -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-041",
+        "DR-019"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.297573,
+      "location": "specs/features/08_approval_integrity.feature:52",
+      "manual": false,
+      "scenario": "The agent identity has no access to approval refs",
+      "status": "passed",
+      "tags": [
+        "SR-040",
+        "DR-026"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.055516,
+      "location": "specs/features/08_approval_integrity.feature:59",
+      "manual": false,
+      "scenario": "No agent-facing tool creates, moves or deletes approval refs",
+      "status": "passed",
+      "tags": [
+        "SR-040",
+        "DR-018"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.220923,
+      "location": "specs/features/09_agent_security.feature:105",
+      "manual": false,
+      "scenario": "AI-authored changes remain unapproved until a human reviews them",
+      "status": "passed",
+      "tags": [
+        "SR-045"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002256,
+      "location": "specs/features/09_agent_security.feature:16",
+      "manual": false,
+      "scenario": "Paths outside the workspace are rejected -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.001971,
+      "location": "specs/features/09_agent_security.feature:17",
+      "manual": false,
+      "scenario": "Paths outside the workspace are rejected -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002494,
+      "location": "specs/features/09_agent_security.feature:18",
+      "manual": false,
+      "scenario": "Paths outside the workspace are rejected -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002233,
+      "location": "specs/features/09_agent_security.feature:19",
+      "manual": false,
+      "scenario": "Paths outside the workspace are rejected -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.001958,
+      "location": "specs/features/09_agent_security.feature:28",
+      "manual": false,
+      "scenario": "Protected directories are rejected even inside the workspace -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.001987,
+      "location": "specs/features/09_agent_security.feature:29",
+      "manual": false,
+      "scenario": "Protected directories are rejected even inside the workspace -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.004447,
+      "location": "specs/features/09_agent_security.feature:32",
+      "manual": false,
+      "scenario": "A path inside the workspace is accepted",
+      "status": "passed",
+      "tags": [
+        "SR-042",
+        "DR-023"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.007039,
+      "location": "specs/features/09_agent_security.feature:37",
+      "manual": false,
+      "scenario": "Input document content is labelled as untrusted data",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-024"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.01212,
+      "location": "specs/features/09_agent_security.feature:43",
+      "manual": false,
+      "scenario": "An instruction inside an input document triggers no action",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-024"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.026416,
+      "location": "specs/features/09_agent_security.feature:50",
+      "manual": false,
+      "scenario": "All agent-facing traffic passes the input guard",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-024"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.008113,
+      "location": "specs/features/09_agent_security.feature:63",
+      "manual": false,
+      "scenario": "A state-changing call needs a human answer outside the agent session -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-032"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.004721,
+      "location": "specs/features/09_agent_security.feature:64",
+      "manual": false,
+      "scenario": "A state-changing call needs a human answer outside the agent session -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-032"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.309384,
+      "location": "specs/features/09_agent_security.feature:67",
+      "manual": false,
+      "scenario": "A missing confirmation aborts the call",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-032"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.012274,
+      "location": "specs/features/09_agent_security.feature:73",
+      "manual": false,
+      "scenario": "The agent cannot answer the confirmation itself",
+      "status": "passed",
+      "tags": [
+        "SR-043",
+        "DR-032"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.00697,
+      "location": "specs/features/09_agent_security.feature:89",
+      "manual": false,
+      "scenario": "Excluded content is never returned -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-044",
+        "DR-025"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.007786,
+      "location": "specs/features/09_agent_security.feature:90",
+      "manual": false,
+      "scenario": "Excluded content is never returned -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-044",
+        "DR-025"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.007441,
+      "location": "specs/features/09_agent_security.feature:93",
+      "manual": false,
+      "scenario": "The operator can configure exclusions",
+      "status": "passed",
+      "tags": [
+        "SR-044",
+        "DR-025"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.020741,
+      "location": "specs/features/09_agent_security.feature:98",
+      "manual": false,
+      "scenario": "Agent commits carry the AI-authorship trailer and session identity",
+      "status": "passed",
+      "tags": [
+        "SR-045",
+        "DR-004"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.536289,
+      "location": "specs/features/10_formats_ids_views.feature:13",
+      "manual": false,
+      "scenario": "The model can be read without the toolchain",
+      "status": "passed",
+      "tags": [
+        "SR-020"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002209,
+      "location": "specs/features/10_formats_ids_views.feature:25",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002032,
+      "location": "specs/features/10_formats_ids_views.feature:26",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.002156,
+      "location": "specs/features/10_formats_ids_views.feature:27",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.00219,
+      "location": "specs/features/10_formats_ids_views.feature:28",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000164,
+      "location": "specs/features/10_formats_ids_views.feature:29",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.5 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000165,
+      "location": "specs/features/10_formats_ids_views.feature:30",
+      "manual": false,
+      "scenario": "IDs follow the scheme and are unique -- @1.6 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.020788,
+      "location": "specs/features/10_formats_ids_views.feature:33",
+      "manual": false,
+      "scenario": "IDs survive renaming and are never reused",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011683,
+      "location": "specs/features/10_formats_ids_views.feature:48",
+      "manual": false,
+      "scenario": "The ID of a deleted element is never reused, also for the last element of a level -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.012047,
+      "location": "specs/features/10_formats_ids_views.feature:49",
+      "manual": false,
+      "scenario": "The ID of a deleted element is never reused, also for the last element of a level -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.012031,
+      "location": "specs/features/10_formats_ids_views.feature:50",
+      "manual": false,
+      "scenario": "The ID of a deleted element is never reused, also for the last element of a level -- @1.3 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.011923,
+      "location": "specs/features/10_formats_ids_views.feature:51",
+      "manual": false,
+      "scenario": "The ID of a deleted element is never reused, also for the last element of a level -- @1.4 ",
+      "status": "passed",
+      "tags": [
+        "SR-022",
+        "DR-028"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 9.285632,
+      "location": "specs/features/10_formats_ids_views.feature:54",
+      "manual": false,
+      "scenario": "Diagrams are exported as Mermaid text",
+      "status": "passed",
+      "tags": [
+        "SR-009",
+        "DR-027"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 5.536667,
+      "location": "specs/features/10_formats_ids_views.feature:61",
+      "manual": true,
+      "scenario": "The model is loadable in a graphical modeling tool",
+      "status": "skipped",
+      "tags": [
+        "SR-009",
+        "DR-027"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.486959,
+      "location": "specs/features/10_formats_ids_views.feature:67",
+      "manual": false,
+      "scenario": "Model changes are diff-able",
+      "status": "passed",
+      "tags": [
+        "SR-009"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.508301,
+      "location": "specs/features/10_formats_ids_views.feature:79",
+      "manual": false,
+      "scenario": "Any compliant MCP client can use the servers -- @1.1 ",
+      "status": "passed",
+      "tags": [
+        "SR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.00114,
+      "location": "specs/features/10_formats_ids_views.feature:8",
+      "manual": false,
+      "scenario": "Persistent artifacts use only open text formats",
+      "status": "passed",
+      "tags": [
+        "SR-020",
+        "DR-029"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.470718,
+      "location": "specs/features/10_formats_ids_views.feature:80",
+      "manual": false,
+      "scenario": "Any compliant MCP client can use the servers -- @1.2 ",
+      "status": "passed",
+      "tags": [
+        "SR-011"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000372,
+      "location": "specs/features/11_execution_railguard.feature:13",
+      "manual": false,
+      "scenario": "An allowlisted function with a reason does not fail the check",
+      "status": "passed",
+      "tags": [
+        "SR-018",
+        "DR-037"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000354,
+      "location": "specs/features/11_execution_railguard.feature:22",
+      "manual": false,
+      "scenario": "An allowlist entry without a reason is refused",
+      "status": "passed",
+      "tags": [
+        "SR-018",
+        "DR-037"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.021179,
+      "location": "specs/features/11_execution_railguard.feature:32",
+      "manual": false,
+      "scenario": "Functions entered in a subprocess are recorded",
+      "status": "passed",
+      "tags": [
+        "SR-018",
+        "DR-036"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000318,
+      "location": "specs/features/11_execution_railguard.feature:38",
+      "manual": false,
+      "scenario": "A run without an execution trace is not evidence",
+      "status": "passed",
+      "tags": [
+        "SR-018",
+        "DR-036",
+        "DR-037"
+      ]
+    },
+    {
+      "detail": "",
+      "duration": 0.000398,
+      "location": "specs/features/11_execution_railguard.feature:5",
+      "manual": false,
+      "scenario": "A function that no scenario executes is reported",
+      "status": "passed",
+      "tags": [
+        "SR-018",
+        "DR-037"
+      ]
+    }
+  ],
+  "summary": {
+    "passed": 151,
+    "skipped": 1
+  }
+}

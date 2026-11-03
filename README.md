@@ -38,7 +38,7 @@ uv run python tools/tracecheck.py check             # trace completeness: needs,
 uv run python tools/coverage_report.py                # coverage report per level and gate (--format json|markdown, --out FILE)
 uv run behave specs/features --dry-run         # parse the specs and bind steps
 uv run behave specs/features                   # run all scenarios against the real tooling (~1 min)
-uv run python tools/specflow.py run            # run the specs and record .specflow/results/last_run.json (G4 evidence)
+uv run python tools/specflow.py run            # run the specs and record .specflow/results/last_run.json (G4 evidence; commit it)
 uv run python tools/specflow.py gate G4        # evaluate a gate: approvals, trace stages, spec run, unreviewed AI commits
 uv run python tools/specflow.py impact SR-004  # upstream/downstream elements, scenarios and gates needing re-approval
 uv run python tools/specflow.py audit G4 approvals|waivers|changes|test-evidence|integrity|bundle
