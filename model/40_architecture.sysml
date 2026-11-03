@@ -9,8 +9,9 @@ package Architecture {
     port def TraceQueryPort { doc /* Trace graph queries and rule evaluation. */ }
     port def ContentPort { doc /* Content returned from tools towards the agent (to be filtered and labelled). */ }
     port def ConfirmationPort { doc /* Request for explicit human confirmation of a state-changing action. */ }
-    port def HumanPort { doc /* Out-of-band interaction with a human (client confirmation dialog or terminal prompt) that the agent cannot answer. */ }
-    port def CliPort { doc /* Command-line interaction of a human or CI job. */ }
+    port def HumanPort { doc /* Out-of-band interaction with a human (client confirmation dialog) that the agent cannot answer. */ }
+    port def CliPort { doc /* Command-line interaction of a human or CI job, including the signed out-of-band confirmation. */ }
+    port def ConfigPort { doc /* Operator-controlled settings read at start; not reachable by the agent. */ }
     port def ApprovalPort { doc /* Submission and query of approvals, waivers and invalidations. */ }
     port def GatePort { doc /* Gate evaluation requests and results. */ }
     port def AuditPort { doc /* Audit and evidence queries per gate and baseline. */ }
@@ -25,11 +26,13 @@ package Architecture {
         port mcp : McpPort; port content : ContentPort; port confirm : ConfirmationPort;
         port ws : WorkspacePort; port git : GitPort; port trace : TraceQueryPort;
         port impact : ImpactPort; port log : LogPort; port ids : IdPort; port views : ViewPort;
+        port approvals : ApprovalPort; port config : ConfigPort;
     }
     part def SpecMcpServer {
         port mcp : McpPort; port content : ContentPort; port confirm : ConfirmationPort;
         port ws : WorkspacePort; port git : GitPort; port trace : TraceQueryPort;
         port impact : ImpactPort; port log : LogPort; port ids : IdPort; port run : RunPort;
+        port approvals : ApprovalPort; port config : ConfigPort;
     }
     part def SpecRunner { port run : RunPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
     part def TraceService { port query : TraceQueryPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
@@ -56,7 +59,7 @@ package Architecture {
     }
     part def ConfidentialityFilter {
         doc /* Removes excluded or classified content before it reaches the agent. */
-        port fromServers : ContentPort[*]; port toGuard : ContentPort;
+        port fromServers : ContentPort[*]; port toGuard : ContentPort; port config : ConfigPort;
     }
     part def InputGuard {
         doc /* Fronts all agent-facing MCP traffic: labels untrusted content and demands human confirmation for state changes. */
@@ -64,13 +67,20 @@ package Architecture {
         port confirmations : ConfirmationPort[*]; port toChannel : ConfirmationPort;
     }
     part def ConfirmationChannel {
-        doc /* Presents the confirmation request to the human outside the agent session and returns only the human's decision. */
-        port fromGuard : ConfirmationPort; port toHuman : HumanPort;
+        doc /* Presents the confirmation request to the human outside the agent session (client dialog, or a decision signed with an approver key in a separate terminal) and returns only the human's verified decision. */
+        port fromGuard : ConfirmationPort; port toHuman : HumanPort; port outOfBand : CliPort; port config : ConfigPort;
+    }
+    part def OperatorConfiguration {
+        doc /* Operator-controlled settings (workspace root, unlocked proposal branches, confirmation mode and timeout, exclusions), read at server start from the MCP client configuration; never set by tool input. */
+        port settings : ConfigPort[*]; port operator : CliPort;
     }
 
     // External context (outside the system boundary)
-    part def Human { port cli : CliPort; port confirm : HumanPort; }
-    part def McpClient { doc /* Any MCP client hosting the AI agent. Outside the boundary. */ port mcp : McpPort; }
+    part def Human { port cli : CliPort[*]; port confirm : HumanPort; }
+    part def McpClient {
+        doc /* Any MCP client hosting the AI agent. Outside the boundary. It relays confirmation dialogs to the human where it supports them. */
+        port mcp : McpPort; port dialog : HumanPort; port confirm : HumanPort;
+    }
     part def GitRepository { doc /* Workspace and version control, including host-side ref protection. Outside the boundary. */ port files : WorkspacePort; port git : GitPort[*]; }
 
     part def Toolchain {
@@ -90,6 +100,7 @@ package Architecture {
         part inputGuard : InputGuard;
         part confidentialityFilter : ConfidentialityFilter;
         part confirmationChannel : ConfirmationChannel;
+        part operatorConfiguration : OperatorConfiguration;
         part idRegistry : IdRegistry;
         part reviewCli : ReviewCli;
         part viewExporter : ViewExporter;
@@ -104,9 +115,11 @@ package Architecture {
         connect specMcp.impact to impactAnalyzer.impact;
         connect reviewCli.impact to impactAnalyzer.impact;
 
-        // Approvals, gates, baselines (human-driven; no agent-facing port)
+        // Approvals, gates, baselines (the servers only read approval state; approving is human-driven)
         connect gateEvaluator.approvals to approvalService.approvals;
         connect reviewCli.approvals to approvalService.approvals;
+        connect modelMcp.approvals to approvalService.approvals;
+        connect specMcp.approvals to approvalService.approvals;
         connect reviewCli.gate to gateEvaluator.gates;
         connect traceService.approvals to approvalService.approvals;
         connect impactAnalyzer.approvals to approvalService.approvals;
@@ -151,6 +164,12 @@ package Architecture {
         connect modelMcp.confirm to inputGuard.confirmations;
         connect specMcp.confirm to inputGuard.confirmations;
         connect inputGuard.toChannel to confirmationChannel.fromGuard;
+
+        // Operator-controlled settings
+        connect modelMcp.config to operatorConfiguration.settings;
+        connect specMcp.config to operatorConfiguration.settings;
+        connect confidentialityFilter.config to operatorConfiguration.settings;
+        connect confirmationChannel.config to operatorConfiguration.settings;
     }
 
     part def SystemContext {
@@ -160,8 +179,11 @@ package Architecture {
         part repo : GitRepository;
 
         connect mcpClient.mcp to toolchain.inputGuard.toAgent;
-        connect toolchain.confirmationChannel.toHuman to human.confirm;
+        connect toolchain.confirmationChannel.toHuman to mcpClient.confirm;
+        connect mcpClient.dialog to human.confirm;
         connect human.cli to toolchain.reviewCli.human;
+        connect human.cli to toolchain.confirmationChannel.outOfBand;
+        connect human.cli to toolchain.operatorConfiguration.operator;
         connect toolchain.workspaceGuard.files to repo.files;
         connect toolchain.modelMcp.git to repo.git;
         connect toolchain.specMcp.git to repo.git;
@@ -204,6 +226,7 @@ package Architecture {
     satisfy UntrustedContentHandling by context.toolchain.inputGuard;
     satisfy ConfidentialityExclusions by context.toolchain.confidentialityFilter;
     satisfy HumanConfirmationChannel by context.toolchain.confirmationChannel;
+    satisfy OperatorControlledSettings by context.toolchain.operatorConfiguration;
     satisfy RefProtectionOutsideAgent by context.toolchain.refGuardHook;
     satisfy ViewExport by context.toolchain.viewExporter;
     satisfy StableIdScheme by context.toolchain.idRegistry;
