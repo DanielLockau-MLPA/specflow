@@ -7,6 +7,7 @@ flowchart LR
   reviewCli["ReviewCli"]
   specRunner["SpecRunner"]
   auditReporter["AuditReporter"]
+  executionTracer["ExecutionTracer"]
   decisionLog["DecisionLogService"]
   idRegistry["IdRegistry"]
   viewExporter["ViewExporter"]
@@ -23,6 +24,7 @@ flowchart LR
   auditReporter -->|RunPort| specRunner
   specMcp -->|RunPort| specRunner
   reviewCli -->|RunPort| specRunner
+  executionTracer -->|RunPort| specRunner
   modelMcp -->|LogPort| decisionLog
   specMcp -->|LogPort| decisionLog
   modelMcp -->|IdPort| idRegistry

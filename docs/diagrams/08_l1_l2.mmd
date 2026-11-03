@@ -34,6 +34,8 @@ flowchart LR
   DR033["DR-033<br/>SourceTraceRules"]
   DR034["DR-034<br/>SourceDeclaration"]
   DR035["DR-035<br/>OperatorControlledSettings"]
+  DR036["DR-036<br/>FunctionExecutionTrace"]
+  DR037["DR-037<br/>UnexecutedFunctionGate"]
   SR001["SR-001<br/>QAndABeforeDrafting"]
   SR002["SR-002<br/>DraftModelFromBaseline"]
   SR003["SR-003<br/>DraftSpecFromModel"]
@@ -51,6 +53,7 @@ flowchart LR
   SR015["SR-015<br/>TraceGateEnforcement"]
   SR016["SR-016<br/>TraceQuery"]
   SR017["SR-017<br/>RequirementSourceTraceability"]
+  SR018["SR-018<br/>NoUnexecutedImplementation"]
   SR020["SR-020<br/>OpenFormats"]
   SR021["SR-021<br/>CiReproducible"]
   SR022["SR-022<br/>UnambiguousIds"]
@@ -113,5 +116,9 @@ flowchart LR
   DR034 -->|derives| SR017
   DR035 -->|derives| SR040
   DR035 -->|derives| SR044
+  DR036 -->|derives| SR018
+  DR036 -->|derives| SR021
+  DR037 -->|derives| SR018
+  DR037 -->|derives| SR015
   DR031 -->|derives| SR032
   DR031 -->|derives| SR030

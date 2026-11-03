@@ -8,6 +8,7 @@ flowchart LR
     modelMcp["ModelMcpServer"]
     specMcp["SpecMcpServer"]
     specRunner["SpecRunner"]
+    executionTracer["ExecutionTracer"]
     traceService["TraceService"]
     impactAnalyzer["ImpactAnalyzer"]
     approvalService["ApprovalService"]
@@ -51,6 +52,7 @@ flowchart LR
   tagStore -->|GatePort| gateEvaluator
   specMcp -->|RunPort| specRunner
   reviewCli -->|RunPort| specRunner
+  executionTracer -->|RunPort| specRunner
   modelMcp -->|LogPort| decisionLog
   specMcp -->|LogPort| decisionLog
   modelMcp -->|IdPort| idRegistry

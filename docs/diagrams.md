@@ -20,7 +20,7 @@ Source: [`00_overview_layers.mmd`](diagrams/00_overview_layers.mmd) · [PNG](dia
 
 ## System context and components (detailed)
 
-All 65 connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.
+All 66 connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.
 
 [![System context and components (detailed)](diagrams/01_context_components.svg)](diagrams/01_context_components.svg)
 

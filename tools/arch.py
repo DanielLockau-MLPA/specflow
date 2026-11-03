@@ -183,7 +183,7 @@ def build_diagrams():
     groups = {
         "agentfacing": ("Agent-facing servers", ["modelMcp", "specMcp", "promptLibrary"]),
         "guards": ("Security guards", ["inputGuard", "confidentialityFilter", "confirmationChannel", "workspaceGuard", "operatorConfiguration"]),
-        "services": ("Core services", ["traceService", "impactAnalyzer", "specRunner", "idRegistry", "decisionLog", "viewExporter"]),
+        "services": ("Core services", ["traceService", "impactAnalyzer", "specRunner", "executionTracer", "idRegistry", "decisionLog", "viewExporter"]),
         "governance": ("Governance (human only)", ["reviewCli", "approvalService", "gateEvaluator", "tagStore", "auditReporter", "refGuardHook"]),
         "extagent": ("MCP client + AI agent", ["mcpClient"]),
         "exthuman": ("Human", ["human"]),
