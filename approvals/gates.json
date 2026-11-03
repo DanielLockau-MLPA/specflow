@@ -20,7 +20,8 @@
       "scope": ["model/", "specs/"],
       "roles": ["implementation-team", "quality-management", "information-security"],
       "trace": ["needs", "model", "spec"],
-      "scenarios": true
+      "scenarios": true,
+      "railguard": true
     }
   }
 }
