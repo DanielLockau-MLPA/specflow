@@ -160,6 +160,8 @@ VIEWS = [
      "Human-only governance: review CLI, approvals and gate evaluation."),
     ("01d_view_storage", "View: workspace and Git access", {"WorkspacePort", "GitPort"},
      "All file access goes through WorkspaceGuard; Git operations go to the repository."),
+    ("01e_view_operator_config", "View: operator configuration", {"ConfigPort"},
+     "Security-relevant settings come only from the operator configuration, never from agent-reachable input (DR-035)."),
 ]
 
 
@@ -178,7 +180,7 @@ def build_diagrams():
 
     groups = {
         "agentfacing": ("Agent-facing servers", ["modelMcp", "specMcp", "promptLibrary"]),
-        "guards": ("Security guards", ["inputGuard", "confidentialityFilter", "confirmationChannel", "workspaceGuard"]),
+        "guards": ("Security guards", ["inputGuard", "confidentialityFilter", "confirmationChannel", "workspaceGuard", "operatorConfiguration"]),
         "services": ("Core services", ["traceService", "impactAnalyzer", "specRunner", "idRegistry", "decisionLog", "viewExporter"]),
         "governance": ("Governance (human only)", ["reviewCli", "approvalService", "gateEvaluator", "tagStore", "auditReporter", "refGuardHook"]),
         "extagent": ("MCP client + AI agent", ["mcpClient"]),
@@ -229,7 +231,7 @@ def build_diagrams():
         if blk == "SystemContext" and u != "toolchain":
             o.append(f"  style {u} fill:#eee,stroke:#999")
     diagrams.append(("01_context_components", "System context and components (detailed)",
-                     "All 46 connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.",
+                     f"All {len(conns)} connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.",
                      "\n".join(o)))
 
     for slug, title, kinds, note in VIEWS:
@@ -253,7 +255,7 @@ def build_diagrams():
             if usages[u][1] == "SystemContext":
                 o.append(f"  style {u} fill:#eee,stroke:#999")
         diagrams.append((slug, title,
-                         f"{note} Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: {', '.join(sorted(kinds))}. Together the views 01a-01d cover every connection of the detailed diagram 01.",
+                         f"{note} Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: {', '.join(sorted(kinds))}. Together the views 01a-01e cover every connection of the detailed diagram 01.",
                          "\n".join(o)))
 
     diagrams.append(("02_agent_path_confirmation", "Agent-facing path and human confirmation",
@@ -274,8 +276,8 @@ def build_diagrams():
                          "  G->>S: forward",
                          "  S->>G: request confirmation",
                          "  G->>C: confirmation request",
-                         "  C->>H: prompt outside agent session",
-                         "  H-->>C: decision",
+                         "  C->>H: prompt via MCP client dialog",
+                         "  H-->>C: decision (client dialog, or signed out-of-band in a separate terminal)",
                          "  C-->>G: decision only",
                          "  alt approved",
                          "    G-->>S: proceed",

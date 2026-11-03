@@ -1,6 +1,7 @@
 """Steps of 03_drafting.feature (shared draft-request and refusal steps are in a_workflow_qa.py)."""
 import fnmatch
 import json
+import os
 import re
 
 from behave import given, then, when
@@ -108,6 +109,20 @@ def write_outcome(context, outcome):
         assert context.world.git("rev-parse", "main").stdout == context.head_before
         assert not context.world.git("status", "--porcelain").stdout.strip()
         assert re.search(r"proposal/\*|approved baseline", context.reply), context.reply
+
+
+@given('the operator unlocked the proposal branch "{branch}"')
+def operator_unlock(context, branch):
+    old = os.environ.get("SPECFLOW_UNLOCK_BRANCHES")
+    os.environ["SPECFLOW_UNLOCK_BRANCHES"] = branch
+    context.add_cleanup(lambda: os.environ.pop("SPECFLOW_UNLOCK_BRANCHES", None) if old is None
+                        else os.environ.__setitem__("SPECFLOW_UNLOCK_BRANCHES", old))
+
+
+@then('the commit on the proposal branch carries the trailer "{trailer}"')
+def commit_trailer(context, trailer):
+    message = context.world.git("log", "-1", "--format=%B", context.branch).stdout
+    assert re.search(rf"^{re.escape(trailer)}: {re.escape(context.path)}$", message, re.M), message
 
 
 @when("the agent proposes a change to a file of that baseline")
