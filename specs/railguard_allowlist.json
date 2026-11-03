@@ -21,6 +21,7 @@
     {"function": "tools/exectrace.py:_key", "reason": "Railguard inventory helper covered by tests/test_exectrace.py only (follow-up: scenario)"},
     {"function": "tools/exectrace.py:_walk", "reason": "Railguard inventory helper covered by tests/test_exectrace.py only (follow-up: scenario)"},
     {"function": "tools/exectrace.py:inventory", "reason": "Railguard inventory covered by tests/test_exectrace.py only (follow-up: scenario)"},
+    {"function": "tools/exectrace.py:describe", "reason": "Railguard inventory covered by tests/test_exectrace.py only (follow-up: scenario)"},
     {"function": "tools/exectrace.py:main", "reason": "Railguard report CLI covered by tests/test_exectrace.py only (follow-up: scenario)"},
     {"function": "tools/mcp_model.py:list_elements", "reason": "MCP tool without a scenario that invokes it (follow-up)"},
     {"function": "tools/mcp_model.py:render", "reason": "MCP tool without a scenario that invokes it (follow-up)"},
