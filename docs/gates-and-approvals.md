@@ -42,6 +42,24 @@ All of these hold:
 
 Check: `uv run python tools/specflow.py gate G2 [--run] [--json]`; the report lists every problem.
 
+## Railguard: functions no scenario executed (G4)
+
+The spec says what must be in the implementation; the railguard (SR-018) finds what is in it without being specified.
+`specrun` starts behave with `SPECFLOW_TRACE_DIR`; `tools/exectrace.py` (standard-library `sys.monitoring`, started by one import
+in every entry point) records each function of `tools/` that is entered, in the behave process and in every subprocess,
+and the merged list is stored in `.specflow/results/last_run.json`. The G4 check compares it with a static inventory of all
+functions in `tools/`; each function that was never entered keeps G4 closed unless `specs/railguard_allowlist.json`
+lists it with a reason:
+
+```json
+{"entries": [{"function": "tools/approve.py:main", "reason": "interactive signing, covered by the manual scenario"}]}
+```
+
+The allowlist lies in the gated `specs/` scope, so the approvers review every exception. Entries without a reason are ignored,
+entries for functions that no longer exist are reported as stale. Functions entered only by `pytest` do not count.
+Enable the check with `"railguard": true` in the G4 entry of `approvals/gates.json`. Report on a trace directory:
+`uv run python tools/exectrace.py report DIR [--json]`.
+
 ## Revisions and commits
 
 - If approvers sign different commits, the gate stays closed: "approvals are on different commits; the newest revision X still needs: …". An approval on a later commit starts a new revision that every role must sign again.
