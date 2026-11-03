@@ -35,6 +35,10 @@ package Architecture {
         port approvals : ApprovalPort; port config : ConfigPort;
     }
     part def SpecRunner { port run : RunPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
+    part def ExecutionTracer {
+        doc /* Records every implementation function entered during a spec run, in the runner process and its subprocesses, and hands the merged list to the spec runner as run evidence. */
+        port run : RunPort;
+    }
     part def TraceService { port query : TraceQueryPort[*]; port ws : WorkspacePort; port approvals : ApprovalPort; }
     part def ImpactAnalyzer { port impact : ImpactPort[*]; port trace : TraceQueryPort; port approvals : ApprovalPort; }
     part def ApprovalService { port approvals : ApprovalPort[*]; port git : GitPort; }
@@ -87,6 +91,7 @@ package Architecture {
         part modelMcp : ModelMcpServer;
         part specMcp : SpecMcpServer;
         part specRunner : SpecRunner;
+        part executionTracer : ExecutionTracer;
         part traceService : TraceService;
         part impactAnalyzer : ImpactAnalyzer;
         part approvalService : ApprovalService;
@@ -132,9 +137,10 @@ package Architecture {
         connect reviewCli.audit to auditReporter.audit;
         connect tagStore.gate to gateEvaluator.gates;
 
-        // Spec execution, log, IDs, views
+        // Spec execution, execution trace, log, IDs, views
         connect specMcp.run to specRunner.run;
         connect reviewCli.run to specRunner.run;
+        connect executionTracer.run to specRunner.run;
         connect modelMcp.log to decisionLog.log;
         connect specMcp.log to decisionLog.log;
         connect modelMcp.ids to idRegistry.ids;
@@ -205,6 +211,7 @@ package Architecture {
     satisfy SpecMcpTools by context.toolchain.specMcp;
     satisfy ScenarioIdTags by context.toolchain.specMcp;
     satisfy HeadlessSpecRun by context.toolchain.specRunner;
+    satisfy FunctionExecutionTrace by context.toolchain.executionTracer;
     satisfy TraceIndex by context.toolchain.traceService;
     satisfy TraceRules by context.toolchain.traceService;
     satisfy StaleReferenceDetection by context.toolchain.traceService;
@@ -214,6 +221,7 @@ package Architecture {
     satisfy ApprovalRecord by context.toolchain.approvalService;
     satisfy ApproverEligibility by context.toolchain.approvalService;
     satisfy GateEvaluation by context.toolchain.gateEvaluator;
+    satisfy UnexecutedFunctionGate by context.toolchain.gateEvaluator;
     satisfy WaiverRecord by context.toolchain.approvalService;
     satisfy ApprovalInvalidation by context.toolchain.approvalService;
     satisfy ImpactAnalysis by context.toolchain.impactAnalyzer;
