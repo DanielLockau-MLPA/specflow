@@ -9,6 +9,7 @@ flowchart LR
     confidentialityFilter["ConfidentialityFilter"]
     confirmationChannel["ConfirmationChannel"]
     workspaceGuard["WorkspaceGuard"]
+    operatorConfiguration["OperatorConfiguration"]
   end
   subgraph services["Core services"]
     traceService["TraceService"]
@@ -36,15 +37,18 @@ flowchart LR
     repo["GitRepository"]
   end
   agentfacing -->|Git| extrepo
-  agentfacing -->|Confirmation, Content, Workspace| guards
+  agentfacing -->|Approval| governance
+  agentfacing -->|Config, Confirmation, Content, Workspace| guards
   agentfacing -->|Id, Impact, Log, Run, TraceQuery, View| services
+  extagent -->|Human| exthuman
   extagent -->|Mcp| guards
   exthuman -->|Cli| governance
+  exthuman -->|Cli| guards
   governance -->|Git| extrepo
   governance -->|Workspace| guards
   governance -->|Impact, Run, TraceQuery| services
   guards -->|Mcp| agentfacing
-  guards -->|Human| exthuman
+  guards -->|Human| extagent
   guards -->|Workspace| extrepo
   services -->|Approval| governance
   services -->|Workspace| guards

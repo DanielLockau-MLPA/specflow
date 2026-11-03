@@ -13,8 +13,8 @@ sequenceDiagram
   G->>S: forward
   S->>G: request confirmation
   G->>C: confirmation request
-  C->>H: prompt outside agent session
-  H-->>C: decision
+  C->>H: prompt via MCP client dialog
+  H-->>C: decision (client dialog, or signed out-of-band in a separate terminal)
   C-->>G: decision only
   alt approved
     G-->>S: proceed

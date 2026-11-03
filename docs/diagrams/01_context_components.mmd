@@ -21,6 +21,7 @@ flowchart LR
     inputGuard["InputGuard"]
     confidentialityFilter["ConfidentialityFilter"]
     confirmationChannel["ConfirmationChannel"]
+    operatorConfiguration["OperatorConfiguration"]
     idRegistry["IdRegistry"]
     reviewCli["ReviewCli"]
     viewExporter["ViewExporter"]
@@ -35,6 +36,8 @@ flowchart LR
   reviewCli -->|ImpactPort| impactAnalyzer
   gateEvaluator -->|ApprovalPort| approvalService
   reviewCli -->|ApprovalPort| approvalService
+  modelMcp -->|ApprovalPort| approvalService
+  specMcp -->|ApprovalPort| approvalService
   reviewCli -->|GatePort| gateEvaluator
   traceService -->|ApprovalPort| approvalService
   impactAnalyzer -->|ApprovalPort| approvalService
@@ -71,9 +74,16 @@ flowchart LR
   modelMcp -->|ConfirmationPort| inputGuard
   specMcp -->|ConfirmationPort| inputGuard
   inputGuard -->|ConfirmationPort| confirmationChannel
+  modelMcp -->|ConfigPort| operatorConfiguration
+  specMcp -->|ConfigPort| operatorConfiguration
+  confidentialityFilter -->|ConfigPort| operatorConfiguration
+  confirmationChannel -->|ConfigPort| operatorConfiguration
   mcpClient -->|McpPort| inputGuard
-  confirmationChannel -->|HumanPort| human
+  confirmationChannel -->|HumanPort| mcpClient
+  mcpClient -->|HumanPort| human
   human -->|CliPort| reviewCli
+  human -->|CliPort| confirmationChannel
+  human -->|CliPort| operatorConfiguration
   workspaceGuard -->|WorkspacePort| repo
   modelMcp -->|GitPort| repo
   specMcp -->|GitPort| repo

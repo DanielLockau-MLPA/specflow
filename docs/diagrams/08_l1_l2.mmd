@@ -33,6 +33,7 @@ flowchart LR
   DR032["DR-032<br/>HumanConfirmationChannel"]
   DR033["DR-033<br/>SourceTraceRules"]
   DR034["DR-034<br/>SourceDeclaration"]
+  DR035["DR-035<br/>OperatorControlledSettings"]
   SR001["SR-001<br/>QAndABeforeDrafting"]
   SR002["SR-002<br/>DraftModelFromBaseline"]
   SR003["SR-003<br/>DraftSpecFromModel"]
@@ -110,5 +111,7 @@ flowchart LR
   DR030 -->|derives| SR021
   DR033 -->|derives| SR017
   DR034 -->|derives| SR017
+  DR035 -->|derives| SR040
+  DR035 -->|derives| SR044
   DR031 -->|derives| SR032
   DR031 -->|derives| SR030

@@ -17,6 +17,7 @@ flowchart LR
   specMcp -->|ConfirmationPort| inputGuard
   inputGuard -->|ConfirmationPort| confirmationChannel
   mcpClient -->|McpPort| inputGuard
-  confirmationChannel -->|HumanPort| human
+  confirmationChannel -->|HumanPort| mcpClient
+  mcpClient -->|HumanPort| human
   style mcpClient fill:#eee,stroke:#999
   style human fill:#eee,stroke:#999

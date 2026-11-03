@@ -2,14 +2,20 @@ flowchart LR
   gateEvaluator["GateEvaluator"]
   approvalService["ApprovalService"]
   reviewCli["ReviewCli"]
+  modelMcp["ModelMcpServer"]
+  specMcp["SpecMcpServer"]
   traceService["TraceService"]
   impactAnalyzer["ImpactAnalyzer"]
   specRunner["SpecRunner"]
   auditReporter["AuditReporter"]
   tagStore["ApprovalTagStore"]
   human["Human"]
+  confirmationChannel["ConfirmationChannel"]
+  operatorConfiguration["OperatorConfiguration"]
   gateEvaluator -->|ApprovalPort| approvalService
   reviewCli -->|ApprovalPort| approvalService
+  modelMcp -->|ApprovalPort| approvalService
+  specMcp -->|ApprovalPort| approvalService
   reviewCli -->|GatePort| gateEvaluator
   traceService -->|ApprovalPort| approvalService
   impactAnalyzer -->|ApprovalPort| approvalService
@@ -19,4 +25,6 @@ flowchart LR
   reviewCli -->|AuditPort| auditReporter
   tagStore -->|GatePort| gateEvaluator
   human -->|CliPort| reviewCli
+  human -->|CliPort| confirmationChannel
+  human -->|CliPort| operatorConfiguration
   style human fill:#eee,stroke:#999

@@ -1,0 +1,10 @@
+flowchart LR
+  modelMcp["ModelMcpServer"]
+  operatorConfiguration["OperatorConfiguration"]
+  specMcp["SpecMcpServer"]
+  confidentialityFilter["ConfidentialityFilter"]
+  confirmationChannel["ConfirmationChannel"]
+  modelMcp -->|ConfigPort| operatorConfiguration
+  specMcp -->|ConfigPort| operatorConfiguration
+  confidentialityFilter -->|ConfigPort| operatorConfiguration
+  confirmationChannel -->|ConfigPort| operatorConfiguration

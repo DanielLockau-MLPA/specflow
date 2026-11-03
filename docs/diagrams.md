@@ -20,7 +20,7 @@ Source: [`00_overview_layers.mmd`](diagrams/00_overview_layers.mmd) · [PNG](dia
 
 ## System context and components (detailed)
 
-All 46 connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.
+All 65 connections, labelled with the interface (port type). Arrows point from the sender of a request or push to its receiver; replies to a call travel back on the same connection. Content returned to the agent is modelled as its own push: servers -> ConfidentialityFilter -> InputGuard. Shaded parts are outside the system boundary. See the overview above for a simplified view.
 
 [![System context and components (detailed)](diagrams/01_context_components.svg)](diagrams/01_context_components.svg)
 
@@ -28,7 +28,7 @@ Source: [`01_context_components.mmd`](diagrams/01_context_components.mmd) · [PN
 
 ## View: agent-facing path
 
-How the AI agent reaches the servers (through InputGuard), how content is filtered and how confirmations reach the human. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ConfirmationPort, ContentPort, HumanPort, McpPort. Together the views 01a-01d cover every connection of the detailed diagram 01.
+How the AI agent reaches the servers (through InputGuard), how content is filtered and how confirmations reach the human. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ConfirmationPort, ContentPort, HumanPort, McpPort. Together the views 01a-01e cover every connection of the detailed diagram 01.
 
 [![View: agent-facing path](diagrams/01a_view_agent_path.svg)](diagrams/01a_view_agent_path.svg)
 
@@ -36,7 +36,7 @@ Source: [`01a_view_agent_path.mmd`](diagrams/01a_view_agent_path.mmd) · [PNG](d
 
 ## View: core service calls
 
-Which components use the core services. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: IdPort, ImpactPort, LogPort, RunPort, TraceQueryPort, ViewPort. Together the views 01a-01d cover every connection of the detailed diagram 01.
+Which components use the core services. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: IdPort, ImpactPort, LogPort, RunPort, TraceQueryPort, ViewPort. Together the views 01a-01e cover every connection of the detailed diagram 01.
 
 [![View: core service calls](diagrams/01b_view_services.svg)](diagrams/01b_view_services.svg)
 
@@ -44,7 +44,7 @@ Source: [`01b_view_services.mmd`](diagrams/01b_view_services.mmd) · [PNG](diagr
 
 ## View: governance
 
-Human-only governance: review CLI, approvals and gate evaluation. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ApprovalPort, AuditPort, CliPort, GatePort. Together the views 01a-01d cover every connection of the detailed diagram 01.
+Human-only governance: review CLI, approvals and gate evaluation. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ApprovalPort, AuditPort, CliPort, GatePort. Together the views 01a-01e cover every connection of the detailed diagram 01.
 
 [![View: governance](diagrams/01c_view_governance.svg)](diagrams/01c_view_governance.svg)
 
@@ -52,11 +52,19 @@ Source: [`01c_view_governance.mmd`](diagrams/01c_view_governance.mmd) · [PNG](d
 
 ## View: workspace and Git access
 
-All file access goes through WorkspaceGuard; Git operations go to the repository. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: GitPort, WorkspacePort. Together the views 01a-01d cover every connection of the detailed diagram 01.
+All file access goes through WorkspaceGuard; Git operations go to the repository. Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: GitPort, WorkspacePort. Together the views 01a-01e cover every connection of the detailed diagram 01.
 
 [![View: workspace and Git access](diagrams/01d_view_storage.svg)](diagrams/01d_view_storage.svg)
 
 Source: [`01d_view_storage.mmd`](diagrams/01d_view_storage.mmd) · [PNG](diagrams/01d_view_storage.png)
+
+## View: operator configuration
+
+Security-relevant settings come only from the operator configuration, never from agent-reachable input (DR-035). Arrows point from the sender of a request or push to its receiver. Shaded parts are outside the system boundary. Port types shown: ConfigPort. Together the views 01a-01e cover every connection of the detailed diagram 01.
+
+[![View: operator configuration](diagrams/01e_view_operator_config.svg)](diagrams/01e_view_operator_config.svg)
+
+Source: [`01e_view_operator_config.mmd`](diagrams/01e_view_operator_config.mmd) · [PNG](diagrams/01e_view_operator_config.png)
 
 ## Agent-facing path and human confirmation
 

@@ -127,3 +127,12 @@ Append-only. Entries are never edited or deleted.
 - decision: Architecture cross-check found four divergences to fix in the model: (1) MCP servers need an ApprovalPort connection to ApprovalService; (2) confirmation path runs via the MCP client (elicitation) or out-of-band signed confirmation, terminal-prompt fallback replaced by out-of-band; (3) operator configuration (SPECFLOW_ROOT, SPECFLOW_UNLOCK_BRANCHES, SPECFLOW_CONFIRM_MODE, exclusions) is not modelled; (4) DR-003 and its scenario must allow the operator-unlocked proposal branch.
 - rationale: Review of model/40_architecture.sysml against tools/mcp_shared.py, tools/specflow_core.py and tools/confirm_oob.py; user asked for the edits through the MCP.
 - affected: DR-003, DR-032, DR-013, SR-040
+
+## DL-024
+- date: 2026-11-03
+- type: review
+- participants: DanielLockau-MLPA, Copilot
+- question: DL-023 was approved and committed manually instead of via the MCP flow; is this process deviation acceptable?
+- decision: Noted deviation: the human approved the DL-023 record out-of-band and committed it by hand before the agent reported the result. Content is unchanged and correct; subsequent edits go through the MCP servers end to end.
+- rationale: Client timeout (-32001) prevented the agent from seeing the completed call; transparency of the audit trail requires recording the deviation.
+- affected: DR-032, SR-040

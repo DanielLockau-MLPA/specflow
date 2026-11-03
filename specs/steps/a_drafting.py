@@ -122,7 +122,7 @@ def operator_unlock(context, branch):
 @then('the commit on the proposal branch carries the trailer "{trailer}"')
 def commit_trailer(context, trailer):
     message = context.world.git("log", "-1", "--format=%B", context.branch).stdout
-    assert re.search(rf"^{re.escape(trailer)}: {re.escape(context.path)}$", message, re.M), message
+    assert re.search(rf"^{re.escape(trailer)}: {re.escape(context.path)}$", message, re.MULTILINE), message
 
 
 @when("the agent proposes a change to a file of that baseline")
