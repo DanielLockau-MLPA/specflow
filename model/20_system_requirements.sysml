@@ -81,6 +81,10 @@ package SystemRequirements {
         doc /* The system shall record the sources of the needs (norms, written communication with a stakeholder, other written documents) together with the stakeholder who raised each source, and shall check that every need cites at least one source, every source names a stakeholder and is cited by a need, and that every use case and requirement reaches a source through its trace chain. */
         attribute :>> kind = Kind::functional;
     }
+    requirement <'SR-018'> NoUnexecutedImplementation : SystemRequirement {
+        doc /* The system shall report every function of the implementation that no executed scenario entered, and the implementation gate shall stay closed while such functions exist, unless each is listed with a reason in an allowlist that is part of the approved specification. */
+        attribute :>> kind = Kind::functional;
+    }
 
     // Quality
     requirement <'SR-020'> OpenFormats : SystemRequirement {
@@ -143,6 +147,8 @@ package SystemRequirements {
     dependency 'SR-016 derives N-005' from TraceQuery to EndToEndTraceability;
     dependency 'SR-017 derives N-005' from RequirementSourceTraceability to EndToEndTraceability;
     dependency 'SR-017 derives N-008' from RequirementSourceTraceability to CertifiableWorkflow;
+    dependency 'SR-018 derives N-004' from NoUnexecutedImplementation to PreciselyTestableSpecification;
+    dependency 'SR-018 derives N-010' from NoUnexecutedImplementation to ReproducibleChecks;
     dependency 'SR-012 derives N-002' from ApprovalReset to AgreeOnDesign;
     dependency 'SR-001 derives N-001' from QAndABeforeDrafting to TurnRequirementsIntoDesign;
     dependency 'SR-002 derives N-001' from DraftModelFromBaseline to TurnRequirementsIntoDesign;

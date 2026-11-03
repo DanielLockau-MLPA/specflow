@@ -139,6 +139,14 @@ package DesignRequirements {
         doc /* Security-relevant settings (workspace root, unlocked proposal branches, confirmation mode and timeout, confidentiality exclusions) shall be read only from the operator configuration at server start; no tool input or agent-reachable file shall set or change them, and a change takes effect only after a restart. */
         attribute :>> kind = Kind::security;
     }
+    requirement <'DR-036'> FunctionExecutionTrace : DesignRequirement {
+        doc /* Spec runs shall record every function of the implementation that is entered, in the spec runner process and in every subprocess it starts, using only the Python standard library (sys.monitoring); the recorded functions shall be stored with the run result, and a run without a trace shall not count as evidence for the railguard check. */
+        attribute :>> kind = Kind::quality;
+    }
+    requirement <'DR-037'> UnexecutedFunctionGate : DesignRequirement {
+        doc /* The gate evaluator shall compare the functions found by static analysis of the implementation with the functions recorded in the spec run, and keep the implementation gate closed for each function that was not entered and is not listed in the allowlist; an allowlist entry needs a reason, entries without a reason are ignored, and the allowlist lies in the gated specification scope. */
+        attribute :>> kind = Kind::security;
+    }
 
     // Quality and format
     requirement <'DR-027'> ViewExport : DesignRequirement {
@@ -213,6 +221,10 @@ package DesignRequirements {
     dependency 'DR-034 derives SR-017' from SourceDeclaration to RequirementSourceTraceability;
     dependency 'DR-035 derives SR-040' from OperatorControlledSettings to NoAgentWriteToBaseline;
     dependency 'DR-035 derives SR-044' from OperatorControlledSettings to NoSecretsToLlm;
+    dependency 'DR-036 derives SR-018' from FunctionExecutionTrace to NoUnexecutedImplementation;
+    dependency 'DR-036 derives SR-021' from FunctionExecutionTrace to CiReproducible;
+    dependency 'DR-037 derives SR-018' from UnexecutedFunctionGate to NoUnexecutedImplementation;
+    dependency 'DR-037 derives SR-015' from UnexecutedFunctionGate to TraceGateEnforcement;
     dependency 'DR-031 derives SR-032' from AuditQuery to RequirementsToTestEvidence;
     dependency 'DR-031 derives SR-030' from AuditQuery to ChangeRecords;
 }
