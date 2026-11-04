@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """behave hooks: one isolated world (git workspace with test keys) per scenario."""
 import sys
 from pathlib import Path

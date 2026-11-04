@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps of 11_execution_railguard.feature."""
 import json
 import os

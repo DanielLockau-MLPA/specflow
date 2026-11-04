@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps for 10_formats_ids_views.feature: open formats, ID scheme, Mermaid export, diff-ability, MCP clients."""
 import asyncio
 import os

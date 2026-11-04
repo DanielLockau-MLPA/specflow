@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Single headless entry point for CI and audits (SR-021, DR-030). No agent, no network, deterministic output.
 
   uv run python tools/specflow.py validate [--json]

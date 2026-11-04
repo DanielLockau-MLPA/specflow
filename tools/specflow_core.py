@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Shared core of the MCP servers: guards, decision log, baselines and proposals.
 
 Prototype of WorkspaceGuard (DR-023), ConfidentialityFilter (DR-025), InputGuard/ConfirmationChannel

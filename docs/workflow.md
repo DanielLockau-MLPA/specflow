@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Workflow guide
 
 This guide describes the end-to-end workflow the tooling supports, who does what, and which command or tool belongs to

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Function execution trace for the railguard check (SR-018, DR-036, DR-037).
 
 Importing this module starts a collector when SPECFLOW_TRACE_DIR is set (the spec run sets it). The collector uses

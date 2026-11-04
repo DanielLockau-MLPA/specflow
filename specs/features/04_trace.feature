@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Traceability checks and queries
   Trace completeness is checked per stage and gaps keep gates closed unless waived by a human.
 

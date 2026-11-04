@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Model validation
   The model is validated by a replaceable parser backend; findings are located precisely.
 

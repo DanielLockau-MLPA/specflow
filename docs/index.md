@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Documentation index
 
 Hand-written guides:

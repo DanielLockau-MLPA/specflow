@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Open formats, IDs and views
   Artifacts are open text, IDs are stable and unique, and views are exportable.
 

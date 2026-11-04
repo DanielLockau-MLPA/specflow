@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Generate docs/step_vocabulary.md: the distinct step phrases the specification uses.
 
 Reviewers check the domain language; implementers bind these phrases at G4.

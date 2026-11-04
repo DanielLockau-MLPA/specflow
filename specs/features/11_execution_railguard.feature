@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Execution railguard
   The implementation contains nothing that no scenario executes. Functions that stay unexecuted need a reviewed reason.
 

@@ -1,8 +1,17 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # MBSE to executable specification (prototype)
 
 Tooling for a human-gated, AI-assisted workflow:
 needs → SysML v2 model → executable specification → implementation gate, with traceability throughout.
 The repository dogfoods itself: `model/` and `specs/` describe this toolchain. Status: **draft, thin slice**.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Copyright (C) 2026 ML!PA Consulting GmbH. Files carry `SPDX-FileCopyrightText` and
+`SPDX-License-Identifier` tags in a comment header; files that cannot (JSON, SVG, Mermaid sources, the lock file, generated
+documents and the append-only decision logs) are covered by `REUSE.toml`. New files need the same header.
 
 ## Layout
 

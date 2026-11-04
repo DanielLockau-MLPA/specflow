@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Agent drafting of model and specification
   The agent drafts only from approved input and only as proposals on a proposal branch.
 

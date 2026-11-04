@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 package ProjectSources {
     doc /* Requirement sources: where the needs come from (norm, written communication with a stakeholder, or other written document). Every need cites at least one source; every source names the stakeholder who raised or owns it. Use cases and requirements below the need level inherit their sources through the trace chain. */
     private import ProjectNeeds::*;

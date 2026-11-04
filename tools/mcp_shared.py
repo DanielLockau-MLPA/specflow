@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Tools shared by the model and spec MCP servers: guarded document reads, decisions and proposals.
 
 The functions here are the InputGuard behaviour of the prototype (DR-024): file access goes through

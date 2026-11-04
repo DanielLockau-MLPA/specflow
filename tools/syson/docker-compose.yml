@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 # SysON images are multi-platform (linux/amd64 and linux/arm64) starting with v2026.9.0.
 # To run an older version on an ARM architecture, execute this command in your shell first:
 # export DOCKER_DEFAULT_PLATFORM=linux/amd64

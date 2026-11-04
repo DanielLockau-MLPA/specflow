@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Project brief (requirement source SRC-001)
 
 Written record of the requirements owner's initial request and the Q&A that followed (session of 2026-10-26),

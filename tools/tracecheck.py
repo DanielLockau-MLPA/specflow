@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Trace and coverage check across needs, use cases, requirements, design elements and scenarios.
 
 Prototype of the trace service (SR-013, SR-014, SR-015, DR-009). Reads the SysML

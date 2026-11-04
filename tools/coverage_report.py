@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Coverage report along need, use case, requirement, design element and scenario (SR-005, DR-011).
 
 Produces JSON or Markdown with stable ordering (sorted, no timestamps), a summary per level and per gate,

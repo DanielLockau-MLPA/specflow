@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Agent and MCP servers
 
 Two stdio MCP servers let any MCP client (and therefore any LLM) work with the model and the specification. The agent is

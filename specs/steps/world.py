@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Test world for the step definitions: an isolated git workspace per scenario.
 
 The world copies model/, specs/features/ and decisions/ of the project into a temporary git repository, registers

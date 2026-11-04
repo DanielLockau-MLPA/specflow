@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """ID scheme and uniqueness (SR-022, DR-028).
 
 An ID is `N|UC|SR|DR|SRC|STK-<digits>`. It cannot be registered when it exists in the model or ever existed in the model

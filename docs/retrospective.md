@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Retrospective (iteration 1)
 
 The model and specs describe this toolchain itself. This document lists what worked, what did not, and the

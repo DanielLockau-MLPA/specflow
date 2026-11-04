@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Applying the framework to a new project
 
 The workflow is generic (not limited to software), but this repository is a **dogfooding prototype**: some tooling still

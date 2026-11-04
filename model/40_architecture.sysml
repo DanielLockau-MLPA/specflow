@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 package Architecture {
     doc /* Logical architecture of the system of interest, its external context, and the allocation of L2 requirements (satisfy). Technology choices are bindings, not part of the logical structure. */
     private import DesignRequirements::*;

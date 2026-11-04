@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Model MCP server (DR-001): read, search, validate, trace, render and propose edits to the SysML model.
 
 Run (stdio): uv run python tools/mcp_model.py

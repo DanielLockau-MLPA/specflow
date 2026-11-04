@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Helpers shared by the trace, coverage and run steps (no step definitions): model/spec mutations in a world."""
 import re
 

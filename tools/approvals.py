@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Gate approval from per-stakeholder SSH-signed tags (SR-041, DR-003).
 
 Each stakeholder role signs `approval/<gate>/<role>.<n>` (n = revision; an unversioned tag counts as revision 0)

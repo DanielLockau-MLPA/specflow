@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Waivers
 
 A waiver is a recorded, time-limited human decision to accept one trace gap (SR-015, DR-015, DR-018). It lets a gate open

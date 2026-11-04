@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Human CLI for gate approvals. Not exposed through MCP.
 
   uv run python tools/approve.py roles

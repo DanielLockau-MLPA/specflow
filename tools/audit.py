@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Audit queries and the evidence bundle per gate (SR-030, SR-032, DR-020, DR-031).
 
 Everything is read from git and the recorded spec run, without an MCP client or the agent.

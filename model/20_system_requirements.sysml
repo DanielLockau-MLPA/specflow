@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 package SystemRequirements {
     doc /* L1 system requirements. Kinds: functional, quality, normative, security (constraints). */
     private import ProjectNeeds::*;

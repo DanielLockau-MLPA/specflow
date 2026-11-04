@@ -26,7 +26,7 @@ Append-only. Entries are never edited or deleted.
 - participants: DanielLockau-MLPA
 - question: Approve gate G3?
 - decision: baseline/G3 created as signed tag.
-- rationale: Signature verified against approvals/keys, signer id_rsa_dl_devops_20250812. Signed tags are the approval record.
+- rationale: Signature verified against approvals/keys, signer id_rsa. Signed tags are the approval record.
 - affected: SR-014
 
 ## DL-010

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Gate evaluation: approvals, trace rules, spec results and unreviewed AI-authored content (SR-008, SR-015, SR-045).
 
 A gate opens only when all of these hold (conditions come from approvals/gates.json):

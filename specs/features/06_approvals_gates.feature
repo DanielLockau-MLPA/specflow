@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Approvals and gates
   Gates G1 to G4 open only on signed approvals from every required human role.
 

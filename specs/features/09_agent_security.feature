@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 @security
 Feature: Agent-facing security controls
   File access, untrusted input, confidential content and human confirmation are enforced

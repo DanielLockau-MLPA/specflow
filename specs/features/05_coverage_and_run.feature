@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Coverage, spec execution and CI use
   Coverage and results are produced headless, deterministically and in machine-readable form.
 

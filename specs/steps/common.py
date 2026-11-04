@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps shared by several features. Phrases here must not be redefined in other step modules."""
 from behave import given, then, when
 

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Approval integrity
   Approvals and waivers are signed, tamper-evident and protected from the agent.
 

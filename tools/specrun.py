@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Run the executable specification headless and keep the result as gate evidence (SR-006, DR-007).
 
 `run` executes behave on specs/features, returns one entry per scenario (ID tags, status, duration) and records the

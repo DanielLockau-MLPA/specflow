@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Spec MCP server (DR-005): list, draft, run and report on the executable specification.
 
 Run (stdio): uv run python tools/mcp_spec.py

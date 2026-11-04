@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
 # Check, list and (optionally) install the dependencies of this project.
 #
 #   ./setup.sh                      check and list only (exit 1 if a required item is missing)

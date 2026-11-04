@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps of 04_trace.feature, bound to tools/tracecheck.py, tools/gate.py, tools/waivers.py and tools/coverage_report.py."""
 import datetime
 import itertools

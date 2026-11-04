@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Waivers as signed tags `waiver/<rule>/<element>[.<n>]` (SR-015, DR-015, DR-018).
 
 The tag message carries `rationale: ...` and `expiry: YYYY-MM-DD`; the approver is the verified signer. A waiver

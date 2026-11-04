@@ -1,0 +1,18 @@
+version = 1
+
+# Files that cannot carry a comment header or are generated or append-only: licensed here (REUSE specification).
+[[annotations]]
+path = [
+    "**/*.json",
+    "**/*.svg",
+    "**/*.mmd",
+    "**/*.pub",
+    "uv.lock",
+    ".gitignore",
+    "decisions/*.md",
+    "docs/diagrams.md",
+    "docs/step_vocabulary.md",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(C) 2026 ML!PA Consulting GmbH"
+SPDX-License-Identifier = "MIT"

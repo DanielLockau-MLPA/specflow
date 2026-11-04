@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Recorded Q&A and decision log
   Humans and the agent clarify intent in a recorded Q&A before any draft is produced.
   Outcomes are kept in an append-only decision log linked to model element IDs.

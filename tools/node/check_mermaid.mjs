@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 // Syntax-check all ```mermaid blocks in a Markdown file.
 // Usage: node tools/node/check_mermaid.mjs docs/diagrams.md
 import { JSDOM } from "jsdom";

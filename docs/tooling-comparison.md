@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Tooling comparison: build versus reuse
 
 Findings of a research pass on 2026-11-03 (sources: project READMEs and repositories; AI-assisted web research). Items marked (?) could not be verified. Decision: DL-025 in `decisions/model.md`.

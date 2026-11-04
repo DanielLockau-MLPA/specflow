@@ -1,5 +1,7 @@
-# Traceability
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
 
+# Traceability
 Traceability connects requirement sources to executable evidence. It is computed from the model text and the feature
 files; nothing is stored separately.
 

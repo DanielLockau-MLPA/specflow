@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 package DesignRequirements {
     doc /* L2 design requirements. Each derives from L1 requirements and is allocated to a part in package Architecture. */
     private import SystemRequirements::*;

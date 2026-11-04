@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Lightweight reader for the project's SysML v2 text files.
 
 Prototype helper: extracts IDs, trace dependencies, part structure and

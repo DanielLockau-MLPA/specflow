@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
+<!-- SPDX-License-Identifier: MIT -->
+
 # Gates and approvals
 
 Approvals are **signed git tags**, one per required role. A gate has no stored state; it is derived each time from tags,

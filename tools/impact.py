@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Impact analysis for a change to a model element (SR-010, DR-017).
 
 Upstream: elements the element derives from, covers or exercises (transitively). Downstream: elements that

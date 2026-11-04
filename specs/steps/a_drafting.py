@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps of 03_drafting.feature (shared draft-request and refusal steps are in a_workflow_qa.py)."""
 import fnmatch
 import json

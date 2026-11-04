@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 Feature: Change control, impact and audit evidence
   Changes to approved items are attributable and analysed; evidence is retained per gate.
 

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Out-of-band human confirmation (DR-032) for clients that cannot answer MCP elicitation.
 
 Server side: a state-changing tool call stores a pending request in .specflow/pending/ and waits. The human decides in a

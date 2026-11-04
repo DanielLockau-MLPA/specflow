@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """In-process MCP client helpers for the step modules a_*.py (no steps defined here)."""
 import asyncio
 

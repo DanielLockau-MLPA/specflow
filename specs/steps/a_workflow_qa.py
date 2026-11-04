@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps of 01_workflow_qa.feature; also the shared 'refused' and 'draft request' steps used by drafting."""
 import re
 

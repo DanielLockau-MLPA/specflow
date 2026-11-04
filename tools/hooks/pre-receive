@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
 """Server-side pre-receive hook: approval and waiver refs are written only as valid signed tags (SR-040, DR-026).
 
 Install in the bare repository of the git host as hooks/pre-receive. The trust anchor is a directory of

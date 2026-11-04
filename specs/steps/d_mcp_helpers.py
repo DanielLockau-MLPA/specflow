@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """In-process MCP client helpers for the step files of features 08 and 09 (no steps defined here)."""
 import asyncio
 import json

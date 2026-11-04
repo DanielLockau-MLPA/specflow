@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+// SPDX-License-Identifier: MIT
+
 package ProjectUseCases {
     doc /* Use cases covering the needs. */
     private import ProjectNeeds::*;

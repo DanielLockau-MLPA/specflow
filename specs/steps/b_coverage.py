@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Steps of 05_coverage_and_run.feature, bound to tools/coverage_report.py, tools/specrun.py and the specflow CLI."""
 import json
 import os

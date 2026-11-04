@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 """Validate the SysML v2 files in model/ with a replaceable parser backend (DR-002).
 
 Findings have one structure regardless of the backend: file, line, column, severity (error|warning|info),

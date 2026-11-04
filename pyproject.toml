@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH
+# SPDX-License-Identifier: MIT
+
 [project]
 name = "mbse-to-executable-spec-test"
 version = "0.1.0"
