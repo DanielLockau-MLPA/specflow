@@ -1,7 +1,18 @@
 <!-- SPDX-FileCopyrightText: (C) 2026 ML!PA Consulting GmbH -->
 <!-- SPDX-License-Identifier: MIT -->
 
-# MBSE to executable specification (prototype)
+> [!WARNING]
+> This project is at a prototype stage. It has been created as an attempt of a requirements
+> driven and acceptance test guarded workflow for AI-coded projects.
+>
+> The project has been intentionally vibe-coded to test the workflow on its code-base during development.
+> Until now, tooling and workflow have only been evaluated on the project itself.
+
+# System model to executable specification
+
+> [!NOTE]
+> Although a few concepts and the chosen modeling language have been inspired by MBSE (model based system engineering),
+> this work does not attempt to represent an MBSE-compliant workflow.
 
 Tooling for a human-gated, AI-assisted workflow:
 needs → SysML v2 model → executable specification → implementation gate, with traceability throughout.
